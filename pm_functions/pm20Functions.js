@@ -1,3 +1,195 @@
+function pm20Data(mode, ex) {
+    let pm20Data = {
+        t:0
+    }
+
+    let data_for_php = 0;
+    let shape = "shape";
+    let php_handler = "mwt_handler.php";
+    
+    if (mode == 0 || mode == 1) { // if we want regional (default) data
+        let key = 'all_pm20_p';
+        data_for_php = { key: key };
+    } else if (mode == 2) { // if we want corridors
+        data_for_php = ex;
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+    }
+    console.log("about to leave");
+    console.log(php_handler);
+    console.log(data_for_php);
+    console.log(mode);
+    /*
+    $.get(php_handler, data_for_php, function (data) {
+        let image = "./img/markers/crash.png";
+        console.log('returned to earth');
+        for (index in data.shape_arr) {
+            let holder = [];
+
+            let type = data.shape_arr[index]['type'];
+            let ogrID = parseInt(data.shape_arr[index]['OGR_FID']);
+
+            if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points 
+                holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
+                holder = holder[0][0]; // Fixes BLOBs
+
+                let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
+
+                let point = new google.maps.Marker({
+                    position: to_visualize,
+                   // title: type,
+                    value: ogrID,
+                    icon: image
+                });
+
+
+                if (type == "Pedestrian" && currentType == "walking") {
+                    point.setMap(map);
+                    points.push(point);
+                } else if (type == "Pedcyclists" && currentType == "biking") {
+                    point.setMap(map);
+                    points.push(point);
+                }
+            }
+        }
+
+        if (mode == 1) {
+            regionalText(pm20Data);
+        }
+        else if (mode == 2 || mode == 3) {
+            let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
+            dynamicCorridorText(corr, pm20Data); // Send graph data and current corridor to dynamic text for corridors
+        }
+    });
+    /*
+    key = 'all_pm20_s';
+    data_for_php = { key: key };
+    console.log(data_for_php);
+    console.log(php_handler);
+    $.get(php_handler, data_for_php, function (data) {
+        let image = "./img/markers/pink.png";
+        console.log('returned to pink');
+        //Stations
+        for (index in data.shape_arr) {
+            let holder = [];
+            console.log("testing");
+           // let ogrID = parseInt(data.shape_arr[index]['OGR_FID']);
+
+            if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points 
+                holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
+                holder = holder[0][0]; // Fixes BLOBs
+
+                let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
+
+                let point = new google.maps.Marker({
+                    position: to_visualize,
+                    title: "test",
+                    icon: image
+                });
+
+                point.setMap(map);
+                points.push(point);
+
+            }
+        }
+
+    });*/
+    //buffer
+    console.log("About to add Buffer");
+    key = 'all_pm20_b';
+    data_for_php = { key: key };
+    console.log(data_for_php);
+    console.log(php_handler);
+    $.get(php_handler, data_for_php, function (data) {
+        console.log("returned from pluto");
+        let color = "#039BE5";//blue
+        for (index in data.shape_arr) {
+            console.log("in here");
+            let temp = wktFormatter(data.shape_arr[index][shape]);
+            let to_visualize = [];
+          
+
+            // if the status of a shape exists, push to visualize
+            for (let i = 0; i < temp.length; i++) {
+                to_visualize.push(temp[i]);
+                polyToErase.exist.push();
+            }
+            let polygon = new google.maps.Polygon({
+                description: "",
+                description_value: '',
+                paths: to_visualize,
+                strokeColor: 'black',
+                strokeOpacity: 0.60,
+                strokeWeight: 0.70,
+                fillColor: color,
+                fillOpacity: 0.60,
+                zIndex: -1,
+                title: "Testing",
+       
+            });
+
+            polyToErase.exist.push(polygon);
+
+            // Hover Effect for Google API Polygons
+            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
+            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
+            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
+
+            polygon.setMap(map);
+            polygons.push(polygon);
+        }
+
+        /*In EXISTING only, get the summation of all the values in the Ratio_Pop column. For the percentage, use this summation, 
+         * then divide that by the total number of jobs((Ratio_Pop / Total Population) * 100) */
+       // pm9Data.peopleLivingTransit = ((pm9Data.Ex_pop / pm9Data.totPop) * 100);
+
+    });
+
+
+
+
+}
+function pm20Crashes(mode, php_handler, data_for_php) {
+    //crashes
+    $.get(php_handler, data_for_php, function (data) {
+        let image = "./img/markers/crash.png";
+        console.log('returned to earth');
+        for (index in data.shape_arr) {
+            let holder = [];
+
+            let type = data.shape_arr[index]['type'];
+            let ogrID = parseInt(data.shape_arr[index]['OGR_FID']);
+
+            if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points 
+                holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
+                holder = holder[0][0]; // Fixes BLOBs
+
+                let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
+
+                let point = new google.maps.Marker({
+                    position: to_visualize,
+                    title: "test",
+                    value: ogrID,
+                    icon: image
+                });
+
+
+                if (type == "Pedestrian" && currentType == "walking") {
+                    point.setMap(map);
+                    points.push(point);
+                } else if (type == "Pedcyclists" && currentType == "biking") {
+                    point.setMap(map);
+                    points.push(point);
+                }
+            }
+
+
+
+        }
+    });
+
+}
+/*
 // Pedestrians
 var pm20_P = {
     lon: [], lat: [], count: [], txtCount:0, clon: [], clat:[], ctype:[], pedTxt:0, highCrashAdd:"temp", highCrashNum:0
@@ -189,3 +381,4 @@ function checkGreatestVal(array, greatest){
     return array[greatest-1];
 }
 
+*/

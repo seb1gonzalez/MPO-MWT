@@ -37,11 +37,11 @@ body { font-family: "Lato", sans-serif; }
 /*mtp projects*/
  #mtp {
   padding: 1% 0% 2% 0%;
-  overflow: hidden;
+  overflow-y: hidden;
   height: 40vh;
   width: 100vw;
   margin-top: unset;
-  top: 60vh;
+  top: 30vh;
   z-index: 1;
 }
 

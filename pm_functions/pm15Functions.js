@@ -1,7 +1,8 @@
 
 function pm15Data(mode) {
+    console.log("new update on 15");
     var pm15Data = {
-        z2014: [], z2015: [], z2016: [], z2017: [], z2018: [], 
+        o8z2014: [], o8z2015: [], o8z2016: [], o8z2017: [], o8z2018: [], 
         o1z2014: [], o1z2015: [], o1z2016: [], o1z2017: [], o1z2018: [], 
         oz8Names:[], oz1Names:[]
     };
@@ -22,37 +23,38 @@ function pm15Data(mode) {
     images.push("./icons/lightgreenPin.png");
     images.push("./icons/lightgrayPin.png");
 
-    let image = "./img/markers/crash.png";
+   
 
     let key = 'all_pm15_16_17g';
     let example = { key: key };
-    console.log('debugging 15');
 
+    console.log('entering 15');
     //store graph data
     $.get('mwt_handler.php', example, function (data) {
+        console.log(data);
+        console.log('returning 15');
         for (index in data.shape_arr) {
             stationName = data.shape_arr[index]['Station'];
-            category = data.shape_arr[index]['Category'];
-            g2014 = data.shape_arr[index].g2014;
-            g2015 = data.shape_arr[index].g2015;
-            g2016 = data.shape_arr[index].g2016;
-            g2017 = data.shape_arr[index].g2017;
-            g2018 = data.shape_arr[index].g2018;
-
-            if (category == 'OZONE 8') {
+            category = data.shape_arr[index]['Pollutant'];
+            pm15Data.abc = [];
+            pm15Data.abc.push(1);
+            
+            if (category == 'Ozone 8 hr') {
+                pm15Data.stationName = [];
+                pm15Data.stationName.push(index);
                 pm15Data.oz8Names.push(stationName);
-                pm15Data.z2014.push(g2014);
-                pm15Data.z2015.push(g2015);
-                pm15Data.z2016.push(g2016);
-                pm15Data.z2017.push(g2017);
-                pm15Data.z2018.push(g2018);
-            } else if (category == 'OZONE 1') {
+                pm15Data.o8z2014.push(data.shape_arr[index].g2014);
+                pm15Data.o8z2015.push(data.shape_arr[index].g2015);
+                pm15Data.o8z2016.push(data.shape_arr[index].g2015);
+                pm15Data.o8z2017.push(data.shape_arr[index].g2017);
+                pm15Data.o8z2018.push(data.shape_arr[index].g2018);
+            } else if (category == 'Ozone 1 hr') {
                 pm15Data.oz1Names.push(stationName);
-                pm15Data.o1z2014.push(g2014);
-                pm15Data.o1z2015.push(g2014);
-                pm15Data.o1z2016.push(g2015);
-                pm15Data.o1z2017.push(g2016);
-                pm15Data.o1z2018.push(g2017);
+                pm15Data.o1z2014.push(data.shape_arr[index].g2014);
+                pm15Data.o1z2015.push(data.shape_arr[index].g2015);
+                pm15Data.o1z2016.push(data.shape_arr[index].g2016);
+                pm15Data.o1z2017.push(data.shape_arr[index].g2017);
+                pm15Data.o1z2018.push(data.shape_arr[index].g2018);
             }       
         }
 
@@ -79,9 +81,10 @@ function pm15Data(mode) {
                         icon: images[index]
                     });
 
-                    point.setMap(map);
-                    points.push(point);
-                    console.log(point);
+                    if (pm15Data.oz8Names[index] == stationName || pm15Data.oz1Names[index] == stationName ) {
+                        point.setMap(map);
+                        points.push(point);
+                    }
                 }
             });
         }
@@ -107,8 +110,8 @@ function pm15chartLine(ctx, data) {
         labels: ['2014', '2015', '2016', '2017', '2018'],
         datasets: [
             {
-                label: data.oz8Names[0],
-                data: data.z2014,
+                label: data.oz8Names,
+                data: data.o8z2014,
                 backgroundColor: "red",
                 borderColor: "red",
                 fill: false,
@@ -117,7 +120,7 @@ function pm15chartLine(ctx, data) {
             },
             {
                 label: data.oz8Names[1],
-                data: data.z2015,
+                data: data.o8z2015,
                 backgroundColor: "orange",
                 borderColor: "orange",
                 fill: false,
@@ -126,7 +129,7 @@ function pm15chartLine(ctx, data) {
             },
             {
                 label: data.oz8Names[2],
-                data: data.z2016,
+                data: data.o8z2016,
                 backgroundColor: "pink",
                 borderColor: "pink",
                 fill: false,
@@ -135,7 +138,7 @@ function pm15chartLine(ctx, data) {
             },
             {
                 label: data.oz8Names[3],
-                data: data.z2017,
+                data: data.o8z2017,
                 backgroundColor: "lightblue",
                 borderColor: "lightblue",
                 fill: false,
@@ -144,18 +147,9 @@ function pm15chartLine(ctx, data) {
             },
             {
                 label: data.oz8Names[4],
-                data: data.z2018,
+                data: data.o8z2018,
                 backgroundColor: "gray",
                 borderColor: "gray",
-                fill: false,
-                lineTension: 0,
-                radius: 5
-            },
-            {
-                label: data.oz8Names[0],
-                data: data.z2014,
-                backgroundColor: "green",
-                borderColor: "green",
                 fill: false,
                 lineTension: 0,
                 radius: 5

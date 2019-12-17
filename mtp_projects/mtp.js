@@ -53,11 +53,11 @@ $('#mtp-projects').click(function() {
                     style: 'single',
                 },
                 scrollY: '32vh',
-                scrollX: true,
-                scrollCollapse: true,
+                scrollCollapse: true, 
                 paging: false,
-                fixedHeader: true,
-                //fixedColumns: true,
+                //fixedHeader: true,
+                //responsive: true,
+                fixedColumns: true,
                 columnDefs: [
                     {
                         targets: '_all',
@@ -72,6 +72,10 @@ $('#mtp-projects').click(function() {
                             }
                             return data;
                         },
+                    },
+                    {
+                        target: 10,
+                        render: $.fn.dataTable.render.number(',', '$' ),
                     },
                 ],
             });
@@ -206,7 +210,7 @@ function openNavMTP() {
     nav.className = 'sidenav rounded-left mb-2 bg-light text-dark';
     // resizing for the table
     $(nav).tooltip('disable');
-    $(nav).css('overflow', 'hidden');
+    $(nav).css('overflow-y', 'hidden');
     nav.style.height = '40vh';
     $(nav).css('margin-top', '');
     $(nav).css('top', '60vh');

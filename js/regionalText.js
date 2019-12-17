@@ -5,10 +5,13 @@
 
 function regionalText(data) {
     resetViewsBeforeSpinner(); 
-    console.log(data);
+   // console.log(data);
 
     if (currentPM == 1) {
         pm1R(data);
+    }
+    else if (currentPM == 2) {
+        pm2R(data);
     }
     else if (currentPM == 3) {
         pm3R(data);
@@ -55,12 +58,81 @@ function regionalText(data) {
     else if (currentPM == 19) {
         pm19R(data);
     }
+    else if (currentPM == 20) {
+        pm20R(data);
+    }
+    else if (currentPM == 21) {
+        pm21R();
+    }
     else if (currentPM == 25) {
        pm25R(data);
     }
     else if (currentPM == 26) {
         pm26R(data);
     }
+}
+function pm21R() {
+    console.log('regional text of 25');
+    headerAdder("Number of projects that include safety enhancements located near crash hotspots.", "title");
+    paragraphAdder("Summary:", "subtitle", "summary-title");
+
+    paragraphAdder("Project C035X. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project P402X-05A. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project P464X-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project F057X-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project F405X-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project A136X-CAP. Hot-spot type: Persistent", "paragraph", "summary-info");
+    paragraphAdder("Project F407A-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project F407B-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project F058X-CAP. Hot-spot type: Persistent. ", "paragraph", "summary-info");
+    paragraphAdder("Project F407C. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project I061X-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project P002X-CAP. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project P533X. Hot-spot type: Persistent.", "paragraph", "summary-info");
+    paragraphAdder("Project T069X. Hot-spot type: Persistent, New, Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project P428X-MOD. Hot-spot type: Persistent, New, Oscillating.", "paragraph", "summary-info");
+    paragraphAdder("Project P428X-CAP-2. Hot-spot type: Persistent, Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project P428X-CAP-2. Hot-spot type: Persistent, Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project M087B. Hot-spot type: Persistent, Intensifying", "paragraph", "summary-info");
+    paragraphAdder("Project R307D. Hot-spot type: Persistent, Intensifying", "paragraph", "summary-info");
+    paragraphAdder("Project I063X-CAP. Hot-spot type: Persistent, Intensifying. ", "paragraph", "summary-info");
+    paragraphAdder("Project P530X-MOD. Hot-spot type: Persistent, Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project M025B. Hot-spot type: Persistent, Intensifying, Oscillating. ", "paragraph", "summary-info");
+    paragraphAdder("Project M087A. Hot-spot type: Persistent, Intensifying, Oscillating. ", "paragraph", "summary-info");
+    paragraphAdder("Project M090X. Hot-spot type: Persistent, Intensifying, Oscillating. ", "paragraph", "summary-info");
+    paragraphAdder("Project F056X-CAP. Hot-spot type: Persistent, Oscillating.", "paragraph", "summary-info");
+    paragraphAdder("Project I406X-CAP. Hot-spot type: Persistent, Oscillating.", "paragraph", "summary-info");
+    paragraphAdder("Project P410X-15A. Hot-spot type: Persistent, Oscillating.", "paragraph", "summary-info");
+    paragraphAdder("Project E304X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project E303X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project M089A. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project B300X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project B301X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project E302X-1. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project E302X-2. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project F060X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project P334X. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project I006X-15A. Hot-spot type: Intensifying.", "paragraph", "summary-info");
+    paragraphAdder("Project A434X-CAP. Hot-spot type: Oscillating.", "paragraph", "summary-info");
+    paragraphAdder("Project I405X-CAP. Hot-spot type: Oscillating.", "paragraph", "summary-info");
+
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("Crash data from 2013-2017, safety projects identified from the Metropolitan Transportation Plan Destino 2045", "paragraph", "analysis-info");
+
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    paragraphAdder("Crash data provided by TxDOT and NMDOT. Destino 2045 projects identified by El Paso MPO.", "paragraph", "data-info");
+
+    paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("Most of the projects in the map were obtained from Alliance. ", "paragraph", "calc-info");
+    paragraphAdder("Most of the projects are represented as lanes in the maps, and three of them are represented as a point, those are: C035X, P333X and P334X.", "paragraph", "calc-info");
+    paragraphAdder("There is no layer for safety projects in Dona Ana and Otero counties, just the crash hotspots was calculated.", "paragraph", "calc-info");
+    paragraphAdder("Space-Time Analysis was made to identify the crash hot spots which classified as follows:", "paragraph", "calc-info");
+    paragraphAdder("Space-Time Analysis was made to identify the crash hot spots which classified as follows:", "paragraph", "calc-info");
+    paragraphAdder("Persistent: \“A location that has been a statistically significant hot spot for ninety percent of the time-step intervals with no discernible trend indicating an increase or decrease in the intensity of clustering over time”\ (ArcGIS).", "paragraph", "calc-info");
+    paragraphAdder("New: \“A location that is a statistically significant hot spot for the final time step and has never been a statistically significant hot spot before”\ (ArcGIS). ", "paragraph", "calc-info");
+    paragraphAdder("Intensifying: \“A location that has been a statistically significant hot spot for ninety percent of the time-step intervals, including the final time step. In addition, the intensity of clustering of high counts in each time step is increasing overall and that increase is statistically significant”\ (ArcGIS).", "paragraph", "calc-info");
+    paragraphAdder("Oscillating: \“A statistically significant hot spot for the final time-step interval that has a history of also being a statistically significant cold spot during a prior time step. Less than ninety percent of the time-step intervals have been statistically significant hot spots”\ (ArcGIS).", "paragraph", "calc-info");
+    openNav();
 }
 function pm1R(data) {
     canvasMaker('chart1', 'myChart');
@@ -72,7 +144,7 @@ function pm1R(data) {
         + "therefore only " +  "% of workers commute via non-SOV modes, which includes carpooled via car, truck, or van. Workers"
         + "used Public Transport means such as bus or trolley bus, streetcar or trolley car, subway or elevated railroad, railroad,"
         + " and ferryboat. Some workers also used a taxicab, motorcycle, bicycle, walking, and other means to go to work or they worked"
-        + " at home. �", "paragraph", "summary-info");
+        + " at home.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2012-2016 5-year average estimates", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -82,6 +154,25 @@ function pm1R(data) {
     paragraphAdder("PM1 is calculated as:", "paragraph", "calc-info");
     imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
     openNav();
+}
+function pm2R(data) {
+    canvasMaker('chart1', 'myChart');
+    var ctx2pm1 = document.getElementById('myChart').getContext('2d');
+    pieChartpm1(ctx2pm1);
+    headerAdder("Percent of Workers commuting by transit/walking/biking. ", "title");
+    paragraphAdder("Summary:", "subtitle", "summary-title");
+    paragraphAdder(" During 2012-2016 __% of workers living in the El Paso MPO area reported to walk to work, __% of workers bike,"
+        + "and __ % of workers reported to commute by public transit. ", "paragraph", "summary - info");
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("2007-2011 and 2012-2016 5-year average estimates", "paragraph", "analysis-info");
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    anchorAdder("American Community Survey 5-Year Estimates", "https://www.census.gov/geo/maps-data/data/tiger-data.html");
+    anchorAdder("TIGER/Line Shapefiles and TIGER/Line Files", "https://www.census.gov/geo/maps-data/data/tiger-line.html");
+    paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("PM1 is calculated as:", "paragraph", "calc-info");
+    imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
+    openNav();
+
 }
 function pm18R(data) {
     canvasMaker('chart1/2', 'myChart');
@@ -170,7 +261,7 @@ function pm25R(data) {
     pm25StackedChart(ctx,data);
     pm25chartLine(ctx2,data);
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("HPMS reports 2017 pavement condition for 432.69 miles within the El Paso MPO area, out of that 21.47% is in poor condition. 78.45 miles (21.65%) of pavement in poor condition are located in Texas and 14.43 miles (20.52%) are in New Mexico. In 2017, 35.64 miles (12.55%) of freight network has pavements in poor condition and 70.78 miles (32.08%) of transit network has pavements in poor condition.", "paragraph", "summary-info");
+    paragraphAdder("HPMS reports 2017 pavement condition for " + data.tot_miles + " miles within the El Paso MPO area, out of that " + data.poor_mi_perc + "% is in poor condition. " + data.tx_miles + " miles (" + data.tx_poor_mi_perc + "%) of pavement in poor condition are located in Texas and " + data.nm_miles + " miles (" + data.nm_poor_mi_perc + "%) are in New Mexico.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2013-2017", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -390,7 +481,7 @@ function pm15R(data) {
     paragraphAdder("Summary:", "subtitle", "summary-title");
     paragraphAdder("According to the data available, ozone, carbon monoxide, and particulate matter pollution has been increasing in the last 5 years.", "paragraph", "summary-info");
     paragraphAdder("Stations with the highest annual readings for each pollutant are:", "paragraph", "summary-info");
-    paragraphAdder("Ozone 8hr � El Paso Chamizal in 2018,", "paragraph", "summary-info");
+    paragraphAdder("Ozone 8hr - El Paso Chamizal in 2018,", "paragraph", "summary-info");
     paragraphAdder("Ozone 1hr � Santa Teresa in 2017,", "paragraph", "summary-info");
     paragraphAdder("Particulate Matter � Desert View in 2016", "paragraph", "summary-info");
     paragraphAdder("Carbon Monoxide � El Paso UTEP in 2018.", "paragraph", "summary-info");
@@ -443,5 +534,21 @@ function pm17R(data) {
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
     paragraphAdder("Annual readings are reported exactly as they appear at Texas Commission on Environmental Quality website and New Mexico Environment Department website. In Texas 8-hour ozone standard is reported, in NM only 1-hour ozone standard was available. Carbon monoxide and particulate matter (PM10) are also reported.", "paragraph", "calc-info");
     paragraphAdder("*Note: Not all monitors collected data for all three pollutants, also not all monitors have data for the full 5-year period.", "paragraph", "calc-info");
+    openNav();
+}
+
+function pm20R(data) {
+    canvasMaker('chart1', 'myChart');
+   // var ctx = document.getElementById('myChart').getContext('2d');
+    //pm17chartLine(ctx, data);
+    headerAdder("Number of crashes between motorized vehicles and pedestrians/bicyclists nearby bus stops.", "title");
+    paragraphAdder("Summary:", "subtitle", "summary-title");
+    paragraphAdder("62.69% of all pedestrian crashes and 48.80% of all bicycle crashes in El Paso region occurred within 200 feet of transit stops.Majority of the crashes near bus stops occurred in downtown area, Mesa St.Dyer St.and Hondo Pass. The highest observed number of crashes within 200 ft.from a bus stop is 10 for pedestrian(on Paisano Dr.between Alley D.and Oregon St.) and 2 for bicycle(15 locations have the same number).", "paragraph", "summary-info");
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019", "paragraph", "analysis-info");
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    paragraphAdder("Crash data from TxDOT, location of bus stops from Sun Metro ", "paragraph", "data-info");
+    paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("A buffer of 200 ft. was created from the bus stops to identify how many crashes occurred within that distance.The crashes are from 2013 to 2017, and the bus stop locations are as of 2019. ", "paragraph", "calc-info");
     openNav();
 }

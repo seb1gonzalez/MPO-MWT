@@ -1,9 +1,8 @@
 function polygonHandler(found) {
     clean();
     displaySpinner();
-    console.log('line handleling');
+
     if (found == "PM1") {
-        alert('start pm1');
         currentType = "driving";
         currentPM = 1;
         pm1Data(1, '');
@@ -16,7 +15,12 @@ function polygonHandler(found) {
         currentType = "biking";
         currentPM = 6;
         pm6Data(1, '');
-    } else if (found == "PM8") {
+    } else if (found == "PM7") {
+        currentType = "transit";
+        currentPM = 7;
+        pm7Data(1, '');
+    }
+    else if (found == "PM8") {
         console.log('2019');
         currentType = "biking";
         currentPM = 8;

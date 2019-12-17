@@ -8,6 +8,7 @@
 function lineHandler(found) {
     clean();
     displaySpinner();
+
     if (found == "PM3") {
         currentType = "transit";
         currentPM = 3;
@@ -28,13 +29,13 @@ function lineHandler(found) {
         currentType = "biking";
         currentPM = 4;
         active_pm_for_AOI = 'all_pm4B';
-
-            if (found == "0pm4B"){
-                 pm4Data(0, '');
-                }
-            else {
-                pm4Data(1, '');
-            }
+        if (found == "0pm4B") {
+            pm4Data(0, '');
+        }
+        else {
+            pm4Data(1, '');
+        }
+                
     } else if (found == "pm11Walking") {
         currentType = "walking";
         currentPM = 11;
@@ -42,14 +43,19 @@ function lineHandler(found) {
         pm11Data(1, '');
 
     } else if (found == "pm12Biking") {
-        //console.log('12 is handled');
         currentType = "biking";
         currentPM = 12;
         active_pm_for_AOI = 'all_pm12';
         pm12Data(1, '');
 
-    } else if (found == "PM25") {
-        //console.log('mier');
+    }
+    else if (found == "PM21") {
+        currentType = "driving";
+        currentPM = 21;
+        //active_pm_for_AOI = 'all_pm25';
+        pm21Data(1, '');
+    }
+    else if (found == "PM25") {
         currentType = "driving";
         currentPM = 25;
         active_pm_for_AOI = 'all_pm25';

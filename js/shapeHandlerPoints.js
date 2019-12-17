@@ -375,10 +375,7 @@ function shape_handlerP(found, key) {
           else if(found == "pm22crashes"){
             
 
-              if(getPointsCorridors("point","AOM") == true){ //If a Switch is on
-               // cmp_lines(); 
-             
-              }else{
+      
                   console.log("ops");
                 cmp_lines();  
                 let image = "./icons/crash_red.png";
@@ -408,7 +405,7 @@ function shape_handlerP(found, key) {
                      });
                  }); 
 
-              }
+              
           
             
         }

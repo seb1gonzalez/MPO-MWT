@@ -2,16 +2,25 @@
  * Note that PM25 is on progress. The graph values are hardcoded, Only 2017 is loaded. 
  * This class only calculates the values for graph
  */
- 
-function pm25Data(mode, example) { 
 
+function pm25Data(mode, example) {
     //graph values
-    pm25Data = {
-        good: [0.0, 0.0, 0.0, 0.0, 0.0],
-        fair: [0.0, 0.0, 0.0, 0.0, 0.0],
-        poor: [0.0, 0.0, 0.0, 0.0, 0.0]
-    }
+
+    console.log(mode + " mode for 25 BC");
     
+    let pm25Data = {
+        good: [0, 0, 0, 0, 0],
+        fair: [0, 0, 0, 0, 0],
+        poor: [0, 0, 0, 0, 0],
+        tot_miles: 0,
+        poor_mi_perc: 0,
+        tx_miles: 0,
+        tx_poor_mi_perc: 0,
+        nm_miles: 0,
+        nm_poor_mi_perc: 0
+    }
+    console.log('Good unitl here');
+        
     let color = '#03A9F4';  // default
     let caller = "mwt_handler.php";
     let shape = "shape";
@@ -22,32 +31,39 @@ function pm25Data(mode, example) {
     } else {
         caller = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
-    }    
+    }
+    console.log(caller);
+    console.log(example);
 
-    $.get('mwt_handler.php', example, function (data) { // ajax call to populate pavement lines
+    $.get(caller, example, function (data) { // ajax call to populate pavement lines
+        //miles in poor condition
+        console.log('pass barrier');
+        let poorconditionMiles = 0;
+        let poorconditionMilesTX = 0;
+        let poorconditionMilesNM = 0;
+
         for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
-            let shp = data.shape_arr[index]['shape']; // shape is LINESTRING or MULTILINESTRING
+            let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING
             let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
             let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
             let to_visualize = []; // used to populate the map (latitude & longitude)
             let coord; // will be an object to push coordinates to populate the map
             let ln = r.getCoordinates(); // parses the shape into lat & lng
-            
 
             //PMS Data
             let iri = data.shape_arr[index].iri_vn;
             let year = data.shape_arr[index].year;
-            var miles = parseFloat(data.shape_arr[index].miles);
+            let miles = parseFloat(data.shape_arr[index].miles);
+            let state = data.shape_arr[index].state_code;
 
-            //miles = miles.toFixed(2);;
             //filter graph Data by Year, add counts on 3 conditions
             if (year == 2013) {
                 if (iri < 95) { //condition
                     pm25Data.good[0] += miles; //year 0 or 2013
                 } else if (iri > 94 && iri < 171) {
-                    pm25Data.fair[0]+=miles;
+                    pm25Data.fair[0] += miles;
                 } else if (iri > 170) {
-                    pm25Data.poor[0]+=miles;
+                    pm25Data.poor[0] += miles;
                 }
             } else if (year == 2014) {
                 if (iri < 95) {
@@ -83,6 +99,30 @@ function pm25Data(mode, example) {
                 }
             }
 
+            //total miles
+            pm25Data.tot_miles += miles;
+            // total poor condition miles
+            if (iri > 170) {
+                poorconditionMiles += miles;
+            }
+
+            //Texas 
+            if (state == 48) {
+                //total in tx
+                pm25Data.tx_miles += miles;
+                //poor in tx
+                if (iri > 170) {
+                    poorconditionMilesTX += miles;
+                }
+
+            } else if (state == 35) {
+                pm25Data.nm_miles += miles;
+
+                if (iri > 170) {
+                    poorconditionMilesNM += miles;
+                }
+            }
+
             //Draw latest year
             if (year == 2017) {
                 if (mode == 1 || mode == 2) {
@@ -109,42 +149,71 @@ function pm25Data(mode, example) {
                     polylines.push(line);
                 }
             }
-      
- 
         }
+        //calculations for dynamic Text
+        pm25Data.poor_mi_perc = ((poorconditionMiles / pm25Data.tot_miles) * 100).toFixed(2);
+        pm25Data.tx_poor_mi_perc = ((poorconditionMilesTX / pm25Data.tx_miles) * 100).toFixed(2);
+        pm25Data.nm_poor_mi_perc = ((poorconditionMilesNM / pm25Data.nm_miles) * 100).toFixed(2);
+
+        pm25Data.tot_miles = (pm25Data.tot_miles).toFixed(2);
+        pm25Data.tx_miles = (pm25Data.tx_miles).toFixed(2);
+        pm25Data.nm_miles = (pm25Data.nm_miles).toFixed(2);
+        // If we fixed used 'toFixed(2)' earlier it cause a bug. Estimating here worked
+        pm25Data.good[0] = (pm25Data.good[0]).toFixed(2);
+        pm25Data.good[1] = (pm25Data.good[1]).toFixed(2);
+        pm25Data.good[2] = (pm25Data.good[2]).toFixed(2);
+        pm25Data.good[3] = (pm25Data.good[3]).toFixed(2);
+        pm25Data.good[4] = (pm25Data.good[4]).toFixed(2);
+
+        pm25Data.fair[0] = (pm25Data.fair[0]).toFixed(2);
+        pm25Data.fair[1] = (pm25Data.fair[1]).toFixed(2);
+        pm25Data.fair[2] = (pm25Data.fair[2]).toFixed(2);
+        pm25Data.fair[3] = (pm25Data.fair[3]).toFixed(2);
+        pm25Data.fair[4] = (pm25Data.fair[4]).toFixed(2);
+
+        pm25Data.poor[0] = (pm25Data.poor[0]).toFixed(2);
+        pm25Data.poor[1] = (pm25Data.poor[1]).toFixed(2);
+        pm25Data.poor[2] = (pm25Data.poor[2]).toFixed(2);
+        pm25Data.poor[3] = (pm25Data.poor[3]).toFixed(2);
+        pm25Data.poor[4] = (pm25Data.poor[4]).toFixed(2);
+ 
 
         let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
+
         if (mode == 0) {
-            //document.getElementById("").innerHTML = 5;
+            document.getElementById("pm25DText").innerHTML = pm25Data.poor_mi_perc;
         }
         else if (mode == 1) {
             regionalText(pm25Data);
         } else if (mode == 2) {
+            console.log('Entering Another Realm');
             dynamicCorridorText(corr, pm25Data);
         }
     });
-         
+    
 }
 
-function pm25StackedChart(ctx,data){
+
+
+function pm25StackedChart(ctx, data) {
     var barChartData = {
-		labels: ['2013', '2014', '2015', '2016', '2017'],
-			datasets: [{
-				label: 'Good',
-				backgroundColor: 'rgba(139,195,74 ,1)',
-                data: data.good
-			}, {
-				label: 'Fair',
-				backgroundColor: 'rgba(239,108,0 ,1)',
-				data: data.fair
-			}, {
-				label: 'Poor',
-				backgroundColor: 'rgba(213,0,0 ,1)',
-				data: data.poor
-			}]
+        labels: ['2013', '2014', '2015', '2016', '2017'],
+        datasets: [{
+            label: 'Good',
+            backgroundColor: 'rgba(139,195,74 ,1)',
+            data: data.good
+        }, {
+            label: 'Fair',
+            backgroundColor: 'rgba(239,108,0 ,1)',
+            data: data.fair
+        }, {
+            label: 'Poor',
+            backgroundColor: 'rgba(213,0,0 ,1)',
+            data: data.poor
+        }]
 
     };
-    //
+
     var chartBar = new Chart(ctx, {
         type: "bar",
         data: barChartData,
@@ -155,9 +224,9 @@ function pm25StackedChart(ctx,data){
                 labels: {
                     fontColor: "#333",
                     fontSize: 10,
-                    boxWidth:6
+                    boxWidth: 6
                 }
-                },
+            },
             title: {
                 display: true,
                 text: 'Past 5 years'
@@ -174,32 +243,32 @@ function pm25StackedChart(ctx,data){
                 yAxes: [{
                     stacked: true,
                     scaleLabel: {
-                      display: true,
-                      labelString: 'Miles in all conditions'
+                        display: true,
+                        labelString: 'Miles in all conditions'
                     }
-                  }]
+                }]
             }
         }
     });
-	
+
 }
-function pm25chartLine(ctx,data){
+function pm25chartLine(ctx, data) {
     var data = {
         labels: ["2013", "2014", "2015", "2016", "2017"],
         datasets: [
             {
-            label: "Poor Condition",
-            data: data.poor,
-            backgroundColor: "blue",
-            borderColor: "lightblue",
-            fill: false,
-            lineTension: 0,
-            radius: 5
+                label: "Poor Condition",
+                data: data.poor,
+                backgroundColor: "blue",
+                borderColor: "lightblue",
+                fill: false,
+                lineTension: 0,
+                radius: 5
             },
         ]
     };
 
-     //options
+    //options
     var options = {
         responsive: true,
         title: {
@@ -207,23 +276,23 @@ function pm25chartLine(ctx,data){
             text: 'Pavements in poor condition'
         },
         legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-            fontColor: "#333",
-            fontSize: 12,
-            boxWidth:10
-        }
+            display: true,
+            position: "bottom",
+            labels: {
+                fontColor: "#333",
+                fontSize: 12,
+                boxWidth: 10
+            }
         },
         scales: {
             yAxes: [{
                 scaleLabel: {
-                  display: true,
-                  labelString: 'Number of miles on poor condition'
+                    display: true,
+                    labelString: 'Number of miles on poor condition'
                 }
-              }]
+            }]
         }
-        
+
     };
 
     //create Chart class object

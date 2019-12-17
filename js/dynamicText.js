@@ -273,17 +273,22 @@ function pm19DynamicText(corridor, data) {
     openNav();
 }
 function pm25DynamicText(corridor, data) {
-    headerAdder("Bikeway Buildout", "title");
-    canvasMaker('chart1', 'myChart');
+    headerAdder("Percentage of pavements in poor condition Corridor", "title");
+    canvasMaker('chart1/2', 'myChart');
+    canvasMaker('chart2/2', 'myChart2');
     var ctx = document.getElementById('myChart').getContext('2d');
-    pm12StackedChart(ctx);
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    pm25StackedChart(ctx,data);
+    pm25chartLine(ctx2,data);
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("HPMS reports 2017 pavement condition for __ miles within the " + wordFix(corridor) + " corridor.", "paragraph", "summary-info");
+	paragraphAdder("HPMS reports 2017 pavement condition for " + data.tot_miles + " miles within the " + wordFix(corridor) + " corridor, out of that " + data.poor_mi_perc + "% is in poor condition. ", "paragraph", "summary-info");
+	
+    
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2013-2017", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
     anchorAdder("Highway Performance Monitoring System (HPMS) Public Release of Geospatial Data in Shapefile Format", "https://www.fhwa.dot.gov/policyinformation/hpms/shapefiles.cfm");
-    //anchorAdder("https://www.fhwa.dot.gov/policyinformation/hpms/shapefiles.cfm ","https://www.fhwa.dot.gov/policyinformation/hpms/shapefiles.cfm");
+    anchorAdder("https://www.fhwa.dot.gov/policyinformation/hpms/shapefiles.cfm ","https://www.fhwa.dot.gov/policyinformation/hpms/shapefiles.cfm");
     paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
     paragraphAdder("Pavement condition was based on International Roughness Index (IRI) as defined by:", "paragraph", "calc-info");
     anchorAdder("Federal Highway Administration", "https://www.fhwa.dot.gov/policy/2013cpr/chap3.cfm#1");

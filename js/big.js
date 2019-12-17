@@ -182,7 +182,9 @@ function modeFinder() {
     if (currentType == "freight") return "pm18Freight";
     if (currentType == "walking") return "pm18Walking";
     if (currentType == "biking") return "pm18Biking";
-  } else if (currentPM == 26) {
+  } else if (currentPM == 25) {
+      return "PM25";
+  }else if (currentPM == 26) {
     return "pm26";
   }
 }
@@ -643,21 +645,21 @@ function sendCorridorData(type, Corridors_selected, Active_pm) {
       pm26Data(2, example);
     }
   } else if (type == "line") {
-     /* if (currentPM == 25) {
+      if (currentPM == 25) {
           pm25Data(2, example);
-    } else */
-      if (currentPM == 11) {
-        (2, example);
-    } else if (currentPM == 12) {
-      pm12Data(2, example);
+      } else if (currentPM == 11) {
+          (2, example);
+      } else if (currentPM == 12) {
+          pm12Data(2, example);
       } else if (currentPM == 3) {
           console.log('3 loading')
-      pm3Data(2, example);
-    } else if (currentPM == 4) {
-      pm4Data(2, example);
-    } else if (currentPM == 5) {
-      corrShape_handlerL("pm4W", example);
-    }
+          pm3Data(2, example);
+      } else if (currentPM == 4) {
+          pm4Data(2, example);
+      } else if (currentPM == 5) {
+          corrShape_handlerL("pm4W", example);
+      }
+      
   }
 
 }
@@ -682,7 +684,7 @@ function performanceDataLoader() {
     //pm20Data();
     //pm20DataT();
     pm22Data();
-    //pm25Data();
+    pm25Data(0,'');
     pm26Data(0, '');
     toggleHide();
 

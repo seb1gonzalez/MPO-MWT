@@ -51,7 +51,7 @@
                                                   </button>
                                                </div>
                                             </div>
-                                            <!--
+                                            
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                    <div class="card">
                                                        <button type="button" href="#" value="pm1" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="polygonHandler('PM1')">
@@ -61,7 +61,7 @@
                                                            </div>
                                                        </button>
                                                    </div>
-                                               </div> -->
+                                               </div> 
                                             <div class="col-lg-4 col-md-4 col-sm-12">
                                                <div class="card">
                                                   <button type="button" href="#" value="pm22Driving" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="/*shape_handler('pm22nm','all_pm22nm','point');*/ shape_handlerP('pm22crashes','all_pm22'); buttonSwitch(this);pm22Data()">
@@ -128,10 +128,9 @@
                                                   </button>
                                                </div>
                                             </div>
-                                            <!-- id="pm25Text 
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                    <div class="card">
-                                                   <button type="button" href="#" value="pm21Driving" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick=" shape_handler('PM21P','all_pm21P','point');shape_handler('PM21','all_pm21','polygon');shape_handler('PM21L','all_pm21L','line');buttonSwitch(this)">
+                                                   <button type="button" href="#" value="pm21Driving" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="lineHandler('PM21')">
                                                            <div data-target="#sidebar" data-toggle="collapse" aria-expanded="false" class="card-body">
                                                                <h3>pm21 </h3>
                                                                <h5>Safety Projects</h5>
@@ -139,13 +138,13 @@
                                                            </div>
                                                        </button>
                                                    </div>
-                                               </div>-->
+                                               </div>
                                             <div class="col-lg-4 col-md-4 col-sm-12">
                                                <div class="card">
-                                                  <button type="button" href="#" value="pm25" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="lineHandler('PM25')">
+                                                  <button type="button" href="#"  data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="lineHandler('PM25')">
                                                      <div data-target="#sidebar" data-toggle="collapse" aria-expanded="false" class="card-body">
-                                                        <h3>21.47%</h3>
-                                                        <!-- id="pm25Text -->
+                                                        <h3 id="pm25DText"></h3>
+                           
                                                         <h5>Pavements in</h5>
                                                         <h5>poor condition </h5>
                                                      </div>
@@ -265,10 +264,10 @@
                                                   </button>
                                                </div>
                                             </div>
-                                            <!--
+                                       
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                    <div class="card">
-                                                        <button type="button" href="#" value="PM7" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick=" shape_handlerP('PM7PK','all_pm7PK'); shape_handlerPoly('PM7','all_pm7'); shape_handlerP('PM7','all_pm7P');  buttonSwitch(this)">
+                                                        <button type="button" href="#" value="PM7" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="polygonHandler('PM7')">
                                                            <div data-target="#sidebar" data-toggle="collapse" aria-expanded="false" class="card-body">
                                                                <h3 id="">PM7</h3>
                                                                <h5>key destinations</h5>
@@ -277,7 +276,7 @@
                                                         </button>
                                                    </div>
                                                </div>
-                                               -->
+                                               
                                          </div>
                                       </div>
                                    </div>
@@ -371,12 +370,12 @@
                                             </div>
                                             <div class="col-lg-4 col-md-4 col-sm-12">
                                                <div class="card">
-                                                  <button type="button" href="#" value="pm20P" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="shape_handlerP('PM20P','all_pm20PC'); shape_handlerP('PM20B','all_pm20')">
+                                                  <button type="button" href="#" value="PM20W" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="pointHandler('PM20W')">
                                                      <div data-target="#sidebar" data-toggle="collapse" aria-expanded="false" class="card-body">
                                                         <h3 id="pm20-P">651</h3>
                                                         <h5>Number</h5>
                                                         <h5>crashes nearby </h5>
-                                                        <h5>bus stops</h5>
+                                                        <h5>bus stops BC</h5>
                                                      </div>
                                                   </button>
                                                </div>
@@ -451,7 +450,7 @@
                                                   </button>
                                                </div>
                                             </div>
-                                            <!--
+                                     
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                        <div class="card">
                                                            <button type="button" href="#" value="pm8Biking" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="polygonHandler('PM8')">
@@ -462,10 +461,10 @@
                                                                </div>
                                                            </button>
                                                        </div>
-                                                   </div>-->
+                                                   </div>
                                             <div class="col-lg-4 col-md-4 col-sm-12">
                                                <div class="card">
-                                                  <button type="button" href="#" value="pm20B" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="shape_handlerP('pm20B','all_pm20C');  buttonSwitch(this)">
+                                                  <button type="button" href="#" value="pm20B" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="pointHandler('PM20B')">
                                                      <div data-target="#sidebar" data-toggle="collapse" aria-expanded="false" class="card-body">
                                                         <h3 id="pm20-B">159</h3>
                                                         <h5>Crashes nearby</h5>
@@ -474,7 +473,7 @@
                                                   </button>
                                                </div>
                                             </div>
-                                            <!--
+                                       
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                    <div class="card">
                                                        <button type="button" href="#" value="PM6" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="polygonHandler('PM6')">
@@ -498,6 +497,7 @@
                                                        </button>
                                                    </div>
                                                </div>
+                                             <!-- 
                                                <div class="col-lg-4 col-md-4 col-sm-12">
                                                    <div class="card">
                                                        <button type="button" href="#" value="PMT" data-dismiss="modal" class="btn btn-info btn-lg same-btn-size btn-block " onclick="testCorridorHandler('AOI'); buttonSwitch(this)">

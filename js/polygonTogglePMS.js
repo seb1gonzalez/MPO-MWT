@@ -66,7 +66,7 @@ $("#toggle1").on('change', function () {
             pm6Data(1, "e");
         } else if (currentPM == 7) {
             PM_existing_selected.PM7 = true;
-            get_exist_plan("all_pm7", "e");
+          //  get_exist_plan("all_pm7", "e");
         } else if (currentPM == 8) {
             PM_existing_selected.PM8 = true;
             pm8Data(1, "e");
@@ -86,7 +86,7 @@ $("#toggle1").on('change', function () {
             PM_existing_selected.PM6 = false;
             clear_Exist();
         } else if (currentPM == 7) {
-            PM_existing_selected.PM7 = false;
+            //PM_existing_selected.PM7 = false;
             clear_Exist();
         } else if (currentPM == 8) {
             PM_existing_selected.PM8 = false;
@@ -110,11 +110,11 @@ $("#toggle2").on('change', function () {
             PM_planned_selected.PM5 = true;
             pm9Data(1, "p"); // 5 & 9 share table
         } else if (currentPM == 6) {
-            PM_planned_selected.PM6 = true; 
+            PM_planned_selected.PM6 = true;
             pm6Data(1, "p");
         } else if (currentPM == 7) {
             PM_planned_selected.PM7 = true;
-            get_exist_plan("all_pm7", "p");
+            //get_exist_plan("all_pm7", "p");
         } else if (currentPM == 8) {
             PM_planned_selected.PM8 = true;
             pm8Data(1, "p");
@@ -129,11 +129,11 @@ $("#toggle2").on('change', function () {
         } else if (currentPM == 9) {
             PM_planned_selected.PM9 = false;
             clear_Planned();
-        }  else if (currentPM == 6) {
+        } else if (currentPM == 6) {
             PM_planned_selected.PM6 = false;
             clear_Planned();
         } else if (currentPM == 7) {
-            PM_planned_selected.PM7 = false;
+         //   PM_planned_selected.PM7 = false;
             clear_Planned();
         } else if (currentPM == 8) {
             PM_planned_selected.PM8 = false;
@@ -145,60 +145,3 @@ $("#toggle2").on('change', function () {
         }
     }
 });
-//Handles 2 toggles of Exist/Plan for Polygons.
-function get_exist_plan(key, condition) {
-    let example = { key: key };
-    $.get('mwt_handler.php', example, function (data) {
-        for (index in data.shape_arr) {
-            let temp = wktFormatter(data.shape_arr[index]['shape']);
-            let to_visualize = [];
-            let pm5_9status = data.shape_arr[index].status;
-            let title = "";
-
-            //filter values on polygons
-            if (currentPM == 9) {
-                let ratioPop = parseFloat(data.shape_arr[index].ratio_pop);
-                title = ratioPop;
-            } else if (currentPM == 5) { // PM5 
-                let prctprim = parseFloat(data.shape_arr[index].prcnt_prim);
-                title = prctprim;
-            }
-            let color = "#039BE5";
-
-            // if the status of a shape exists, push to visualize
-            for (let i = 0; i < temp.length; i++) {
-                if (pm5_9status == "exist" && condition == "e") {
-                    color = "#039BE5";//blue
-                    to_visualize.push(temp[i]);
-                    polyToErase.exist.push();
-                } else if (pm5_9status == "planned" && condition == "p") {
-                    color = "#9E9E9E"; //gray
-                    to_visualize.push(temp[i]);
-                    polyToErase.plan.push();
-                }
-
-            }
-            let polygon = new google.maps.Polygon({
-                description: "",
-                description_value: '',
-                paths: to_visualize,
-                strokeColor: 'black',
-                strokeOpacity: 0.60,
-                strokeWeight: 0.70,
-                fillColor: color,
-                fillOpacity: 0.60,
-                zIndex: -1,
-                title: title.toFixed(1) + "%",
-            });
-            if (condition == "e") polyToErase.exist.push(polygon);
-            if (condition == "p") polyToErase.plan.push(polygon);
-            // Hover Effect for Google API Polygons
-            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
-            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-
-            polygon.setMap(map);
-            polygons.push(polygon);
-        }
-    });
-}

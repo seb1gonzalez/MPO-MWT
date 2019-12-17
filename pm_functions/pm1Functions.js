@@ -11,60 +11,58 @@ var pm1Chart =0;
 var pm1Chart2 = 0;
 
 function pm1Data(mode, ex) {
-    {
-//     let pm1Data = {
-//         jobs: 0,
-//         ratioPrim: 0,
-//         ratioPrimTot: 0
-//     };
+    let pm1Data = {
+        jobs: 0,
+        ratioPrim: 0,
+        ratioPrimTot: 0
+    };
 
-//     // let key = 'all_pm1';
-//     // let example = { key: key };
-//     // let color = "#039BE5";
-//     // console.log('pm1 before db');
-//     $.get('mwt_handler.php', example, function (data) {
-//     //     console.log(data.shape_arr);
-//     //     console.log('returned from db');
-//     //     for (index in data.shape_arr) {
-//     //         let temp = wktFormatter(data.shape_arr[index]['shape']);
-//     //         let to_visualize = [];
-//     //         // if the status of a shape exists, push to visualize
-//     //         for (let i = 0; i < temp.length; i++) {
-//     //                 color = "#9E9E9E"; //gray
-//     //                 to_visualize.push(temp[i]);
-//     //                 polyToErase.plan.push();
-//     //         }
-//     //         let polygon = new google.maps.Polygon({
-//     //             description: "",
-//     //             description_value: '',
-//     //             paths: to_visualize,
-//     //             strokeColor: 'black',
-//     //             strokeOpacity: 0.60,
-//     //             strokeWeight: 0.70,
-//     //             fillColor: color,
-//     //             fillOpacity: 0.60,
-//     //             zIndex: -1,
-//     //             title:'test',
-//     //         });
+    let key = 'all_pm1';
+    let example = { key: key };
+    let color = "#039BE5";
+    console.log('pm1 ');
+    $.get('mwt_handler.php', example, function (data) {
+        console.log('pm1 returned');
+        for (index in data.shape_arr) {
+            let temp = wktFormatter(data.shape_arr[index]['shape']);
+            let to_visualize = [];
+            // if the status of a shape exists, push to visualize
+            for (let i = 0; i < temp.length; i++) {
+                color = "#9E9E9E"; //gray
+                to_visualize.push(temp[i]);
+                polyToErase.plan.push();
+            }
+            let polygon = new google.maps.Polygon({
+                description: "",
+                description_value: '',
+                paths: to_visualize,
+                strokeColor: 'black', strokeOpacity: 0.60,
+                strokeWeight: 0.70,
+                fillColor: color,
+                fillOpacity: 0.60,
+                zIndex: -1,
+                title: 'test',
+            });
+            polyToErase.exist.push(polygon);
 
-//     //          polyToErase.exist.push(polygon);
+            //   Hover Effect for Google API Polygons
+            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
+            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
+            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
 
-// }
-//             // Hover Effect for Google API Polygons
-//             google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
-//             google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-//             google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-//             polygon.setMap(map);
-//             polygons.push(polygon);
-//         }
-//         if (mode == 0) {
-//         } else if (mode == 1) {
-//             regionalText(pm1Data);
-//         }
-//     });
+            polygon.setMap(map);
+            polygons.push(polygon);
+
+          
+
+        }
+
+    });
+    if (mode == 0) {
+
+    } else if (mode == 1) {
+        regionalText(pm1Data);
     }
-
-
 }
 
 function pm1chart(g2, data) {
@@ -138,25 +136,6 @@ function pm1Data2(){ // gets valuesPm2 for pm2 graph, returns array with percent
 }
 
 
-
-function safeDestroypm1(){
-    if(isChartFilledpm1() == true){
-        destroypm1charts();
-    }
-    pm1Chart =0;
-    pm1Chart2 = 0;
-}
-
-function isChartFilledpm1(){
-    if(pm1Chart == 0 || pm1Chart2 ==0)
-        return false;
-    return true;
-}
-
-function destroypm1charts(){
-    pm1Chart.destroy();
-    pm1Chart2.destroy();
-}
 
 function pieChartpm1(ctx){
     pm1Data();
