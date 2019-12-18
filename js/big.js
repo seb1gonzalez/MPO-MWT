@@ -679,6 +679,7 @@ function performanceDataLoader() {
     //pm13_14Data();
     //pm15Data();
     pm15Data(0); // test
+    pm17Data(0);
     pm18Data(0, '');
     pm19Data(0, '');
     //pm20Data();
@@ -998,4 +999,25 @@ function clearMetadata() {
   components = {};
 
   markerClusterSafeDelete();
+}
+ 
+/** Get SUM of array 
+ * | Input: array 
+ * | Output: integer || float*/
+function arrSum(list){
+  let sum= 0;
+  list.forEach(element => {
+      sum += element;
+  });
+  return sum;
+}
+
+
+/** Get AVG of array 
+* | Input: array 
+* | Output: integer || float*/
+function arrAvg(list){
+  let x= 0;
+  x = arrSum(list);
+  return x/list.length;
 }

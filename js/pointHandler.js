@@ -13,18 +13,18 @@ function pointHandler(found) {
     if (found == "pm15Driving") {
         currentType = "driving";
         currentPM = 15;
-        active_pm_for_AOI = "all_pm15_16_17";
+     //   active_pm_for_AOI = "all_pm15_16_17";
         pm15Data(1);
     } else if (found == "pm16Driving") {
         currentType = "driving";
         currentPM = 16;
-        active_pm_for_AOI = "all_pm15_16_17";
+      //  active_pm_for_AOI = "all_pm15_16_17";
         pm16Data(1);
     }
     else if (found == "pm17Driving") {
         currentType = "driving";
         currentPM = 17;
-        active_pm_for_AOI = "all_pm15_16_17";
+       // active_pm_for_AOI = "all_pm15_16_17";
         pm17Data(1);
     }
     else if (found == "pm18Driving") {

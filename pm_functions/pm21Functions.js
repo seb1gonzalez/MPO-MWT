@@ -1,7 +1,5 @@
 function pm21Data(mode, ex) {
-    alert("BETO");
     loadpm21H(mode, ex);
-
 }
 
 
@@ -51,6 +49,7 @@ function loadpm21P(mode,ex) {
             let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
             dynamicCorridorText(corr, pm20Data); // Send graph data and current corridor to dynamic text for corridors
         }
+        loadpm21Lines(mode,ex);
     });
 
 }
@@ -206,6 +205,71 @@ function loadpm21Projected(mode, ex) {
             polygon.setMap(map);
             polygons.push(polygon);
         }
+
+
+    });
+}
+
+function loadpm21Lines(mode, ex) {
+    let data_for_php = 0;
+    let shape = "shape";
+    let php_handler = "mwt_handler.php";
+
+    if (mode == 0 || mode == 1) { // if we want regional (default) data
+        let key = 'all_pm21_lines';
+        data_for_php = { key: key };
+    } else if (mode == 2) { // if we want corridors
+        data_for_php = ex;
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+    }
+    let color = "#039BE5";//blue
+    $.get(php_handler, data_for_php, function (data) { // ajax call to populate pavement lines
+        let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+        for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
+            let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING
+            let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+            let to_visualize = []; // used to populate the map (latitude & longitude)
+
+
+            if (mode == 1 || mode == 2) {
+
+                if ('geometries' in r) { //multilinestrings
+                    to_visualize = pm3_polyline_geojson_formatter(r);
+                    console.log(to_visualize);
+
+                    for (i in to_visualize) {
+                        let line = new google.maps.Polyline({ // it is a POLYLINE
+                            path: to_visualize[i], // polyline has a path, defined by lat & lng 
+                            strokeColor: color,
+                            strokeOpacity: .50,
+                            strokeWeight: 4,
+                            zIndex: 99 // on top of every other shape
+                        });
+                        line.setMap(map);
+                        polylines.push(line);
+                    }
+                } else if ('points' in r) { //linestrings
+                    to_visualize = pm3_line_geojson_formatter(r);
+
+                    let line = new google.maps.Polyline({ // it is a POLYLINE
+                        path: to_visualize, // polyline has a path, defined by lat & lng 
+                        strokeColor: color,
+                        strokeOpacity: .50,
+                        strokeWeight: 4,
+                        zIndex: 99 // on top of every other shape
+                    });
+                    line.setMap(map);
+                    polylines.push(line);
+
+                }
+
+
+
+            }
+        }
+
+
 
 
     });

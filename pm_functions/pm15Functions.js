@@ -1,12 +1,6 @@
 
 function pm15Data(mode) {
-    console.log("new update on 15");
-    var pm15Data = {
-        o8z2014: [], o8z2015: [], o8z2016: [], o8z2017: [], o8z2018: [], 
-        o1z2014: [], o1z2015: [], o1z2016: [], o1z2017: [], o1z2018: [], 
-        oz8Names:[], oz1Names:[]
-    };
-
+    var pm15Data = [];
     let images = [];
 
     //store all colors for points
@@ -23,41 +17,103 @@ function pm15Data(mode) {
     images.push("./icons/lightgreenPin.png");
     images.push("./icons/lightgrayPin.png");
 
-   
 
     let key = 'all_pm15_16_17g';
     let example = { key: key };
 
-    console.log('entering 15');
+    //for calculations
+    let greathestNum8 = 0;
+    let greathestStat8 = '';
+    let year8 = 0;
+
+    let greathestNum1 = 0;
+    let greathestStat1 = '';
+    let year1 = 0;
+
     //store graph data
     $.get('mwt_handler.php', example, function (data) {
-        console.log(data);
-        console.log('returning 15');
         for (index in data.shape_arr) {
             stationName = data.shape_arr[index]['Station'];
             category = data.shape_arr[index]['Pollutant'];
-            pm15Data.abc = [];
-            pm15Data.abc.push(1);
-            
-            if (category == 'Ozone 8 hr') {
-                pm15Data.stationName = [];
-                pm15Data.stationName.push(index);
-                pm15Data.oz8Names.push(stationName);
-                pm15Data.o8z2014.push(data.shape_arr[index].g2014);
-                pm15Data.o8z2015.push(data.shape_arr[index].g2015);
-                pm15Data.o8z2016.push(data.shape_arr[index].g2015);
-                pm15Data.o8z2017.push(data.shape_arr[index].g2017);
-                pm15Data.o8z2018.push(data.shape_arr[index].g2018);
-            } else if (category == 'Ozone 1 hr') {
-                pm15Data.oz1Names.push(stationName);
-                pm15Data.o1z2014.push(data.shape_arr[index].g2014);
-                pm15Data.o1z2015.push(data.shape_arr[index].g2015);
-                pm15Data.o1z2016.push(data.shape_arr[index].g2016);
-                pm15Data.o1z2017.push(data.shape_arr[index].g2017);
-                pm15Data.o1z2018.push(data.shape_arr[index].g2018);
-            }       
+            g2014 = data.shape_arr[index].g2014;
+            g2015 = data.shape_arr[index].g2015;
+            g2016 = data.shape_arr[index].g2016;
+            g2017 = data.shape_arr[index].g2017;
+            g2018 = data.shape_arr[index].g2018;
+
+            if (category == "Ozone 1 hr" || category == "Ozone 8 hr") {
+                pm15Data[index] = {
+                    name: stationName,
+                    category: category,
+                    graphData: [g2014, g2015, g2016, g2017, g2018]
+                };
+
+                if (category == "Ozone 1 hr") {
+                    if (greathestNum1 < g2014) {
+                        greathestNum1 = g2014;
+                        year1 = 2014;
+                        greathestStat1 = stationName;
+                    }
+                    if (greathestNum1 < g2015) {
+                        greathestNum1 = g2015;
+                        year1 = 2015;
+                        greathestStat1 = stationName;
+                    }
+                    if (greathestNum1 < g2016) {
+                        greathestNum1 = g2016;
+                        year1 = 2016;
+                        greathestStat1 = stationName;
+                    }
+                    if (greathestNum1 < g2017) {
+                        greathestNum1 = g2017;
+                        year1 = 2017;
+                        greathestStat1 = stationName;
+                    }
+                    if (greathestNum1 < g2018) {
+                        greathestNum1 = g2018;
+                        year1 = 2018;
+                        greathestStat1 = stationName;
+                    }
+                } else if (category == "Ozone 8 hr") {
+                    if (greathestNum8 < g2014) {
+                        greathestNum8 = g2014;
+                        year8 = 2014;
+                        greathestStat8 = stationName;
+                    }
+                    if (greathestNum8 < g2015) {
+                        greathestNum8 = g2015;
+                        year8 = 2015;
+                        greathestStat8 = stationName;
+                    }
+                    if (greathestNum8 < g2016) {
+                        greathestNum8 = g2016;
+                        year8 = 2016;
+                        greathestStat8 = stationName;
+                    }
+                    if (greathestNum8 < g2017) {
+                        greathestNum8 = g2017;
+                        year8 = 2017;
+                        greathestStat8 = stationName;
+                    }
+                    if (greathestNum8 < g2018) {
+                        greathestNum8 = g2018;
+                        year8 = 2018;
+                        greathestStat8 = stationName;
+                    }
+                }
+            }
         }
 
+        //adding dynamic variables to last element of our data 
+        pm15Data[pm15Data.length] = {
+            num8: greathestNum8,
+            station8: greathestStat8,
+            year_8: year8,
+            num1: greathestNum1,
+            station1: greathestStat1,
+            year_1: year1
+        };
+        
         //print points 
         if (mode == 1) {
             key = 'all_pm15_16_17';
@@ -70,7 +126,6 @@ function pm15Data(mode) {
                     holder.push(wktFormatterPoint(data.shape_arr[index]['shape']));
                     holder = holder[0][0]; // Fixes BLOB
                     stationName = data.shape_arr[index]['station_na'];
-                    console.log(stationName);
 
                     let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
 
@@ -81,25 +136,19 @@ function pm15Data(mode) {
                         icon: images[index]
                     });
 
-                    if (pm15Data.oz8Names[index] == stationName || pm15Data.oz1Names[index] == stationName ) {
                         point.setMap(map);
                         points.push(point);
-                    }
+               
                 }
             });
         }
-        //calculations
-   
-
+    
         //menu text
         if (mode == 0) {
-
+            document.getElementById("pm15Text").innerHTML = pm15Data[pm15Data.length - 1].num8 + " ppb";
         } else if (mode == 1) {
             regionalText(pm15Data);
         }
-
-
-
     });
 }
 
@@ -110,8 +159,8 @@ function pm15chartLine(ctx, data) {
         labels: ['2014', '2015', '2016', '2017', '2018'],
         datasets: [
             {
-                label: data.oz8Names,
-                data: data.o8z2014,
+                label: data[5].name,
+                data: data[5].graphData,
                 backgroundColor: "red",
                 borderColor: "red",
                 fill: false,
@@ -119,8 +168,8 @@ function pm15chartLine(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz8Names[1],
-                data: data.o8z2015,
+                label: data[6].name,
+                data: data[6].graphData,
                 backgroundColor: "orange",
                 borderColor: "orange",
                 fill: false,
@@ -128,8 +177,8 @@ function pm15chartLine(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz8Names[2],
-                data: data.o8z2016,
+                label: data[7].name,
+                data: data[7].graphData,
                 backgroundColor: "pink",
                 borderColor: "pink",
                 fill: false,
@@ -137,8 +186,8 @@ function pm15chartLine(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz8Names[3],
-                data: data.o8z2017,
+                label: data[8].name,
+                data: data[8].graphData,
                 backgroundColor: "lightblue",
                 borderColor: "lightblue",
                 fill: false,
@@ -146,10 +195,19 @@ function pm15chartLine(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz8Names[4],
-                data: data.o8z2018,
+                label: data[9].name,
+                data: data[9].graphData,
                 backgroundColor: "gray",
                 borderColor: "gray",
+                fill: false,
+                lineTension: 0,
+                radius: 5
+            },
+            {
+                label: data[10].name,
+                data: data[10].graphData,
+                backgroundColor: "green",
+                borderColor: "green",
                 fill: false,
                 lineTension: 0,
                 radius: 5
@@ -194,14 +252,12 @@ function pm15chartLine(ctx, data) {
 }
 
 function pm15chartLine2(ctx, data) {
-    console.log(data);
-
     var data = {
         labels: ['2014', '2015', '2016', '2017', '2018'],
         datasets: [
             {
-                label: data.oz1Names[0],
-                data: data.o1z2014,
+                label: data[0].name,
+                data: data[0].graphData,
                 backgroundColor: "yellow",
                 borderColor: "yellow",
                 fill: false,
@@ -209,8 +265,8 @@ function pm15chartLine2(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz1Names[1],
-                data: data.o1z2015,
+                label: data[1].name,
+                data: data[1].graphData,
                 backgroundColor: "purple",
                 borderColor: "purple",
                 fill: false,
@@ -218,8 +274,8 @@ function pm15chartLine2(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz1Names[2],
-                data: data.o1z2016,
+                label: data[2].name,
+                data: data[2].graphData,
                 backgroundColor: "blue",
                 borderColor: "blue",
                 fill: false,
@@ -227,8 +283,8 @@ function pm15chartLine2(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz1Names[3],
-                data: data.o1z2017,
+                label: data[3].name,
+                data: data[3].graphData,
                 backgroundColor: "lightgreen",
                 borderColor: "lightgreen",
                 fill: false,
@@ -236,8 +292,8 @@ function pm15chartLine2(ctx, data) {
                 radius: 5
             },
             {
-                label: data.oz1Names[4],
-                data: data.o1z2018,
+                label: data[4].name,
+                data: data[4].graphData,
                 backgroundColor: "lightgray",
                 borderColor: "lightgray",
                 fill: false,

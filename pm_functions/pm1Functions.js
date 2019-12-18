@@ -1,5 +1,13 @@
-
 /**
+ * PM1 and PM2 have the same source table from database,
+ * however, they are kept separate to ensure atomic requests, and avoid complexity
+ * in sharing and keeping track of global variables
+ *   
+ * */
+
+
+
+ /**
  * Data only for pm1 [NonSOV, SOV] - builds pie chart
  *  */
 let for_pm1 = {
@@ -8,7 +16,8 @@ let for_pm1 = {
 }
 // graph
 var pm1Chart =0;
-var pm1Chart2 = 0;
+
+//var pm1Chart2 = 0;
 
 function pm1Data(mode, ex) {
     let pm1Data = {
@@ -111,34 +120,8 @@ function pm1chart(g2, data) {
     });
 }
 
-
-var valsPm1 = []; // stores values for PM1 graph
-
-function pm1Data2(){ // gets valuesPm2 for pm2 graph, returns array with percent
-    let arr = [];
-    let json = [
-       "SOV",
-    ];
-
-    fetch('./results.json')
-      .then(function (response) {
-          return response.json();
-       })
-      .then(function (myJson) {
-            for (let i = 0; i < json.length; i++) {
-                arr.push(myJson[json[i]]);
-            }
-            
-            valsPm1[0] = Math.round(avg(arr)*10)/10; // SOV
-            valsPm1[1] = Math.round((100 -  valsPm1[0]) * 10)/10; // NON SOVDDD
-            document.getElementById("pm1-sov").innerHTML = valsPm1[0] + "%";
-        });
-}
-
-
-
 function pieChartpm1(ctx){
-    pm1Data();
+  //  pm1Data();
     colors=[];
       colors = [
         'rgba(255,255,0,0.3)',
@@ -150,13 +133,13 @@ function pieChartpm1(ctx){
         type: 'pie',
         data: {
             datasets: [{
-                data: valsPm1,
+                data: for_pm1,
                 backgroundColor: colors,
                 label: 'Dataset 1'
             }],
             labels: [
-                'Non SOV',
                 'SOV',
+                'Non SOV',
             ]
         },
         options: {
@@ -172,79 +155,13 @@ function pieChartpm1(ctx){
        
     });
 }
-    
-function barchartPm1(g1){
-    pm1Chart2 = new Chart(g1, {
-        type: 'bar',
-        data: {
-            labels: [''],
-            datasets: [
-            {
-                label: 'No Data',
-                data:[10],
-                backgroundColor: [
-                    'rgba(192,192,192 ,1 )',                     
-                ],
-                borderColor: [
-                    'rgba(192,192,192 ,1 )',
-            
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Below Mean',
-                data: [4],
-                backgroundColor: [
-                    'rgba(0,204,255,0.5)',                     
-                ],
-                borderColor: [
-                    'rgba(0,204,255,0.5)',
-            
-                ],
-                borderWidth: 1
-            },
-            {
-                label: 'Above Mean',
-                data: [3],
-                backgroundColor: [
-                    'rgba(0,102,204,0.5)',                     
-                ],
-                borderColor: [
-                    'rgba(0,102,204,0.5)',
-            
-                ],
-                borderWidth: 1
-            }]
-        },
-    
-        options: {
-                responsive: true,
-            legend:{
-                labels: {
-                    fontSize: 14,
-                    boxWidth:15
-                }
-            },
-           /* title: {
-                display: true,
-                text: 'Title 1'
-            },*/
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-			            
-                    }
-                }]
-            }
-        }
-    });
-}
 
 
-// ! this function will run at the beginning always
-function fetch_data_pm1_pm2(){
-    { /**
+
+/**Fetches pm1 data from Database and makes calculations on the fly  */
+function fetch_data_pm1(){ // ! Brian, this is ready for MODES
+    { 
+        /**
         * Stores calculations: 
         * Index # | Operation
         * 0       | NonSOV_e: b08301e1 - b08301e3
@@ -264,9 +181,9 @@ function fetch_data_pm1_pm2(){
        }
 
 
-
+ // ! change the handler and key if needed according to the MODE requested
     let key = {'key':'all_pm1'}
-    let file = './mwt_handler.php';
+    let file = 'mwt_handler.php';
 
     /** Fetch data from database */ 
     $.get(file,key).done(function(data) {//succesful
@@ -328,42 +245,125 @@ function fetch_data_pm1_pm2(){
               ( data.shape_arr[index].b08301m19 ) /(data.shape_arr[index].b08301m1));
 
         }// end for loop
-        valuesPm2 = []
-        valuesPm2.push(arrAvg(PM2_pct_PublicTrans_e));
-        valuesPm2.push(arrAvg(PM2_pct_Biking_e));
-        valuesPm2.push(arrAvg(PM2_pct_Walking_e));
-        valuesPm2.push(arrAvg(PM1_pct_NonSOV_e));
-        SOV = 100 - arrSum(valuesPm2);
+        valuesPm1 = []
+        valuesPm1.push(arrAvg(PM2_pct_PublicTrans_e));  //transit
+        valuesPm1.push(arrAvg(PM2_pct_Biking_e));           //biking
+        valuesPm1.push(arrAvg(PM2_pct_Walking_e));        //walking
+        valuesPm1.push(arrAvg(PM1_pct_NonSOV_e));       //other
+        SOV = 100 - arrSum(valuesPm1);                               //driving
         
         // fill PM1 graph data 
         for_pm1.SOV = SOV;
         for_pm1.NonSOV = (arrAvg(PM1_pct_NonSOV_e));
 
-        //fill PM2 data
-        for_pm2.Biking = 
-        
-
         alert('Data ready'); // after operations
+
         //  */*/*/*/* Display polygons   /*/*/*/*/
         
         
         // */*/*/*/   */*/*/    /*/*/   */*/    */*
-        // let results = {
-        //     1:NonSOV_e,  
-        //     2:PM_RatioIN_e , 
-        //     3:PM_RatioIN_m , 
-        //     4:PM1_pct_NonSOV_e ,
-        //     5:PM1_pct_NonSOV_m ,
-        //     6:PM2_pct_PublicTrans_e  ,
-        //     7:PM2_pct_Biking_e ,
-        //     8:PM2_pct_Biking_m ,
-        //     9:PM2_pct_Walking_e ,
-        //     10:PM2_pct_Walking_m ,
-        //     11:SOV 
-        //     };
+        
 
     }).fail(function(){//error
         alert('Whoops, we could not retrieve data from our database. Check your internet connection or contact MPO');
     });
 
 }
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//old
+
+var valsPm1 = []; // stores values for PM1 graph
+
+function pm1Data2(){ 
+
+
+    //     fetch('./results.json')
+    //       .then(function (response) {
+    //           return response.json();
+    //        })
+    //       .then(function (myJson) {
+    //             for (let i = 0; i < json.length; i++) {
+    //                 arr.push(myJson[json[i]]);
+    //             }
+                
+    //             valsPm1[0] = Math.round(avg(arr)*10)/10; // SOV
+    //             valsPm1[1] = Math.round((100 -  valsPm1[0]) * 10)/10; // NON SOVDDD
+               document.getElementById("pm1-sov").innerHTML = for_pm1[0] + "%";
+       
+    // }
+    }
+        
+
+// function barchartPm1(g1){
+//     pm1Chart2 = new Chart(g1, {
+//         type: 'bar',
+//         data: {
+//             labels: [''],
+//             datasets: [
+//             {
+//                 label: 'No Data',
+//                 data:[10],
+//                 backgroundColor: [
+//                     'rgba(192,192,192 ,1 )',                     
+//                 ],
+//                 borderColor: [
+//                     'rgba(192,192,192 ,1 )',
+            
+//                 ],
+//                 borderWidth: 1
+//             },
+//             {
+//                 label: 'Below Mean',
+//                 data: [4],
+//                 backgroundColor: [
+//                     'rgba(0,204,255,0.5)',                     
+//                 ],
+//                 borderColor: [
+//                     'rgba(0,204,255,0.5)',
+            
+//                 ],
+//                 borderWidth: 1
+//             },
+//             {
+//                 label: 'Above Mean',
+//                 data: [3],
+//                 backgroundColor: [
+//                     'rgba(0,102,204,0.5)',                     
+//                 ],
+//                 borderColor: [
+//                     'rgba(0,102,204,0.5)',
+            
+//                 ],
+//                 borderWidth: 1
+//             }]
+//         },
+    
+//         options: {
+//                 responsive: true,
+//             legend:{
+//                 labels: {
+//                     fontSize: 14,
+//                     boxWidth:15
+//                 }
+//             },
+//            /* title: {
+//                 display: true,
+//                 text: 'Title 1'
+//             },*/
+//             scales: {
+//                 yAxes: [{
+//                     ticks: {
+//                         beginAtZero: true,
+			            
+//                     }
+//                 }]
+//             }
+//         }
+//     });
+// }

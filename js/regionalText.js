@@ -5,7 +5,7 @@
 
 function regionalText(data) {
     resetViewsBeforeSpinner(); 
-   // console.log(data);
+    console.log(data);
 
     if (currentPM == 1) {
         pm1R(data);
@@ -481,10 +481,10 @@ function pm15R(data) {
     paragraphAdder("Summary:", "subtitle", "summary-title");
     paragraphAdder("According to the data available, ozone, carbon monoxide, and particulate matter pollution has been increasing in the last 5 years.", "paragraph", "summary-info");
     paragraphAdder("Stations with the highest annual readings for each pollutant are:", "paragraph", "summary-info");
-    paragraphAdder("Ozone 8hr - El Paso Chamizal in 2018,", "paragraph", "summary-info");
-    paragraphAdder("Ozone 1hr � Santa Teresa in 2017,", "paragraph", "summary-info");
-    paragraphAdder("Particulate Matter � Desert View in 2016", "paragraph", "summary-info");
-    paragraphAdder("Carbon Monoxide � El Paso UTEP in 2018.", "paragraph", "summary-info");
+    paragraphAdder("Ozone 8hr - " + data[data.length-1].station8+" in "+data[data.length-1].year_8+".", "paragraph", "summary-info");
+    paragraphAdder("Ozone 1hr - " + data[data.length-1].station1 + " in " + data[data.length-1].year_1 +".", "paragraph", "summary-info");
+    //paragraphAdder("Particulate Matter - Desert View in 2016", "paragraph", "summary-info");
+    //paragraphAdder("Carbon Monoxide - El Paso UTEP in 2018.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -503,8 +503,8 @@ function pm16R(data) {
     pm16chartLine(ctx, data);
 
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder(" According to the data available, ______ Carbon Monoxide pollution has been the same for the last 5 years. Except for 2018 that UTEP registered a high reading. ", "paragraph", "summary-info");
-    paragraphAdder("Stations with the highest annual readings for Carbon Monoxide _____ are:  ", "paragraph", "summary-info");
+    paragraphAdder("According to the data available, Carbon Monoxide pollution has been the same for the last 5 years. Except for 2018 that UTEP registered a high reading. ", "paragraph", "summary-info");
+    paragraphAdder("Stations with the highest annual readings for Carbon Monoxide are:  ", "paragraph", "summary-info");
     paragraphAdder("El Paso UTEP in 2018.  ", "paragraph", "summary-info");
     paragraphAdder("El Paso Chamizal in 2017. ", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
@@ -523,9 +523,9 @@ function pm17R(data) {
     pm17chartLine(ctx, data);
 
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder(" According to the data available, ______ Particulate Matter pollution has been increasing and decreasing depending of the station in the last 5 years.", "paragraph", "summary-info");
-    paragraphAdder("Stations with the highest annual readings for Carbon Monoxide ______ are:  ", "paragraph", "summary-info");
-    paragraphAdder("El Paso UTEP in 2018.  ", "paragraph", "summary-info");
+    paragraphAdder("According to the data available, Particulate Matter pollution has been increasing and decreasing depending of the station in the last 5 years.", "paragraph", "summary-info");
+    paragraphAdder("Stations with the highest annual readings for Carbon Monoxide are:  ", "paragraph", "summary-info");
+    paragraphAdder(data[data.length - 1].station + " in " + data[data.length - 1].year +".", "paragraph", "summary-info");
     paragraphAdder("El Paso Chamizal in 2017. ", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
