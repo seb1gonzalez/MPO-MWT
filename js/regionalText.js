@@ -26,7 +26,7 @@ function regionalText(data) {
         pm6R(data);
     }
     else if (currentPM == 7) {
-   
+        pm7R(data);
     }
     else if (currentPM == 8) {
         pm8R(data);
@@ -385,7 +385,7 @@ function pm5R(data) {
     pm5chart(ctx,data);
     headerAdder("Percent of jobs within 1/2 mile of high-quality rapid transit", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("In the El Paso MPO region, there are a total of " + commafy(data.jobs) + " jobs. In a half-mile of high-quality rapid transit, there are a total of " + Math.round(data.ratioPrim) + "% jobs.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.ratioPrimTot.toFixed(2) + "% jobs within a half-mile of high-quality rapid transit.", "paragraph", "summary-info");
+    paragraphAdder("In the El Paso MPO region, there are a total of " + commafy(data.tot_jobs) + " jobs. In a half-mile of high-quality rapid transit, there are a total of " + data.ratioPrim.toFixed(2) + "% jobs.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.ratioPrimTot.toFixed(2) + "% jobs within a half-mile of high-quality rapid transit.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Data from 2015 LEHD files, 2017 Tigerline shapefile, bikeway data from 2018. ", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -404,7 +404,7 @@ function pm9R(data) {
     pm9chart(ctx,data);
     headerAdder("Population within 1/2 mile of high-quality rapid transit.", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("There are " + commafy(data.Ex_pop) + " people residing in the El Paso MPO region. There are " + data.peopleLivingTransit.toFixed(2) + "% people living within a half-mile of high-quality rapid transit.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + commafy(data.totPop) + " people living within a high-quality rapid transit.", "paragraph", "summary-info");
+    paragraphAdder("There are " + commafy(data.totPop) + " people residing in the El Paso MPO region. There are " + data.peopleLivingTransit.toFixed() + "% people living within a half-mile of high-quality rapid transit.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.totalpeopleLivingTransit.toFixed() + "% people living within a high-quality rapid transit.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Data from 2015 LEHD files, 2012-2016 ACS data, bikeway data from 2018.", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -419,16 +419,16 @@ function pm6R(data) {
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm6chart(ctx, data);
-    headerAdder("Population within 1/2 mile of high-quality rapid transit.", "title");
+    headerAdder("Percent of jobs within ½ mile of bikeways ", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("There are " + commafy(data.totalJobs) + " people residing in the El Paso MPO region. There are " + data.percentLiving.toFixed(2) + "% people living within a half-mile of high-quality rapid transit.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.percentJobs.toFixed(2)  + " % people living within a high-quality rapid transit.", "paragraph", "summary-info");
+    paragraphAdder("In the El Paso MPO region, there are a total of " + commafy(data.totalJobs) + " jobs. In a half-mile of existing bikeways, there are a total of " + data.percentJobs.toFixed(2) + "% jobs.  Once all proposed bikeways are completed, there will be a total of " + data.percentJobsTot.toFixed(2) + "% jobs within a half-mile of bikeways.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("Data from 2015 LEHD files, 2012-2016 ACS data, bikeway data from 2018.", "paragraph", "analysis-info");
+    paragraphAdder("Data from 2015 LEHD files, 2017 Tigerline shapefile, and bikeway data from 2018.", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
-    paragraphAdder("American Community Survey 5-Year Estimates & TIGER/Line Shapefiles ", "paragraph", "data-info");
-    paragraphAdder("The layer of the high-quality transit stations was provided by Sun Metro.  ", "paragraph", "data-info");
+    paragraphAdder("TIGER/Line Shapefiles & Longitudinal Employer-Household Dynamics (LEHD) files", "paragraph", "data-info");
+    paragraphAdder("Bikeway data was provided by the following entities in January 2019: Paso del Norte Health foundation, City of Sunland Park, City of San Elizario, and the City of El Paso.   ", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("American Community Survey data was analysed on a census block group-level in order to estimate the population within 1/2 mile of high-quality rapid transit, assuming a homogenous distribution of population each the block group.", "paragraph", "calc-info");
+    paragraphAdder("LEHD workplace area characteristics (WAC) data was analysed on a census block group-level in order to estimate the number of jobs within a ½ mile from a bikeway, assuming a homogenous distribution of jobs each the block group.", "paragraph", "calc-info");
     togglevisible();
     openNav();
 }
@@ -436,20 +436,40 @@ function pm10R(data) {
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm10chart(ctx, data);
-    headerAdder("Population within 1/2 mile of high-quality rapid transit.", "title");
+    headerAdder("Percent of population within ½ mile of bikeways", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("There are " + data.totPop + " people residing in the El Paso MPO region. There are " + data.peoplelivin.toFixed(2) + "% people living within a half-mile of high-quality rapid transit.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.totpeoplelivinTot + " people living within a high-quality rapid transit.", "paragraph", "summary-info");
+    paragraphAdder("There are " + commafy(data.totPop) + " people residing in the El Paso MPO region. There are " + data.peoplelivin.toFixed() + "%  people living within a half-mile of existing bikeways.  Once all proposed bikeways are complete, there will be a total of " + data.totpeoplelivin.toFixed()+"% people living within a half-mile of bikeways.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("Data from 2015 LEHD files, 2012-2016 ACS data, bikeway data from 2018.", "paragraph", "analysis-info");
+    paragraphAdder("Data from the 2012-2016 ACS data and 2019 Transit data ", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
-    paragraphAdder("American Community Survey 5-Year Estimates & TIGER/Line Shapefiles ", "paragraph", "data-info");
-    paragraphAdder("The layer of the high-quality transit stations was provided by Sun Metro.  ", "paragraph", "data-info");
+    paragraphAdder("American Community Survey 5-Year Estimates & TIGER/Line Shapefiles", "paragraph", "data-info");
+    paragraphAdder("Bikeway data was provided by the municipalities: Paso del Norte Health foundation, City of Sunland Park, City of San Elizario, and the City of El Paso.", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("American Community Survey data was analysed on a census block group-level in order to estimate the population within 1/2 mile of high-quality rapid transit, assuming a homogenous distribution of population each the block group.", "paragraph", "calc-info");
+    paragraphAdder("American Community Survey data was analysed on a census block group-level in order to estimate the number of jobs within a ½ mile from a bikeway, assuming a homogenous distribution of jobs for each block group. ", "paragraph", "calc-info");
     togglevisible();
     openNav();
 }
 
+function pm7R(data) {
+    // canvasMaker('chart1', 'myChart');
+    //   canvasMaker('chart2', 'myChart2');
+    //  var ctx = document.getElementById('myChart').getContext('2d');
+    // var ctx2 = document.getElementById('myChart2').getContext('2d');
+    //  pm8HorizontalBar(ctx);
+    // pm8HorizontalBar2(ctx2);
+
+    headerAdder("key destinations within ½ mile of high-quality rapid transit", "title");
+    paragraphAdder("Summary:", "subtitle", "summary-title");
+    paragraphAdder("In the El Paso MPO region, there are a total of __ key destinations. In a half-mile of existing high-quality rapid transit stations, there are a total of __  (__%) key destinations.  Once all proposed high-quality rapid transit stations are complete, there will be a total of __  (__%)  key destinations within a half-mile of high-quality rapid transit.  ", "paragraph", "summary-info");
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("2019 Transit data  ", "paragraph", "analysis-info");
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    paragraphAdder("The layer of the high-quality transit stations was provided by Sun Metro. Key destinations were identified from the EPMPO 2040 Horizon Model – Model Development Report and leisure time activity locations were identified from Visit El Paso website.", "paragraph", "data-info");
+    paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("A ½ mile buffer was drawn around existing high-quality rapid transit and the number of key destinations within the buffer was calculated. This analysis was also done for proposed high-quality rapid transit, to indicate the potential result if all high-quality rapid transit in existing plans were completed.", "paragraph", "calc-info");
+    togglevisible();
+    openNav();
+}
 function pm8R(data) {
    // canvasMaker('chart1', 'myChart');
  //   canvasMaker('chart2', 'myChart2');
@@ -466,7 +486,7 @@ function pm8R(data) {
     paragraphAdder("Data Source:", "subtitle", "data-title");
     paragraphAdder("Crash data provided by TxDOT and NMDOT.", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("A � mile buffer was drawn around existing bikeways and the number of key destinations within the buffer was calculated. This analysis was also done for proposed bikeways, to indicate the potential result if all bikeways in existing plans were completed.", "paragraph", "calc-info");
+    paragraphAdder("A 1/2 mile buffer was drawn around existing bikeways and the number of key destinations within the buffer was calculated. This analysis was also done for proposed bikeways, to indicate the potential result if all bikeways in existing plans were completed.", "paragraph", "calc-info");
     togglevisible();
     openNav();
 }

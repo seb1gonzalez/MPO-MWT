@@ -3,7 +3,7 @@
 
 function pm5Data(mode, condition) {
     let pm5Data = {
-        jobs: 0,
+        tot_jobs: 0,
         ratioPrim: 0,
         ratioPrimTot: 0
     };
@@ -16,19 +16,16 @@ function pm5Data(mode, condition) {
             let temp = wktFormatter(data.shape_arr[index]['shape']);
             let to_visualize = [];
             let status = data.shape_arr[index].status;
-            let title = "";
+            let prctprim = parseFloat(data.shape_arr[index].prcnt_prim);  //filter values on polygons
 
-            //update Text Data
+            //update Dynamic Data
             if (data.shape_arr[index].status == "exist") {
-                pm5Data.jobs += parseInt(data.shape_arr[index].prim_jobs_);
                 pm5Data.ratioPrim += parseInt(data.shape_arr[index].ratio_prim);
-               // pm9TxtData.pop += parseInt(data.shape_arr[index].ratio_pop);
-            } else if (data.shape_arr[index].status == "planned") {
-                pm5Data.ratioPrimTot += parseInt(data.shape_arr[index].ratio_prim);
-            }
-
-            //filter values on polygons
-            let prctprim = parseFloat(data.shape_arr[index].prcnt_prim);
+            } 
+            //both existing and planned
+            pm5Data.ratioPrimTot += parseInt(data.shape_arr[index].ratio_prim);
+            pm5Data.tot_jobs+= parseInt(data.shape_arr[index].prim_jobs_);  ///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          
 
 
 
@@ -69,11 +66,10 @@ function pm5Data(mode, condition) {
             polygons.push(polygon);
         }
 
-        pm5Data.ratioPrim = ((pm5Data.ratioPrim / pm5Data.jobs) * 100);
-        pm5Data.ratioPrimTot = ((pm5Data.ratioPrimTot / pm5Data.jobs) * 100);
+        pm5Data.ratioPrim = ((pm5Data.ratioPrim / pm5Data.tot_jobs) * 100);
+        pm5Data.ratioPrimTot = ((pm5Data.ratioPrimTot / pm5Data.tot_jobs) * 100);
 
-     //   pm5Data.ratio_pop = ((pm9TxtData.ratio_pop / pm9TxtData.pop) * 100);
-     //   pm5Data.ratio_popTot = ((pm9TxtData.ratio_popTot / pm9TxtData.pop) * 100);
+
         if (mode == 0) {
             document.getElementById("pm5Text").innerHTML = String(pm5Data.ratioPrim.toFixed(2)) + "%"; // menu text
         } else if (mode == 1) {

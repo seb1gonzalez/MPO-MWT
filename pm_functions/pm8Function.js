@@ -1,39 +1,51 @@
 function pm8Data(mode, condition) {
- 
+
     let pm8Data = {
         jobs: 1,
         ratioPrim: 2,
         ratioPrimTot: 3
     };
+    pm8DataBuffer(mode, condition);
 
-    let key = 'all_pm8';
-    let example = { key: key };
-    let color = "#039BE5";
+}
 
-    console.log("about to enter 1st");
-    $.get('mwt_handler.php', example, function (data) {
-        console.log("returning from 1st");
+
+function pm8DataBuffer(mode, condition) {
+    let data_for_php = 0;
+    let shape = "shape";
+    let php_handler = "mwt_handler.php";
+
+    if (mode == 0 || mode == 1) { // if we want regional (default) data
+        let key = 'all_pm8_b';
+        data_for_php = { key: key };
+    } else if (mode == 2) { // if we want corridors
+        data_for_php = ex;
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+    }
+
+    $.get(php_handler, data_for_php, function (data) {
+
+        let color = "#039BE5";//blue
         for (index in data.shape_arr) {
-            let temp = wktFormatter(data.shape_arr[index]['shape']);
+            let temp = wktFormatter(data.shape_arr[index][shape]);
             let to_visualize = [];
-            let status = data.shape_arr[index].status;
-            let title = "";
+            let status = data.shape_arr[index]['status'];
 
-            //filter by status
+            // if the status of a shape exists, push to visualize
             for (let i = 0; i < temp.length; i++) {
-                console.log('this is i ' + i);
-                if (status == "existing" && condition == "e") {
+                if (status == null &&  condition == "e") {
                     color = "#039BE5";//blue
                     to_visualize.push(temp[i]);
                     polyToErase.exist.push();
-                
-                } else if (status == "planned_existing" && condition == "p") {
+                } else if (status == "existingplan" && condition == "p") {
                     color = "#9E9E9E"; //gray
                     to_visualize.push(temp[i]);
-                    polyToErase.plan.push();
+                    polyToErase.exist.push();
                 }
-
+          
             }
+
             let polygon = new google.maps.Polygon({
                 description: "",
                 description_value: '',
@@ -45,12 +57,10 @@ function pm8Data(mode, condition) {
                 fillOpacity: 0.60,
                 zIndex: -1,
                 title: "",
+
             });
 
-            if (condition == "e") {
-                polyToErase.exist.push(polygon);
-            }
-            if (condition == "p") polyToErase.plan.push(polygon);
+            polyToErase.exist.push(polygon);
 
             // Hover Effect for Google API Polygons
             google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
@@ -61,18 +71,14 @@ function pm8Data(mode, condition) {
             polygons.push(polygon);
         }
 
-        //   pm8Data.ratio_pop = ((pm9TxtData.ratio_pop / pm9TxtData.pop) * 100);
-        //   pm8Data.ratio_popTot = ((pm9TxtData.ratio_popTot / pm9TxtData.pop) * 100);
         if (mode == 0) {
-            document.getElementById("pm8Text").innerHTML = String(pm8Data.ratioPrim.toFixed(2)) + "%"; // menu text
+            document.getElementById("pm5Text").innerHTML = String(pm5Data.ratioPrim.toFixed(2)) + "%"; // menu text
         } else if (mode == 1) {
-            console.log("migrating");
-            pm8DataP(1, condition);
-            //regionalText(pm8Data);
+            regionalText('');
         }
+       // pm8DataP(mode, ex);
     });
 }
-
 function pm8DataP(mode, condition) {
     console.log('en puntos');
     let pm8Data = {

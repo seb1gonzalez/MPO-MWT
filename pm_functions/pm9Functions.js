@@ -5,29 +5,31 @@ function pm9Data(mode, condition) {
 
     let pm9Data = {
         totPop: 0, //The summation of people living in the proposed & planned areas
-        Ex_pop: 0, // population for existing ONLY
-        peopleLivingTransit:0
-      
+        peopleLivingTransit: 0,
+        totalpeopleLivingTransit:0,
+        ratioPop: 0 // population for existing ONLY
     };
 
     let key = 'all_pm9';
     let example = { key: key};
     let color = "#039BE5";
+    let totRatioPop = 0;
 
     $.get('mwt_handler.php', example, function (data) {
         for (index in data.shape_arr) {
             let temp = wktFormatter(data.shape_arr[index]['shape']);
             let to_visualize = [];
             let status = data.shape_arr[index].status;
-            let pop = data.shape_arr[index].ratio_pop;
+            let pop = data.shape_arr[index].b00001e1;
+            let ratioPop = data.shape_arr[index].ratio_pop;
 
             // update Text Data
             if (status == "exist") {
-                pm9Data.Ex_pop += parseInt(pop);
+                pm9Data.ratioPop += parseInt(ratioPop);
             }
        
             pm9Data.totPop += parseInt(pop); // sumation of people living in proposed and planned areas
-
+            totRatioPop += parseInt(ratioPop);
             // if the status of a shape exists, push to visualize
             for (let i = 0; i < temp.length; i++) {
                 if (status == "exist" && condition == "e") {
@@ -51,7 +53,7 @@ function pm9Data(mode, condition) {
                 fillColor: color,
                 fillOpacity: 0.60,
                 zIndex: -1,
-                title: Math.round(pop),
+                title: Math.round(ratioPop),
             });
 
             if (condition == "e") polyToErase.exist.push(polygon);
@@ -68,11 +70,15 @@ function pm9Data(mode, condition) {
 
         /*In EXISTING only, get the summation of all the values in the Ratio_Pop column. For the percentage, use this summation, 
          * then divide that by the total number of jobs((Ratio_Pop / Total Population) * 100) */
-        pm9Data.peopleLivingTransit = ((pm9Data.Ex_pop / pm9Data.totPop) * 100);
+        pm9Data.peopleLivingTransit = ((pm9Data.ratioPop / pm9Data.totPop) * 100);
+
+        // ((Ratio_Pop /Total Pop) *100).
+        pm9Data.totalpeopleLivingTransit = ((totRatioPop / pm9Data.totPop) * 100);
+   
 
 
         if (mode == 0) {
-            document.getElementById("pm9Text").innerHTML = String(pm9Data.peopleLivingTransit.toFixed(2)) + "%"; // menu text
+            document.getElementById("pm9Text").innerHTML = String(pm9Data.peopleLivingTransit.toFixed()) + "%"; // menu text
         } else if (mode == 1) {
             regionalText(pm9Data);
         }

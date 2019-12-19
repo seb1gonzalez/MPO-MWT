@@ -281,8 +281,13 @@ function pm25DynamicText(corridor, data) {
     pm25StackedChart(ctx,data);
     pm25chartLine(ctx2,data);
     paragraphAdder("Summary:", "subtitle", "summary-title");
+    if(corridor == "AOI"){
+        paragraphAdder("HPMS reports 2017 pavement condition for " + data.tot_miles + " miles within the AOI, out of that " + data.poor_mi_perc + "% is in poor condition. ", "paragraph", "summary-info");
+
+    }
+    else{
 	paragraphAdder("HPMS reports 2017 pavement condition for " + data.tot_miles + " miles within the " + wordFix(corridor) + " corridor, out of that " + data.poor_mi_perc + "% is in poor condition. ", "paragraph", "summary-info");
-	
+    }
     
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2013-2017", "paragraph", "analysis-info");

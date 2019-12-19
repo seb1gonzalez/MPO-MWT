@@ -22,20 +22,24 @@ function pm25Data(mode, example) {
     console.log('Good unitl here');
         
     let color = '#03A9F4';  // default
-    let caller = "mwt_handler.php";
+    let php_handler = "mwt_handler.php";
     let shape = "shape";
+    let data_for_php = example;
 
     if (mode == 0 || mode == 1) {
         let key = 'all_pm25';
-        example = { key: key };
-    } else {
-        caller = "corridor_handlerB.php";
+        data_for_php = { key: key };
+    } else if (mode == 4){
+        php_handler = "backend/AOI.php";
+    } 
+    else {
+        php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
     }
-    console.log(caller);
-    console.log(example);
+    console.log(php_handler);
+    console.log(data_for_php);
 
-    $.get(caller, example, function (data) { // ajax call to populate pavement lines
+    $.get(php_handler, data_for_php, function (data) { // ajax call to populate pavement lines
         //miles in poor condition
         console.log('pass barrier');
         let poorconditionMiles = 0;
@@ -125,7 +129,7 @@ function pm25Data(mode, example) {
 
             //Draw latest year
             if (year == 2017) {
-                if (mode == 1 || mode == 2) {
+                if (mode == 1 || mode == 2  || mode == 4) {
                     for (let i = 0; i < ln.length; i++) {
                         coord = { lat: ln[i]['y'], lng: ln[i]['x'] }; // this is how lat & lng is interpreted by the tool
                         to_visualize.push(coord); // pushing the interpretation to our to_visualize array
@@ -188,6 +192,10 @@ function pm25Data(mode, example) {
         } else if (mode == 2) {
             console.log('Entering Another Realm');
             dynamicCorridorText(corr, pm25Data);
+        }
+        else if(mode == 4){
+            console.log('Entering AOI Realm');
+            dynamicCorridorText("AOI", pm25Data);
         }
     });
     

@@ -40,14 +40,14 @@ if($key == "all_pm1"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm7PK"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
-}else if($key == "all_pm8"){
+}else if($key == "all_pm8_b"){
 	$query = "select status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm8P"){
 	$query = "select name, status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm9"){ // Pm5 and PM9 share table both have all_pm9
-	$query = "select status, ratio_prim, prcnt_prim, ratio_pop,prim_jobs_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
+	$query = "select status, b00001e1, ratio_prim, prcnt_prim, ratio_pop,prim_jobs_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm10"){ // Pm6 and pm10 share table
-	$query = "select status, prim_jobs_,prcnt_prim,ratio_prim, ratio_pop, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
+	$query = "select status, b00001e1, ratio_pop, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm11"){
 	$query = "select length, status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm12"){
@@ -67,6 +67,7 @@ if($key == "all_pm1"){
 }else if($key == "all_pm25"){
 	$query = "select state_code,year,iri_vn, miles, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm13_14"){
+	
 	$query = "select port_of_en, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm15_16_17"){
 	$query = "select station_na, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 

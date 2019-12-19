@@ -671,8 +671,9 @@ function performanceDataLoader() {
     pm3Data(0, '');
     lineHandler('0pm4W'); // mode 0 in pm4 Walking
     pm5Data(0, '');
-    //pm6Data(0, '');
+    pm6Data(0, '');
     pm9Data(0, '');
+    pm10Data(0, '');
     pm11Data(0, '');
     pm12Data(0, '');
     //pm13Data();

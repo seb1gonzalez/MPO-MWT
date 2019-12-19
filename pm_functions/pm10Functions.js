@@ -4,31 +4,33 @@
 function pm10Data(mode, condition) {
     let pm10Data = {
         totPop: 0,
-        totRatioPop: 0,
-        existingPop: 0,
         peoplelivin: 0,
-        totpeoplelivinTot:0
+        totpeoplelivin:0
     };
 
     let key = 'all_pm10';
     let example = { key: key };
     let color = "#039BE5";
-
+    let existing_ratio_pop = 0;
+    let totRatioPop = 0;
     $.get('mwt_handler.php', example, function (data) {
+        console.log(data);
         for (index in data.shape_arr) {
             let temp = wktFormatter(data.shape_arr[index]['shape']);
             let to_visualize = [];
             let status = data.shape_arr[index].status;
-            let pop = parseFloat(data.shape_arr[index].ratio_pop);
-          
+            let pop = parseFloat(data.shape_arr[index].b00001e1); //B00001e1 
+            let ratio_pop = parseFloat(data.shape_arr[index].ratio_pop);
+            
 
             //update Text Data
-            if (status == "exist") {
-                pm10Data.existingPop += pop;
+            if (status == "existing") {
+                existing_ratio_pop += ratio_pop;
             } 
 
+            totRatioPop += ratio_pop;
             pm10Data.totPop += pop;
-           // pm10Data.totRatioPop += ;
+            
                               
             // if the status of a shape exists, push to visualize
             for (let i = 0; i < temp.length; i++) {
@@ -36,7 +38,7 @@ function pm10Data(mode, condition) {
                     color = "#039BE5"; //blue
                     to_visualize.push(temp[i]);
                     polyToErase.exist.push();
-                } else if (status == "planned_exist" && condition == "p") {
+                } else if (status == "plan_exist" && condition == "p") {
                     color = "#9E9E9E"; //gray
                     to_visualize.push(temp[i]);
                     polyToErase.plan.push();
@@ -53,7 +55,7 @@ function pm10Data(mode, condition) {
                 fillColor: color,
                 fillOpacity: 0.60,
                 zIndex: -1,
-                title: pop.toFixed(2),
+                title: ratio_pop.toFixed(),
             });
 
             if (condition == "e") polyToErase.exist.push(polygon);
@@ -74,12 +76,12 @@ function pm10Data(mode, condition) {
          * ((Ratio_Pop/Total Population) *100)
          */
 
-        pm10Data.peoplelivin = (pm10Data.existingPop / pm10Data.totPop) * 100;
-        pm10Data.totpeoplelivinTot = (pm10Data.totRatioPop / pm10Data.totPop) * 100; 
+        pm10Data.peoplelivin = (existing_ratio_pop / pm10Data.totPop) * 100;
+        pm10Data.totpeoplelivin = (totRatioPop / pm10Data.totPop) * 100; 
 
 
         if (mode == 0) {
-            document.getElementById("pm10Text").innerHTML = String(pm10Data.ratioPrim.toFixed(2)) + "%"; // menu text
+            document.getElementById("pm10Text").innerHTML = String(pm10Data.peoplelivin.toFixed()) + "%"; // menu text
         } else if (mode == 1) {
             regionalText(pm10Data);
         }
@@ -100,7 +102,7 @@ function pm10chart(g2, data) {
         data: {
             datasets: [{
                 //  data: [tot, Math.round(data.ratioPrim)],
-                data: [tot.toFixed(2), data.peoplelivin.toFixed(2)],
+                data: [tot.toFixed(2), data.peoplelivin.toFixed()],
                 backgroundColor: colors,
                 label: 'Dataset 1'
             }],

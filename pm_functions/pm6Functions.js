@@ -6,8 +6,8 @@ function pm6Data(mode, condition) {
         existingJobs: 0,
         totalJobs: 0,
         totalprims:0,
-        percentLiving: 0,
-        percentJobs:0
+        percentJobs: 0,
+        percentJobsTot:0
     };
 
     let key = 'all_pm10';
@@ -74,12 +74,12 @@ function pm6Data(mode, condition) {
          * that by the total number of jobs 
          * ((Ratio_Prim_Jobs /Total Jobs) *100).*/
 
-        pm6Data.percentLiving = (pm6Data.existingJobs / pm6Data.totalJobs) * 100;
-        pm6Data.percentJobs =   (pm6Data.totalprims / pm6Data.totalJobs) * 100;
+        pm6Data.percentJobs = (pm6Data.existingJobs / pm6Data.totalJobs) * 100;
+        pm6Data.percentJobsTot =   (pm6Data.totalprims / pm6Data.totalJobs) * 100;
 
 
         if (mode == 0) {
-            document.getElementById("pm6Text").innerHTML = String(pm6Data.percentLiving.toFixed(2)) + "%"; // menu text
+            document.getElementById("pm6Text").innerHTML = String(pm6Data.percentJobs.toFixed(2)) + "%"; // menu text
         } else if (mode == 1) {
             console.log(pm6Data);
             regionalText(pm6Data);
@@ -89,7 +89,7 @@ function pm6Data(mode, condition) {
 }
 
 function pm6chart(g2, data) {
-    let totJobs = 100 - data.percentLiving;
+    let totJobs = 100 - data.percentJobs;
     colors = [];
     colors = [
         'rgba(33,150,243,1)',
@@ -101,7 +101,7 @@ function pm6chart(g2, data) {
         data: {
             datasets: [{
               //  data: [tot, Math.round(data.ratioPrim)],
-                data: [totJobs.toFixed(2), data.percentLiving.toFixed(2)],
+                data: [totJobs.toFixed(2), data.percentJobs.toFixed(2)],
                 backgroundColor: colors,
                 label: 'Dataset 1'
             }],

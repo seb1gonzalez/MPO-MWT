@@ -78,9 +78,9 @@ function pm17Data(mode) {
 
             }
         }
-
         console.log("**********************************");
-        console.log(pm17Data);
+        findTop2Stations(pm17Data);
+       
         //adding dynamic variables to last element of our data 
         pm17Data[pm17Data.length] = {
             num: greathestNum,
@@ -89,7 +89,7 @@ function pm17Data(mode) {
 
         };
         console.log(pm17Data);
-
+      
         //print points 
         if (mode == 1) {
             key = 'all_pm15_16_17';
@@ -129,6 +129,24 @@ function pm17Data(mode) {
             regionalText(pm17Data);
         }
     });
+}
+function findTop2Stations(data) {
+    let c = data.length;
+    var stations = [];
+    let val = 0;
+    let index = 0;
+    let year = 0;
+    for (index in data) {
+      //  console.log(Math.max(data[index].graphData));
+        val = Math.max(...data[index].graphData);
+        index = (data[index].graphData).findIndex(val);
+
+        stations[i] = {
+            name: data[index].name,
+            value: val,
+            year: 
+        };
+    }
 }
 
 function pm17chartLine(ctx,data) {
@@ -212,7 +230,4 @@ function pm17chartLine(ctx,data) {
    var chart = new Chart(ctx, {
        type: "line",
        data: data,
-       options: options
-   });
-}
-
+       options: opt
