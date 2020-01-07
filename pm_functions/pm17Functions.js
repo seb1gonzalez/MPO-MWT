@@ -1,6 +1,7 @@
 ﻿
 function pm17Data(mode) {
     var pm17Data = [];
+	var greatest = [];
     let images = [];
 
     //store all colors for points
@@ -25,7 +26,8 @@ function pm17Data(mode) {
     let greathestNum = 0;
     let greathestStat = '';
     let year = 0;
-    let i = 0; //helps on index of CO 
+	
+    let i = 0; //helps on index of PM 10 
 
 
 
@@ -47,9 +49,9 @@ function pm17Data(mode) {
                     name: stationName,
                     graphData: [g2014, g2015, g2016, g2017, g2018]
                 };
-                console.log(i);
+               
                 i++;
-                console.log(i);
+            
                 if (greathestNum < g2014) {
                     greathestNum = g2014;
                     year = 2014;
@@ -75,20 +77,37 @@ function pm17Data(mode) {
                     year = 2018;
                     greathestStat = stationName;
                 }
+				//store greatest on current station
+				greatest[i] = {
+					name: greathestStat,
+					year: year,
+					greathestNum: greathestNum
+				};
+				// reset
+				greathestNum = 0;
+				greathestStat = '';
+				year = 0;
 
             }
         }
-        console.log("**********************************");
-        findTop2Stations(pm17Data);
-       
-        //adding dynamic variables to last element of our data 
+		
+		// sort all the greathest stations from highest to lowest 
+		greatest.sort(function(a, b){
+			return b.greathestNum-a.greathestNum
+		})
+		
+	
+        //adding dynamic info aka top 2 greathest stations
         pm17Data[pm17Data.length] = {
-            num: greathestNum,
-            station: greathestStat,
-            year: year,
-
+            num: greatest[0].greathestNum,
+            station: greatest[0].name,
+            year: greatest[0].year,
+			
+			num2: greatest[1].greathestNum,
+			station2:  greatest[1].name,
+			year2:  greatest[1].year
         };
-        console.log(pm17Data);
+
       
         //print points 
         if (mode == 1) {
@@ -129,24 +148,6 @@ function pm17Data(mode) {
             regionalText(pm17Data);
         }
     });
-}
-function findTop2Stations(data) {
-    let c = data.length;
-    var stations = [];
-    let val = 0;
-    let index = 0;
-    let year = 0;
-    for (index in data) {
-      //  console.log(Math.max(data[index].graphData));
-        val = Math.max(...data[index].graphData);
-        index = (data[index].graphData).findIndex(val);
-
-        stations[i] = {
-            name: data[index].name,
-            value: val,
-            year: 
-        };
-    }
 }
 
 function pm17chartLine(ctx,data) {
@@ -230,4 +231,7 @@ function pm17chartLine(ctx,data) {
    var chart = new Chart(ctx, {
        type: "line",
        data: data,
-       options: opt
+       options: options
+   });
+}
+

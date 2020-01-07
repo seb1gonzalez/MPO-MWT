@@ -938,7 +938,7 @@
             <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#pms-modal" data-toggle="modal"><i class="fa fa-map"></i> <span class="d-none d-md-inline">Interactive AOI</span></a>
             <a class="list-group-item d-inline-block collapsed " data-target="#sidebar" href="#" data-parent="sidebar" id="mtp-projects"> <i class="fa fa-pencil-square-o"></i> <span class="d-none d-md-inline">MTP
                 Projects</span></a>
-            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#pms-modal" data-toggle="modal"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Data Repository</span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#data-repo" data-toggle="modal" id="data-repository"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Data Repository</span></a>
 
             <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class=""></i><span class="d-none d-md-inline"></span></a>
             <a href="tutorial.php" target="_blank" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-certificate"></i> <span class="d-none d-md-inline">Tutorial</span></a>
@@ -1033,6 +1033,8 @@
 <script type="text/javascript" src="mtp_projects/mtp.js"></script>
 
 <script type="text/javascript" src="benchmark/benchmark.js"></script>
+
+<script type="text/javascript" src="data_repository/repo.js"></script>
 
 
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">

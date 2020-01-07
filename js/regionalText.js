@@ -5,6 +5,7 @@
 
 function regionalText(data) {
     resetViewsBeforeSpinner(); 
+	toggleRadioVisible();
     console.log(data);
 
     if (currentPM == 1) {
@@ -137,11 +138,11 @@ function pm21R() {
 function pm1R(data) {
     canvasMaker('chart1', 'myChart');
     var ctx2pm1 = document.getElementById('myChart').getContext('2d');
-    pieChartpm1(ctx2pm1);
+    pieChartpm1(ctx2pm1,data);
     headerAdder("Percent of non-single occupancy vehicle (SOV) commute", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("% of workers living in the El Paso MPO area reported to drive alone during their commute to work,"
-        + "therefore only " +  "% of workers commute via non-SOV modes, which includes carpooled via car, truck, or van. Workers"
+    paragraphAdder(data.SOV.toFixed(2) + "% of workers living in the El Paso MPO area reported to drive alone during their commute to work,"
+        + "therefore only " + data.NonSOV.toFixed(2) + "% of workers commute via non-SOV modes, which includes carpooled via car, truck, or van. Workers"
         + "used Public Transport means such as bus or trolley bus, streetcar or trolley car, subway or elevated railroad, railroad,"
         + " and ferryboat. Some workers also used a taxicab, motorcycle, bicycle, walking, and other means to go to work or they worked"
         + " at home.", "paragraph", "summary-info");
@@ -158,11 +159,11 @@ function pm1R(data) {
 function pm2R(data) {
     canvasMaker('chart1', 'myChart');
     var ctx2pm1 = document.getElementById('myChart').getContext('2d');
-    pieChartpm1(ctx2pm1);
+    piechartpm2(ctx2pm1,data);
     headerAdder("Percent of Workers commuting by transit/walking/biking. ", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
     paragraphAdder(" During 2012-2016 __% of workers living in the El Paso MPO area reported to walk to work, __% of workers bike,"
-        + "and __ % of workers reported to commute by public transit. ", "paragraph", "summary - info");
+        + "and __ % of workers reported to commute by public transit. ", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2007-2011 and 2012-2016 5-year average estimates", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -186,22 +187,22 @@ function pm18R(data) {
 
     if (currentType == 'driving') {
         headerAdder("Number of Fatalities - Driving", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes occurred in the El Paso MPO region and " + dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.dtot18 + " people were killed.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountD) + " crashes occurred in the El Paso MPO region and " + data.dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.dtot18 + " people were killed.", "paragraph", "summary-info");
         pm18chartLine(ctx, data);
     }
     else if (currentType == 'freight') {
         headerAdder("Number of Fatalities - Freight", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a commercial motor vehicle (CMV) occurred in the El Paso MPO region and " + dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.ftot18 + " people were killed in CMV-related crashes. ", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountF) + " crashes that involved a commercial motor vehicle (CMV) occurred in the El Paso MPO region and " + data.dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.ftot18 + " people were killed in CMV-related crashes. ", "paragraph", "summary-info");
         pm18chartLine(ctx, data);
     }
     else if (currentType == 'walking') {
         headerAdder("Number of Fatalities - Walking", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a pedestrian occurred in the El Paso MPO region and " + dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.wtot18 + " pedestrians were killed.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountW) + " crashes that involved a pedestrian occurred in the El Paso MPO region and " + data.dtextPercent.toFixed(2) + "% of those crashes resulted in fatalities. " + data.wtot18 + " pedestrians were killed.", "paragraph", "summary-info");
         pm18chartLine(ctx, data);
     }
     else if (currentType == 'biking') {
         headerAdder("Number of Fatalities - Biking", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a bicyclist occurred in the El Paso MPO region and " + dtextPercent.toFixed(2) + " of those crashes resulted in fatalities. " + data.btot18 + " bicyclists were killed.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountB) + " crashes that involved a bicyclist occurred in the El Paso MPO region and " + data.dtextPercent.toFixed(4) + " of those crashes resulted in fatalities. " + data.btot18 + " bicyclists were killed.", "paragraph", "summary-info");
         pm18chartLine(ctx, data);
     }
 
@@ -226,19 +227,19 @@ function pm19R(data) {
 
     if (currentType == 'driving') {
         headerAdder("Number serious injuries - Driving", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " people were seriously injured.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountD) + " crashes occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " people were seriously injured.", "paragraph", "summary-info");
     }
     else if (currentType == 'freight') {
         headerAdder("Number serious injuries - Freight", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a commercial vehicle occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " people were seriously injured in commercial vehicle-related crashes.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountF) + " crashes that involved a commercial vehicle occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " people were seriously injured in commercial vehicle-related crashes.", "paragraph", "summary-info");
     }
     else if (currentType == 'walking') {
         headerAdder("Number serious injuries - Walking", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a pedestrian occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " pedestrians were seriously injured.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountW) + " crashes that involved a pedestrian occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " pedestrians were seriously injured.", "paragraph", "summary-info");
     }
     else if (currentType == 'biking') {
         headerAdder("Number serious injuries - Biking", "title");
-        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.GEN_) + " crashes that involved a bicyclist occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " bicyclits were seriously injured.", "paragraph", "summary-info");
+        paragraphAdder("During a 5-year period (2013-2017), a total of " + commafy(data.crashCountB) + " crashes that involved a bicyclist occurred in the El Paso MPO region and " + data.dtextpercent.toFixed(2) + "% of those crashes resulted in serious injuries. " + data.dtextinjured + " bicyclits were seriously injured.", "paragraph", "summary-info");
     }
 
     pm19chartLine(ctx, data);
@@ -380,6 +381,7 @@ function pm26R(data) {
     openNav();
 }
 function pm5R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm5chart(ctx,data);
@@ -399,6 +401,7 @@ function pm5R(data) {
     openNav();
 }
 function pm9R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm9chart(ctx,data);
@@ -416,6 +419,7 @@ function pm9R(data) {
     openNav();
 }
 function pm6R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm6chart(ctx, data);
@@ -433,6 +437,7 @@ function pm6R(data) {
     openNav();
 }
 function pm10R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm10chart(ctx, data);
@@ -451,18 +456,19 @@ function pm10R(data) {
 }
 
 function pm7R(data) {
-    // canvasMaker('chart1', 'myChart');
-    //   canvasMaker('chart2', 'myChart2');
-    //  var ctx = document.getElementById('myChart').getContext('2d');
-    // var ctx2 = document.getElementById('myChart2').getContext('2d');
-    //  pm8HorizontalBar(ctx);
-    // pm8HorizontalBar2(ctx2);
+    toggleRadioHide();
+    canvasMaker('chart1', 'myChart');
+    canvasMaker('chart2', 'myChart2');
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    pm7HorizontalBar(ctx);
+    pm7HorizontalBar2(ctx2);
 
     headerAdder("key destinations within ½ mile of high-quality rapid transit", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("In the El Paso MPO region, there are a total of __ key destinations. In a half-mile of existing high-quality rapid transit stations, there are a total of __  (__%) key destinations.  Once all proposed high-quality rapid transit stations are complete, there will be a total of __  (__%)  key destinations within a half-mile of high-quality rapid transit.  ", "paragraph", "summary-info");
+    paragraphAdder("In the El Paso MPO region, there are a total of __ key destinations. In a half-mile of existing high-quality rapid transit stations, there are a total of __  (__%) key destinations.  Once all proposed high-quality rapid transit stations are complete, there will be a total of __  (__%)  key destinations within a half-mile of high-quality rapid transit.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("2019 Transit data  ", "paragraph", "analysis-info");
+    paragraphAdder("2019 Transit data", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
     paragraphAdder("The layer of the high-quality transit stations was provided by Sun Metro. Key destinations were identified from the EPMPO 2040 Horizon Model – Model Development Report and leisure time activity locations were identified from Visit El Paso website.", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
@@ -470,13 +476,15 @@ function pm7R(data) {
     togglevisible();
     openNav();
 }
+
 function pm8R(data) {
-   // canvasMaker('chart1', 'myChart');
- //   canvasMaker('chart2', 'myChart2');
-  //  var ctx = document.getElementById('myChart').getContext('2d');
-   // var ctx2 = document.getElementById('myChart2').getContext('2d');
-  //  pm8HorizontalBar(ctx);
-   // pm8HorizontalBar2(ctx2);
+    toggleRadioHide();
+    canvasMaker('chart1', 'myChart');
+    canvasMaker('chart2', 'myChart2');
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    pm8HorizontalBar(ctx);
+    pm8HorizontalBar2(ctx2);
 
     headerAdder("Key Destinations in the El Paso MPO Region ", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
@@ -492,6 +500,7 @@ function pm8R(data) {
 }
 
 function pm15R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     canvasMaker('chart2', 'myChart2');
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -516,6 +525,7 @@ function pm15R(data) {
 }
 
 function pm16R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -525,8 +535,8 @@ function pm16R(data) {
     paragraphAdder("Summary:", "subtitle", "summary-title");
     paragraphAdder("According to the data available, Carbon Monoxide pollution has been the same for the last 5 years. Except for 2018 that UTEP registered a high reading. ", "paragraph", "summary-info");
     paragraphAdder("Stations with the highest annual readings for Carbon Monoxide are:  ", "paragraph", "summary-info");
-    paragraphAdder("El Paso UTEP in 2018.  ", "paragraph", "summary-info");
-    paragraphAdder("El Paso Chamizal in 2017. ", "paragraph", "summary-info");
+    paragraphAdder(data[data.length - 1].station + " in " + data[data.length - 1].year +".", "paragraph", "summary-info"); ///////////////////////////////////////////////////////**************
+    paragraphAdder(data[data.length - 1].station2 + " in " + data[data.length - 1].year2 +".", "paragraph", "summary-info"); 
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -538,6 +548,7 @@ function pm16R(data) {
 }
 
 function pm17R(data) {
+	toggleRadioHide();
     canvasMaker('chart1', 'myChart');
     var ctx = document.getElementById('myChart').getContext('2d');
     pm17chartLine(ctx, data);
@@ -546,7 +557,7 @@ function pm17R(data) {
     paragraphAdder("According to the data available, Particulate Matter pollution has been increasing and decreasing depending of the station in the last 5 years.", "paragraph", "summary-info");
     paragraphAdder("Stations with the highest annual readings for Carbon Monoxide are:  ", "paragraph", "summary-info");
     paragraphAdder(data[data.length - 1].station + " in " + data[data.length - 1].year +".", "paragraph", "summary-info");
-    paragraphAdder("El Paso Chamizal in 2017. ", "paragraph", "summary-info");
+    paragraphAdder(data[data.length - 1].station2 + " in " + data[data.length - 1].year2 +".", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -558,12 +569,9 @@ function pm17R(data) {
 }
 
 function pm20R(data) {
-    canvasMaker('chart1', 'myChart');
-   // var ctx = document.getElementById('myChart').getContext('2d');
-    //pm17chartLine(ctx, data);
     headerAdder("Number of crashes between motorized vehicles and pedestrians/bicyclists nearby bus stops.", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("62.69% of all pedestrian crashes and 48.80% of all bicycle crashes in El Paso region occurred within 200 feet of transit stops.Majority of the crashes near bus stops occurred in downtown area, Mesa St.Dyer St.and Hondo Pass. The highest observed number of crashes within 200 ft.from a bus stop is 10 for pedestrian(on Paisano Dr.between Alley D.and Oregon St.) and 2 for bicycle(15 locations have the same number).", "paragraph", "summary-info");
+    paragraphAdder("62.69% of all pedestrian crashes and 48.80% of all bicycle crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area, Mesa St.Dyer St.and Hondo Pass. The highest observed number of crashes within 200 ft.from a bus stop is " + data.w_greatest + " for pedestrian (on " + data.w_address + " " + data.w_on_st + ") and " + data.b_greatest + " for bicycle(" + data.b_greatestCounter+" locations have the same number).", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");

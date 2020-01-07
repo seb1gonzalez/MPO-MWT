@@ -1,5 +1,5 @@
-$(document).ready(function() { // when the document loads
-  performanceDataLoader();
+$(document).ready(function () { // when the document loads
+    performanceDataLoader();
 });
 alert("Loading Initial Data");
 
@@ -22,8 +22,8 @@ var polygons = [];
 var coordPropName = null;
 var tipObj = null;
 var offset = {
-  x: 20,
-  y: 20
+    x: 20,
+    y: 20
 };
 //used to keep track of toggle.
 var currentPM = 0;
@@ -32,8 +32,8 @@ var currentType = "driving||freight||transit||walking||biking";
 // var currentCorr  = ""; // current corridor tracker
 var toggleOn = false;
 var polyToErase = { // keeps track what polygons to erase
-  exist: [],
-  plan: []
+    exist: [],
+    plan: []
 }
 
 // keeps count of the number in each mode of transportation. Used for bar chart in workers commute. -C
@@ -52,45 +52,45 @@ type = "text/javascript"
 
 
 var watcherCorr = {
-  'ALAMEDA': false,
-  'DONIPHAN': false,
-  'DYER': false,
-  'HORIZON': false,
-  'MESA': false,
-  'MONTANA': false,
-  'MONTWOOD': false,
-  'YARBROUGH': false,
-  'ZARAGOZA': false
+    'ALAMEDA': false,
+    'DONIPHAN': false,
+    'DYER': false,
+    'HORIZON': false,
+    'MESA': false,
+    'MONTANA': false,
+    'MONTWOOD': false,
+    'YARBROUGH': false,
+    'ZARAGOZA': false
 }
 var corridors_shown = {
-  'ALAMEDA': [],
-  'DONIPHAN': [],
-  'DYER': [],
-  'HORIZON': [],
-  'MESA': [],
-  'MONTANA': [],
-  'MONTWOOD': [],
-  'YARBROUGH': [],
-  'ZARAGOZA': [],
-  'EASTLAKE': [],
-  'SOCORRO': [],
-  'ARTCRAFT': [],
-  'MCNUTT': []
+    'ALAMEDA': [],
+    'DONIPHAN': [],
+    'DYER': [],
+    'HORIZON': [],
+    'MESA': [],
+    'MONTANA': [],
+    'MONTWOOD': [],
+    'YARBROUGH': [],
+    'ZARAGOZA': [],
+    'EASTLAKE': [],
+    'SOCORRO': [],
+    'ARTCRAFT': [],
+    'MCNUTT': []
 };
 var corridors_selected = {
-  'ALAMEDA': false,
-  'DONIPHAN': false,
-  'DYER': false,
-  'HORIZON': false,
-  'MESA': false,
-  'MONTANA': false,
-  'MONTWOOD': false,
-  'YARBROUGH': false,
-  'ZARAGOZA': false,
-  'EASTLAKE': false,
-  'SOCORRO': false,
-  'ARTCRAFT': false,
-  'MCNUTT': false
+    'ALAMEDA': false,
+    'DONIPHAN': false,
+    'DYER': false,
+    'HORIZON': false,
+    'MESA': false,
+    'MONTANA': false,
+    'MONTWOOD': false,
+    'YARBROUGH': false,
+    'ZARAGOZA': false,
+    'EASTLAKE': false,
+    'SOCORRO': false,
+    'ARTCRAFT': false,
+    'MCNUTT': false
 };
 
 /*This is a temporal solution to not having to redraw corridors
@@ -98,575 +98,489 @@ Aids in having corridors drawn well and include points inside corridors
 Without this corridors would be redrawn again
 */
 var corridors_T = {
-  'ALAMEDA': false,
-  'DONIPHAN': false,
-  'DYER': false,
-  'HORIZON': false,
-  'MESA': false,
-  'MONTANA': false,
-  'MONTWOOD': false,
-  'YARBROUGH': false,
-  'ZARAGOZA': false,
+    'ALAMEDA': false,
+    'DONIPHAN': false,
+    'DYER': false,
+    'HORIZON': false,
+    'MESA': false,
+    'MONTANA': false,
+    'MONTWOOD': false,
+    'YARBROUGH': false,
+    'ZARAGOZA': false,
 
-  'EASTLAKE': false,
-  'SOCORRO': false,
-  'ARTCRAFT': false,
-  'MCNUTT': false
+    'EASTLAKE': false,
+    'SOCORRO': false,
+    'ARTCRAFT': false,
+    'MCNUTT': false
 };
 
 //temp solution, this can be shorted
 function turnoff_Corridors() {
-  corridors_selected.ALAMEDA = false;
-  corridors_selected.DONIPHAN = false;
-  corridors_selected.DYER = false;
-  corridors_selected.HORIZON = false;
-  corridors_selected.MESA = false;
-  corridors_selected.MONTANA = false;
-  corridors_selected.MONTWOOD = false;
-  corridors_selected.YARBROUGH = false;
-  corridors_selected.ZARAGOZA = false;
-  corridors_selected.EASTLAKE = false;
-  corridors_selected.SOCORRO = false;
-  corridors_selected.ARTCRAFT = false;
-  corridors_selected.MCNUTT = false;
+    corridors_selected.ALAMEDA = false;
+    corridors_selected.DONIPHAN = false;
+    corridors_selected.DYER = false;
+    corridors_selected.HORIZON = false;
+    corridors_selected.MESA = false;
+    corridors_selected.MONTANA = false;
+    corridors_selected.MONTWOOD = false;
+    corridors_selected.YARBROUGH = false;
+    corridors_selected.ZARAGOZA = false;
+    corridors_selected.EASTLAKE = false;
+    corridors_selected.SOCORRO = false;
+    corridors_selected.ARTCRAFT = false;
+    corridors_selected.MCNUTT = false;
 
-  corridors_T.ALAMEDA = false;
-  corridors_T.DONIPHAN = false;
-  corridors_T.DYER = false;
-  corridors_T.HORIZON = false;
-  corridors_T.MESA = false;
-  corridors_T.MONTANA = false;
-  corridors_T.MONTWOOD = false;
-  corridors_T.YARBROUGH = false;
-  corridors_T.ZARAGOZA = false;
-  corridors_T.EASTLAKE = false;
-  corridors_T.SOCORRO = false;
-  corridors_T.ARTCRAFT = false;
-  corridors_T.MCNUTT = false;
+    corridors_T.ALAMEDA = false;
+    corridors_T.DONIPHAN = false;
+    corridors_T.DYER = false;
+    corridors_T.HORIZON = false;
+    corridors_T.MESA = false;
+    corridors_T.MONTANA = false;
+    corridors_T.MONTWOOD = false;
+    corridors_T.YARBROUGH = false;
+    corridors_T.ZARAGOZA = false;
+    corridors_T.EASTLAKE = false;
+    corridors_T.SOCORRO = false;
+    corridors_T.ARTCRAFT = false;
+    corridors_T.MCNUTT = false;
 
-  clear_corridors("ALAMEDA");
-  clear_corridors("DONIPHAN");
-  clear_corridors("DYER");
-  clear_corridors("HORIZON");
-  clear_corridors("MESA");
-  clear_corridors("MONTANA");
-  clear_corridors("MONTWOOD");
-  clear_corridors("YARBROUGH");
-  clear_corridors("ZARAGOZA");
-  clear_corridors("EASTLAKE");
-  clear_corridors("SOCORRO");
-  clear_corridors("ARTCRAFT");
-  clear_corridors("MCNUTT");
+    clear_corridors("ALAMEDA");
+    clear_corridors("DONIPHAN");
+    clear_corridors("DYER");
+    clear_corridors("HORIZON");
+    clear_corridors("MESA");
+    clear_corridors("MONTANA");
+    clear_corridors("MONTWOOD");
+    clear_corridors("YARBROUGH");
+    clear_corridors("ZARAGOZA");
+    clear_corridors("EASTLAKE");
+    clear_corridors("SOCORRO");
+    clear_corridors("ARTCRAFT");
+    clear_corridors("MCNUTT");
 
 }
 
-//for regional text, aids in separating by type
-function modeFinder() {
-  if (currentPM == 3) {
-    return "PM3";
-  } else if (currentPM == 4) {
-    console.log('purple');
-    if (currentType == "biking") return "pm4Biking";
-    if (currentType == "walking") return "pm4Walking";
-  } else if (currentPM == 11) {
-    return 'pm11Walking';
-  } else if (currentPM == 12) {
-    return 'pm12Biking';
-  } else if (currentPM == 19) {
-    if (currentType == "driving") return "pm19Driving";
-    if (currentType == "freight") return "pm19Freight";
-    if (currentType == "walking") return "pm19Walking";
-    if (currentType == "biking") return "pm19Biking";
-  } else if (currentPM == 18) {
-    if (currentType == "driving") return "pm18Driving";
-    if (currentType == "freight") return "pm18Freight";
-    if (currentType == "walking") return "pm18Walking";
-    if (currentType == "biking") return "pm18Biking";
-  } else if (currentPM == 25) {
-      return "PM25";
-  }else if (currentPM == 26) {
-    return "pm26";
-  }
-}
 
 // * For drop down button
 //  Handles Corridors on drop down button. Populates map based on what user selected.
 //  Index calls this method. Sends the selected corridor i.e. 'MESA'
 function turnOn_Switch(selected) {
-  //variables to be send so map gets populated.
-  let shapeType = "point,polygon or line";
-  let tableName = "tbd"; //this is send and turn into a query
-  let found = "";
+    console.log(selected);
 
-  //clear previous data, regional data
-  clearMetadata();
-  markerClusterSafeDelete();
-  turnoff_Corridors();
+    //clear previous data, regional data
+    clearMetadata();
+    markerClusterSafeDelete();
+    turnoff_Corridors();
 
+    //determine what is selected then turn it on
+    if (selected == "REGIONAL") { //default
+        regionalCaller();
+    } else {
+        removeAllElementsBar();
+        if (selected == "ALAMEDA") {
+            corridors_selected.ALAMEDA = true;
+            corridors_T.ALAMEDA = true;
+            sendCurrentCorridor("alameda_buffer");
+        } else if (selected == "DONIPHAN") {
+            corridors_selected.DONIPHAN = true;
+            corridors_T.DONIPHAN = true;
+            sendCurrentCorridor("doniphan_buffer");
+        } else if (selected == "DYER") {
+            corridors_selected.DYER = true;
+            corridors_T.DYER = true;
+            sendCurrentCorridor("dyer_buffer");
+        } else if (selected == "HORIZON") {
+            corridors_selected.HORIZON = true;
+            corridors_T.HORIZON = true;
+            sendCurrentCorridor("horizon_buffer");
+        } else if (selected == "MESA") {
+            corridors_selected.MESA = true;
+            corridors_T.MESA = true;
+            sendCurrentCorridor("mesa_buffer");
+        } else if (selected == "MONTANA") {
+            corridors_selected.MONTANA = true;
+            corridors_T.MONTANA = true;
+            sendCurrentCorridor("montana_buffer");
+        } else if (selected == "MONTWOOD") {
+            corridors_selected.MONTWOOD = true;
+            corridors_T.MONTWOOD = true;
+            sendCurrentCorridor("montwood_buffer");
+        } else if (selected == "YARBROUGH") {
+            corridors_selected.YARBROUGH = true;
+            corridors_T.YARBROUGH = true;
+            sendCurrentCorridor("yarbrough_buffer");
+        } else if (selected == "ZARAGOZA") {
+            corridors_selected.ZARAGOZA = true;
+            corridors_T.ZARAGOZA = true;
+            sendCurrentCorridor("zaragoza_buffer");
+        } else if (selected == "EASTLAKE") {
+            corridors_selected.EASTLAKE = true;
+            corridors_T.EASTLAKE = true;
+            sendCurrentCorridor("eastlake_buffer");
+        } else if (selected == "SOCORRO") {
+            corridors_selected.SOCORRO = true;
+            corridors_T.SOCORRO = true;
+            sendCurrentCorridor("socorro_buffer");
+        } else if (selected == "ARTCRAFT") {
+            corridors_selected.ARTCRAFT = true;
+            corridors_T.ARTCRAFT = true;
+            sendCurrentCorridor("artcraft_buffer");
+        } else if (selected == "MCNUTT") {
+            corridors_selected.MCNUTT = true;
+            corridors_T.MCNUTT = true;
+            sendCurrentCorridor("mcnutt_buffer");
+        }
 
-  //if regional then give it a
-  if (selected == "REGIONAL") {
-    found = modeFinder();
-  }
+        //call these methods to populate corridor
+        get_corridors_buffer(); //draws corridor buffer
 
-  //determine shapeType based on current PM and set performance
-  //Table names are found on 'PMS' on Database
-
-  //Points
-  if (currentPM == 18 || currentPM == 19) {
-    shapeType = "point";
-    tableName = "pm18_19txdotall";
-    pm_for_AOI = 'all_pm18_19';
-  } else if (currentPM == 26) {
-    shapeType = "point";
-    tableName = "pm26";
-    pm_for_AOI = 'all_pm26';
-  } else if (currentPM == 13 || currentPM == 14) {
-    shapeType = "point";
-    tableName = "pm14points";
-    pm_for_AOI = "all_pm13_14";
-  } else if (currentPM == 21) {
-    shapeType = "point";
-    tableName = "pm14points";
-
-  } else if (currentPM == 7) {
-    shapeType = "point";
-    tableName = "pm7_planbrst";
-    pm_for_AOI = "all_pm7P";
-  } else if (currentPM == 15 || currentPM == 16 || currentPM == 17) {
-    shapeType = "point";
-    tableName = "pm15_16_17p";
-    pm_for_AOI = "all_pm15_16_17";
-  }
-  //lines
-  else if (currentPM == 3) {
-    shapeType = "line";
-    tableName = "pm3final";
-  } else if (currentPM == 4) { //bike
-    shapeType = "line";
-    if (currentType == "biking") {
-      tableName = "pm4_bike";
-    } else if (currentType == "walking") {
-      tableName = "pm4_walking";
     }
-  } else if (currentPM == 5) { //!
-    shapeType = "line";
-    tableName = "pm5";
-  } else if (currentPM == 25) {
-    shapeType = "line";
-    tableName = "pm25d";
-  } else if (currentPM == 11) {
-    shapeType = "line";
-    tableName = "pm11_sidewalks";
-  } else if (currentPM == 12) {
-    shapeType = "line";
-    tableName = "pm12";
-  }
-  //polygons
+}
 
-  //determine what is selected then turn it on
-  if (selected == "REGIONAL") { //default
-    if (shapeType == "point") {
-      console.log("guiding");
-      pointHandler(found); //shape handlerP handles default views for points
-    } else if (shapeType == "line") {
-      console.log('going to lineHandlerS');
-      lineHandler(found);
+//mimics a click of the menu text. 
+function regionalCaller() {
+    if (currentPM == 1) {
+        pointHandler("PM1");
+    } else if (currentPM == 3) {
+        lineHandler("PM3");
+    } else if (currentPM == 4) {
+        if (currentType == "biking") lineHandler("pm4Biking");
+        if (currentType == "walking") lineHandler("pm4Walking");
+    } else if (currentPM == 11) {
+        lineHandler('pm11Walking');
+    } else if (currentPM == 12) {
+        lineHandler('pm12Biking');
+    } else if (currentPM == 18) {
+        if (currentType == "driving") {
+            pointHandler("pm18Driving");
+        } else if (currentType == "freight") {
+            pointHandler("pm18Freight");
+        } else if (currentType == "walking") {
+            pointHandler("pm18Walking");
+        } else if (currentType == "biking") {
+            pointHandler("pm18Biking");
+        }
+    } else if (currentPM == 19) {
+        if (currentType == "driving") {
+            pointHandler("pm19Driving");
+        } else if (currentType == "freight") {
+            pointHandler("pm19Freight");
+        } else if (currentType == "walking") {
+            pointHandler("pm19Walking");
+        } else if (currentType == "biking") {
+            pointHandler("pm19Biking");
+        }
+    } else if (currentPM == 20) {
+        if (currentType == "walking") {
+            pointHandler("PM20W");
+        } else if (currentType == "biking") {
+            pointHandler("PM20B");
+        }
     }
-  } else {
-    if (selected == "ALAMEDA") {
-      corridors_selected.ALAMEDA = true;
-      corridors_T.ALAMEDA = true;
-    } else if (selected == "DONIPHAN") {
-      corridors_selected.DONIPHAN = true;
-      corridors_T.DONIPHAN = true;
-    } else if (selected == "DYER") {
-      corridors_selected.DYER = true;
-      corridors_T.DYER = true;
-    } else if (selected == "HORIZON") {
-      corridors_selected.HORIZON = true;
-      corridors_T.HORIZON = true;
-    } else if (selected == "MESA") {
-      corridors_selected.MESA = true;
-      corridors_T.MESA = true;
-    } else if (selected == "MONTANA") {
-      corridors_selected.MONTANA = true;
-      corridors_T.MONTANA = true;
-    } else if (selected == "MONTWOOD") {
-      corridors_selected.MONTWOOD = true;
-      corridors_T.MONTWOOD = true;
-    } else if (selected == "YARBROUGH") {
-      corridors_selected.YARBROUGH = true;
-      corridors_T.YARBROUGH = true;
-    } else if (selected == "ZARAGOZA") {
-      corridors_selected.ZARAGOZA = true;
-      corridors_T.ZARAGOZA = true;
-    } else if (selected == "EASTLAKE") {
-      corridors_selected.EASTLAKE = true;
-      corridors_T.EASTLAKE = true;
-    } else if (selected == "SOCORRO") {
-      corridors_selected.SOCORRO = true;
-      corridors_T.SOCORRO = true;
-    } else if (selected == "ARTCRAFT") {
-      corridors_selected.ARTCRAFT = true;
-      corridors_T.ARTCRAFT = true;
-    } else if (selected == "MCNUTT") {
-      corridors_selected.MCNUTT = true;
-      corridors_T.MCNUTT = true;
+     else if (currentPM == 25) {
+        lineHandler("PM25");
+    } else if (currentPM == 26) {
+        pointHandler("pm26");
     }
-
+   
+}
+// mode 2 on PMS, sends the corridor that is ON
+function sendCurrentCorridor(corr) {
     removeAllElementsBar();
+    displaySpinner();
 
-    //call these methods to populate corridor
-    get_corridors_buffer(); //draws corridor buffer
-    preparePointsCorridor(shapeType, tableName); //populates buffer
-  }
-}
-/* Checks status of corridors , if on then print points on that corridor*/
-function preparePointsCorridor(type, tableName) {
-  if (corridors_T.ALAMEDA == true) {
-    sendCorridorData(type, "alameda_buffer", tableName);
-  } else if (corridors_T.DONIPHAN == true) {
-    sendCorridorData(type, "doniphan_buffer", tableName);
-  } else if (corridors_T.DYER == true) {
-    sendCorridorData(type, "dyer_buffer", tableName);
-  } else if (corridors_T.HORIZON == true) {
-    sendCorridorData(type, "horizon_buffer", tableName);
-  } else if (corridors_T.MESA == true) {
-    sendCorridorData(type, "mesa_buffer", tableName);
-  } else if (corridors_T.MONTANA == true) {
-    sendCorridorData(type, "montana_buffer", tableName);
-  } else if (corridors_T.MONTWOOD == true) {
-    sendCorridorData(type, "montwood_buffer", tableName);
-  } else if (corridors_T.YARBROUGH == true) {
-    sendCorridorData(type, "yarbrough_buffer", tableName);
-  } else if (corridors_T.ZARAGOZA == true) {
-    sendCorridorData(type, "zaragoza_buffer", tableName);
-  } else if (corridors_T.SOCORRO == true) {
-    sendCorridorData(type, "socorro_buffer", tableName);
-  } else if (corridors_T.MCNUTT == true) {
-    sendCorridorData(type, "mcnutt_buffer", tableName);
-  } else if (corridors_T.EASTLAKE == true) {
-    sendCorridorData(type, "eastlake_buffer", tableName);
-  } else if (corridors_T.ARTCRAFT == true) {
-    sendCorridorData(type, "artcraft_buffer", tableName);
-  }
+    if (currentPM == 18) {
+        pm18Data(2, corr);
+    } else if (currentPM == 20) {
+        pm20Data(2, corr);
+    }else if (currentPM == 19) {
+        pm19Data(2, corr);
+     } else if (currentPM == 26) {
+        pm26Data(2, corr);
+    }else if (currentPM == 25) {
+        pm25Data(2, corr);
+     } else if (currentPM == 11) {
+        pm11Data(2, corr);
+    } else if (currentPM == 12) {
+        pm12Data(2, corr);
+    } else if (currentPM == 3) {
+        pm3Data(2, corr);
+    } else if (currentPM == 4) {
+        pm4Data(2, corr);
+    } else if (currentPM == 5) {
+        corrShape_handlerL("pm4W", corr);
+    }else if (currentPM == 1) {
+        pm1Data(2, corr);
+    }
+    
 }
 
 
-$("#alameda_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.ALAMEDA = true;
-    corridors_T.ALAMEDA = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.ALAMEDA = false;
-    corridors_T.ALAMEDA = false;
-    clear_corridors("ALAMEDA");
-  }
+$("#alameda_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.ALAMEDA = true;
+        corridors_T.ALAMEDA = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.ALAMEDA = false;
+        corridors_T.ALAMEDA = false;
+        clear_corridors("ALAMEDA");
+    }
 });
-$("#doniphan_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.DONIPHAN = true;
-    corridors_T.DONIPHAN = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.DONIPHAN = false;
-    corridors_T.DONIPHAN = false;
-    clear_corridors("DONIPHAN");
-  }
+$("#doniphan_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.DONIPHAN = true;
+        corridors_T.DONIPHAN = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.DONIPHAN = false;
+        corridors_T.DONIPHAN = false;
+        clear_corridors("DONIPHAN");
+    }
 });
-$("#dyer_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.DYER = true;
-    corridors_T.DYER = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.DYER = false;
-    corridors_T.DYER = false;
-    clear_corridors("DYER");
-  }
+$("#dyer_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.DYER = true;
+        corridors_T.DYER = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.DYER = false;
+        corridors_T.DYER = false;
+        clear_corridors("DYER");
+    }
 });
-$("#horizon_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.HORIZON = true;
-    corridors_T.HORIZON = true;
-    get_corridors_buffer();
-  } else {
-    corridors_T.HORIZON = false;
-    clear_corridors("HORIZON");
-  }
+$("#horizon_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.HORIZON = true;
+        corridors_T.HORIZON = true;
+        get_corridors_buffer();
+    } else {
+        corridors_T.HORIZON = false;
+        clear_corridors("HORIZON");
+    }
 });
-$("#mesa_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.MESA = true;
-    corridors_T.MESA = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.MESA = false;
-    corridors_T.MESA = false;
-    clear_corridors("MESA");
-  }
+$("#mesa_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.MESA = true;
+        corridors_T.MESA = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.MESA = false;
+        corridors_T.MESA = false;
+        clear_corridors("MESA");
+    }
 });
-$("#montana_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.MONTANA = true;
-    corridors_T.MONTANA = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.MONTANA = false;
-    corridors_T.MONTANA = false;
-    clear_corridors("MONTANA");
-  }
+$("#montana_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.MONTANA = true;
+        corridors_T.MONTANA = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.MONTANA = false;
+        corridors_T.MONTANA = false;
+        clear_corridors("MONTANA");
+    }
 });
-$("#montwood_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.MONTWOOD = true;
-    corridors_T.MONTWOOD = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.MONTWOOD = false;
-    corridors_T.MONTWOOD = false;
-    clear_corridors("MONTWOOD");
-  }
+$("#montwood_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.MONTWOOD = true;
+        corridors_T.MONTWOOD = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.MONTWOOD = false;
+        corridors_T.MONTWOOD = false;
+        clear_corridors("MONTWOOD");
+    }
 });
-$("#yarbrough_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.YARBROUGH = true;
-    corridors_T.YARBROUGH = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.YARBROUGH = false;
-    corridors_T.YARBROUGH = false;
-    clear_corridors("YARBROUGH");
-  }
+$("#yarbrough_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.YARBROUGH = true;
+        corridors_T.YARBROUGH = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.YARBROUGH = false;
+        corridors_T.YARBROUGH = false;
+        clear_corridors("YARBROUGH");
+    }
 });
-$("#zaragoza_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.ZARAGOZA = true;
-    corridors_T.ZARAGOZA = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.ZARAGOZA = false;
-    corridors_T.ZARAGOZA = false;
-    clear_corridors("ZARAGOZA");
-  }
+$("#zaragoza_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.ZARAGOZA = true;
+        corridors_T.ZARAGOZA = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.ZARAGOZA = false;
+        corridors_T.ZARAGOZA = false;
+        clear_corridors("ZARAGOZA");
+    }
 });
-$("#eastlake_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.EASTLAKE = true;
-    //alert("eastlak3e on");
-    corridors_T.EASTLAKE = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.EASTLAKE = false;
-    corridors_T.EASTLAKE = false;
-    clear_corridors("EASTLAKE");
-  }
+$("#eastlake_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.EASTLAKE = true;
+        //alert("eastlak3e on");
+        corridors_T.EASTLAKE = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.EASTLAKE = false;
+        corridors_T.EASTLAKE = false;
+        clear_corridors("EASTLAKE");
+    }
 });
-$("#socorro_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.SOCORRO = true;
-    corridors_T.SOCORRO = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.SOCORRO = false;
-    corridors_T.SOCORRO = false;
-    clear_corridors("SOCORRO");
-  }
+$("#socorro_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.SOCORRO = true;
+        corridors_T.SOCORRO = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.SOCORRO = false;
+        corridors_T.SOCORRO = false;
+        clear_corridors("SOCORRO");
+    }
 });
-$("#artcraft_Domenici_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.ARTCRAFT = true;
-    corridors_T.ARTCRAFT = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.ARTCRAFT = false;
-    corridors_T.ARTCRAFT = false;
-    clear_corridors("ARTCRAFT");
-  }
+$("#artcraft_Domenici_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.ARTCRAFT = true;
+        corridors_T.ARTCRAFT = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.ARTCRAFT = false;
+        corridors_T.ARTCRAFT = false;
+        clear_corridors("ARTCRAFT");
+    }
 });
-$("#mcNutt_toggle").on('change', function() {
-  if ($(this).is(':checked')) { //when TRUE
-    corridors_selected.MCNUTT = true;
-    corridors_T.MCNUTT = true;
-    get_corridors_buffer();
-  } else {
-    corridors_selected.MCNUTT = false;
-    corridors_T.MCNUTT = false;
-    clear_corridors("MCNUTT");
-  }
+$("#mcNutt_toggle").on('change', function () {
+    if ($(this).is(':checked')) { //when TRUE
+        corridors_selected.MCNUTT = true;
+        corridors_T.MCNUTT = true;
+        get_corridors_buffer();
+    } else {
+        corridors_selected.MCNUTT = false;
+        corridors_T.MCNUTT = false;
+        clear_corridors("MCNUTT");
+    }
 });
 
 //Clears for Toggle
 function clear_Exist() {
-  for (var index in polyToErase.exist) {
-    polyToErase.exist[index].setMap(null);
-  }
+    for (var index in polyToErase.exist) {
+        polyToErase.exist[index].setMap(null);
+    }
 }
 
 function clear_Planned() {
-  for (var index in polyToErase.plan) {
-    polyToErase.plan[index].setMap(null);
-  }
+    for (var index in polyToErase.plan) {
+        polyToErase.plan[index].setMap(null);
+    }
 }
 
 function clear_corridors(_key) {
-  let array_we_want = corridors_shown[_key];
-  for (var index in array_we_want) {
-    array_we_want[index].setMap(null);
-  }
+    let array_we_want = corridors_shown[_key];
+    for (var index in array_we_want) {
+        array_we_want[index].setMap(null);
+    }
 }
 
 function clear_corridorsPoints(_key) {
-  let array_we_want = corridors_shown[_key];
-  for (var index in array_we_want) {
-    array_we_want[index].setMap(null);
-  }
+    let array_we_want = corridors_shown[_key];
+    for (var index in array_we_want) {
+        array_we_want[index].setMap(null);
+    }
 }
 
 
 //lines
 function get_corridors() {
-  //console.table(corridors_selected);
-  fetch('./corridors_buffers.json').then(function(response) {
-    return response.json();
-  }).then(function(myJson) {
-    for (var _key in corridors_selected) {
-      //console.log(_key);
-      if (corridors_selected[_key]) {
-        let active_corr = myJson[_key];
-        corridors_selected[_key] = false; // set to false again to not re-paint over the same active line
-        for (index in active_corr) {
-          //console.log(active_corr); // iterates through every index in the returned element
-          let shp = active_corr[index]['shape']; // shape is LINESTRING or MULTILINESTRING
-          let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-          let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-          let to_visualize = []; // used to populate the map (latitude & longitude)
-          let coord; // will be an object to push coordinates to populate the map
-          let ln = r.getCoordinates(); // parses the shape into lat & lng
-          for (let i = 0; i < ln.length; i++) {
-            coord = {
-              lat: ln[i]['y'],
-              lng: ln[i]['x']
-            };
-            to_visualize.push(coord);
-          }
-          let line = new google.maps.Polyline({ // it is a POLYLINE
-            path: to_visualize, // polyline has a path, defined by lat & lng
-            // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
-            strokeColor: 'teal',
-            strokeOpacity: 0.70,
-            strokeWeight: 5,
-            zIndex: 99 // on top of every other shape
-          });
-          line.setMap(map);
-          corridors_shown[_key].push(line);
+    //console.table(corridors_selected);
+    fetch('./corridors_buffers.json').then(function (response) {
+        return response.json();
+    }).then(function (myJson) {
+        for (var _key in corridors_selected) {
+            //console.log(_key);
+            if (corridors_selected[_key]) {
+                let active_corr = myJson[_key];
+                corridors_selected[_key] = false; // set to false again to not re-paint over the same active line
+                for (index in active_corr) {
+                    //console.log(active_corr); // iterates through every index in the returned element
+                    let shp = active_corr[index]['shape']; // shape is LINESTRING or MULTILINESTRING
+                    let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+                    let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+                    let to_visualize = []; // used to populate the map (latitude & longitude)
+                    let coord; // will be an object to push coordinates to populate the map
+                    let ln = r.getCoordinates(); // parses the shape into lat & lng
+                    for (let i = 0; i < ln.length; i++) {
+                        coord = {
+                            lat: ln[i]['y'],
+                            lng: ln[i]['x']
+                        };
+                        to_visualize.push(coord);
+                    }
+                    let line = new google.maps.Polyline({ // it is a POLYLINE
+                        path: to_visualize, // polyline has a path, defined by lat & lng
+                        // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
+                        strokeColor: 'teal',
+                        strokeOpacity: 0.70,
+                        strokeWeight: 5,
+                        zIndex: 99 // on top of every other shape
+                    });
+                    line.setMap(map);
+                    corridors_shown[_key].push(line);
+                }
+            }
         }
-      }
-    }
-  });
+    });
 }
 
 //polygons
 function get_corridors_buffer() {
-  //console.table(corridors_selected);
-  fetch('./corridors_buffers.json').then(function(response) {
-    return response.json();
-  }).then(function(myJson) {
-    for (var _key in corridors_selected) {
-      //console.log(_key);
-      if (corridors_selected[_key]) {
-        let active_corr = myJson[_key];
-        corridors_selected[_key] = false; // set to false again to not re-paint over the same active line // find a way to fix
-        for (index in active_corr) {
-          //console.log(active_corr); // iterates through every index in the returned element
-          let shp = active_corr[index]['shape']; // shape is LINESTRING or MULTILINESTRING
-          let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-          let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-          let to_visualize = []; // used to populate the map (latitude & longitude)
-          let coord; // will be an object to push coordinates to populate the map
-          let ln = r.getCoordinates(); // parses the shape into lat & lng
-          for (let i = 0; i < ln.length; i++) {
-            coord = {
-              lat: ln[i]['y'],
-              lng: ln[i]['x']
-            };
-            to_visualize.push(coord);
-          }
-          let polygon = new google.maps.Polygon({
-            description: "",
-            description_value: '',
-            paths: to_visualize,
-            strokeColor: 'teal',
-            strokeOpacity: 0.80,
-            strokeWeight: 2.0,
-            fillColor: "teal",
-            fillOpacity: 0.60,
-            zIndex: 99,
-            title: "1 mile buffer",
-          });
+    //console.table(corridors_selected);
+    fetch('./corridors_buffers.json').then(function (response) {
+        return response.json();
+    }).then(function (myJson) {
+        for (var _key in corridors_selected) {
+            //console.log(_key);
+            if (corridors_selected[_key]) {
+                let active_corr = myJson[_key];
+                corridors_selected[_key] = false; // set to false again to not re-paint over the same active line // find a way to fix
+                for (index in active_corr) {
+                    //console.log(active_corr); // iterates through every index in the returned element
+                    let shp = active_corr[index]['shape']; // shape is LINESTRING or MULTILINESTRING
+                    let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+                    let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+                    let to_visualize = []; // used to populate the map (latitude & longitude)
+                    let coord; // will be an object to push coordinates to populate the map
+                    let ln = r.getCoordinates(); // parses the shape into lat & lng
+                    for (let i = 0; i < ln.length; i++) {
+                        coord = {
+                            lat: ln[i]['y'],
+                            lng: ln[i]['x']
+                        };
+                        to_visualize.push(coord);
+                    }
+                    let polygon = new google.maps.Polygon({
+                        description: "",
+                        description_value: '',
+                        paths: to_visualize,
+                        strokeColor: 'teal',
+                        strokeOpacity: 0.80,
+                        strokeWeight: 2.0,
+                        fillColor: "teal",
+                        fillOpacity: 0.60,
+                        zIndex: 99,
+                        title: "1 mile buffer",
+                    });
 
-          polygon.setMap(map);
-          corridors_shown[_key].push(polygon);
+                    polygon.setMap(map);
+                    corridors_shown[_key].push(polygon);
+                }
+            }
         }
-      }
-    }
-  });
+    });
 }
 let corridorPointsT = [];
 
-//returns shapes that intercept the corridor selected
-function sendCorridorData(type, Corridors_selected, Active_pm) {
-  let key = currentPM;
-  console.log('this is the current key');
-  console.log(key);
-
-  //prepare example that will be send to the PHP handler
-  let example = {
-    key: key,
-    corridors_selected: Corridors_selected,
-    active_pm: Active_pm
-  };
-
-  console.log("Preparing info for corridor");
-  console.log(example);
-  removeAllElementsBar();
-  displaySpinner();
-  console.log("adding spinner");
-  // Once info is preapred, see who to call based on shape and performance
-  if (type == "point") {
-    if (currentPM == 18) {
-      pm18Data(2, example);
-    } else if (currentPM == 19) {
-      console.log("sending stuff to corridor 19 Update");
-      pm19Data(2, example);
-    } else if (currentPM == 26) {
-      pm26Data(2, example);
-    }
-  } else if (type == "line") {
-      if (currentPM == 25) {
-          pm25Data(2, example);
-      } else if (currentPM == 11) {
-          (2, example);
-      } else if (currentPM == 12) {
-          pm12Data(2, example);
-      } else if (currentPM == 3) {
-          console.log('3 loading')
-          pm3Data(2, example);
-      } else if (currentPM == 4) {
-          pm4Data(2, example);
-      } else if (currentPM == 5) {
-          corrShape_handlerL("pm4W", example);
-      }
-      
-  }
-
-}
-
 // Loads graph Data, fetches go here
 function performanceDataLoader() {
-    //pm1Data();
+    pm1Data(0, '');
     //pm2Data();
     pm3Data(0, '');
     lineHandler('0pm4W'); // mode 0 in pm4 Walking
@@ -679,81 +593,83 @@ function performanceDataLoader() {
     //pm13Data();
     //pm13_14Data();
     //pm15Data();
-    pm15Data(0); // test
+    pm15Data(0);
+    pm16Data(0);
     pm17Data(0);
+
     pm18Data(0, '');
     pm19Data(0, '');
     //pm20Data();
     //pm20DataT();
     pm22Data();
-    pm25Data(0,'');
+    pm25Data(0, '');
     pm26Data(0, '');
     toggleHide();
 
 }
 
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), { // callback
-    zoom: 11,
-    center: new google.maps.LatLng(31.837465, -106.2851078)
+    map = new google.maps.Map(document.getElementById('map'), { // callback
+        zoom: 11,
+        center: new google.maps.LatLng(31.837465, -106.2851078)
 
-  }); // * End Map
+    }); // * End Map
 
-  // ! do not remove -> for AOI
-  // TODO: Get shapes from UI and send to DB to extract intersection
-  drawingManager = new google.maps.drawing.DrawingManager({
-    drawingMode: null,
-    drawingControl: false,
-    drawingControlOptions: {
-      position: google.maps.ControlPosition.TOP_CENTER,
-      drawingModes: ['polygon']
-    },
-    polygonOptions: {
-      clickable: false,
-      draggable: false,
-      editable: false,
-      geodesic: true,
-      zIndex: 1,
-      fillColor: '#00796b',
-      fillOpacity: .2,
-    },
-  });
-  drawingManager.setMap(map);
-  // * Listeners for the user-drawn shapes
-  google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-    deleteUserShapes();
-    all_overlays.push(event);
-    var poly_bounds = event.overlay.getPath();
-    var coords_arr = [];
+    // ! do not remove -> for AOI
+    // TODO: Get shapes from UI and send to DB to extract intersection
+    drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: null,
+        drawingControl: false,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: ['polygon']
+        },
+        polygonOptions: {
+            clickable: false,
+            draggable: false,
+            editable: false,
+            geodesic: true,
+            zIndex: 1,
+            fillColor: '#00796b',
+            fillOpacity: .2,
+        },
+    });
+    drawingManager.setMap(map);
+    // * Listeners for the user-drawn shapes
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
+        deleteUserShapes();
+        all_overlays.push(event);
+        var poly_bounds = event.overlay.getPath();
+        var coords_arr = [];
 
-    // ! for some reason, polygons are not being stored correctly. The last/closing coordinates are missing
-    // ! last and first pairs of coordinates must be the same in the case of Polygon
-    // ! read https://stackoverflow.com/questions/34524031/mysql-invalid-gis-data-provided-to-function-st-geometryfromtext
+        // ! for some reason, polygons are not being stored correctly. The last/closing coordinates are missing
+        // ! last and first pairs of coordinates must be the same in the case of Polygon
+        // ! read https://stackoverflow.com/questions/34524031/mysql-invalid-gis-data-provided-to-function-st-geometryfromtext
 
-    let first_coords = [];
-    for (var i = 0; i < poly_bounds.length; i++) {
-      var dummy = [];
-      var x = poly_bounds.getAt(i).lat();
-      var y = poly_bounds.getAt(i).lng();
-      //! save first coordinates, then insert/push outside for loop to our main array
-      if (i == 0) {
-        first_coords.push(y);
-        first_coords.push(x);
-      }
-      dummy.push(y);
-      dummy.push(x);
-      coords_arr.push(dummy);
-    }
-    // ! add first coordinates to last place -> a drawn shape is closed where it started
-    coords_arr.push(first_coords);
-    AOI_STRING = createGeoJSON(event.type, coords_arr);
-    // console.log(AOI_STRING);
+        let first_coords = [];
+        for (var i = 0; i < poly_bounds.length; i++) {
+            var dummy = [];
+            var x = poly_bounds.getAt(i).lat();
+            var y = poly_bounds.getAt(i).lng();
+            //! save first coordinates, then insert/push outside for loop to our main array
+            if (i == 0) {
+                first_coords.push(y);
+                first_coords.push(x);
+            }
+            dummy.push(y);
+            dummy.push(x);
+            coords_arr.push(dummy);
+        }
+        // ! add first coordinates to last place -> a drawn shape is closed where it started
+        coords_arr.push(first_coords);
+        AOI_STRING = createGeoJSON(event.type, coords_arr);
+        // console.log(AOI_STRING);
 
 
-    //clearMetadata();
-    console.log(AOI_STRING);
-    AOI(AOI_STRING); // send AOI string
-  });
+        //clearMetadata();
+        console.log(AOI_STRING);
+        AOI(AOI_STRING); // send AOI string
+    });
 
 
 
@@ -761,121 +677,121 @@ function initMap() {
 
 
 function avg(data) {
-  let sum = 0.0;
-  for (let i = 0; i < data.length; i++) {
-    sum += data[i];
-  }
-  return sum / data.length;
+    let sum = 0.0;
+    for (let i = 0; i < data.length; i++) {
+        sum += data[i];
+    }
+    return sum / data.length;
 }
 
 function pdf() {
-  print();
+    print();
 }
 
 
 function cmp_lines() {
-  fetch('./results.json').then(function(response) {
-    return response.json();
-  }).then(function(myJson) {
-    console.log("CMP NETWORK LINES");
-    for (var index in myJson.PM22_Lines) {
-      for (var county in myJson.PM22_Lines[index]) {
-        let shp = myJson.PM22_Lines[index][county]["shape"];
+    fetch('./results.json').then(function (response) {
+        return response.json();
+    }).then(function (myJson) {
+        console.log("CMP NETWORK LINES");
+        for (var index in myJson.PM22_Lines) {
+            for (var county in myJson.PM22_Lines[index]) {
+                let shp = myJson.PM22_Lines[index][county]["shape"];
 
-        let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-        let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-        let to_visualize = []; // used to populate the map (latitude & longitude)
-        let coord; // will be an object to push coordinates to populate the map
-        let ln = r.getCoordinates(); // parses the shape into lat & lng
-        for (let i = 0; i < ln.length; i++) {
-          coord = {
-            lat: ln[i]['y'],
-            lng: ln[i]['x']
-          };
-          to_visualize.push(coord);
+                let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+                let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+                let to_visualize = []; // used to populate the map (latitude & longitude)
+                let coord; // will be an object to push coordinates to populate the map
+                let ln = r.getCoordinates(); // parses the shape into lat & lng
+                for (let i = 0; i < ln.length; i++) {
+                    coord = {
+                        lat: ln[i]['y'],
+                        lng: ln[i]['x']
+                    };
+                    to_visualize.push(coord);
+                }
+                let line = new google.maps.Polyline({ // it is a POLYLINE
+                    path: to_visualize, // polyline has a path, defined by lat & lng
+                    // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
+                    strokeColor: 'pink',
+                    strokeOpacity: 0.80,
+                    strokeWeight: 5,
+                    zIndex: 99 // on top of every other shape
+                });
+                line.setMap(map);
+                polylines.push(line);
+            }
+
         }
-        let line = new google.maps.Polyline({ // it is a POLYLINE
-          path: to_visualize, // polyline has a path, defined by lat & lng
-          // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
-          strokeColor: 'pink',
-          strokeOpacity: 0.80,
-          strokeWeight: 5,
-          zIndex: 99 // on top of every other shape
-        });
-        line.setMap(map);
-        polylines.push(line);
-      }
 
-    }
-
-    // for (var index in myJson.PM22_Lines.TX_CMP_LINES) {
-    //     let shp =  myJson.PM22_Lines[index]['shape']; // shape is LINESTRING or MULTILINESTRING
-    //     let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-    //     let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-    //     let to_visualize = []; // used to populate the map (latitude & longitude)
-    //     let coord; // will be an object to push coordinates to populate the map
-    //     let ln = r.getCoordinates(); // parses the shape into lat & lng
-    //     for (let i = 0; i < ln.length; i++) {
-    //         coord = {
-    //             lat: ln[i]['y'],
-    //             lng: ln[i]['x']
-    //         };
-    //         to_visualize.push(coord);
-    //     }
-    //     let line = new google.maps.Polyline({ // it is a POLYLINE
-    //         path: to_visualize, // polyline has a path, defined by lat & lng
-    //         // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
-    //         strokeColor: 'teal',
-    //         strokeOpacity: 0.70,
-    //         strokeWeight: 5,
-    //         zIndex: 99 // on top of every other shape
-    //     });
-    //     line.setMap(map);
-    //     corridors_shown[_key].push(line);
+        // for (var index in myJson.PM22_Lines.TX_CMP_LINES) {
+        //     let shp =  myJson.PM22_Lines[index]['shape']; // shape is LINESTRING or MULTILINESTRING
+        //     let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+        //     let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+        //     let to_visualize = []; // used to populate the map (latitude & longitude)
+        //     let coord; // will be an object to push coordinates to populate the map
+        //     let ln = r.getCoordinates(); // parses the shape into lat & lng
+        //     for (let i = 0; i < ln.length; i++) {
+        //         coord = {
+        //             lat: ln[i]['y'],
+        //             lng: ln[i]['x']
+        //         };
+        //         to_visualize.push(coord);
+        //     }
+        //     let line = new google.maps.Polyline({ // it is a POLYLINE
+        //         path: to_visualize, // polyline has a path, defined by lat & lng
+        //         // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
+        //         strokeColor: 'teal',
+        //         strokeOpacity: 0.70,
+        //         strokeWeight: 5,
+        //         zIndex: 99 // on top of every other shape
+        //     });
+        //     line.setMap(map);
+        //     corridors_shown[_key].push(line);
 
 
-    // }
-  });
+        // }
+    });
 }
 
 function wktFormatter(poly) {
-  let name = poly.slice(0, 7);
-  let shape_s = [];
-  if (name == "MULTIPO") { // Multipolygon parser
-    let new_poly = poly.slice(15, -3);
-    new_poly = new_poly.split(")),((");
-    let len = new_poly.length;
-    for (var j = 0; j < len; j++) {
-      let polyCoordi = [];
-      let polyTemp = new_poly[j].split(",");
-      for (i = 0; i < polyTemp.length; i++) {
-        let temp = polyTemp[i].split(" ");
-        polyCoordi.push({
-          lat: parseFloat(temp[1]),
-          lng: parseFloat(temp[0])
-        });
-      }
-      shape_s[j] = polyCoordi;
-    }
-  } else { // Polygon parser
+    let name = poly.slice(0, 7);
+    let shape_s = [];
+    if (name == "MULTIPO") { // Multipolygon parser
+        let new_poly = poly.slice(15, -3);
+        new_poly = new_poly.split(")),((");
+        let len = new_poly.length;
+        for (var j = 0; j < len; j++) {
+            let polyCoordi = [];
+            let polyTemp = new_poly[j].split(",");
+            for (i = 0; i < polyTemp.length; i++) {
+                let temp = polyTemp[i].split(" ");
+                polyCoordi.push({
+                    lat: parseFloat(temp[1]),
+                    lng: parseFloat(temp[0])
+                });
+            }
+            shape_s[j] = polyCoordi;
+        }
+    } else { // Polygon parser
 
-    let new_poly = poly.slice(9, -2);
-    new_poly = new_poly.split("),(");
-    let len = new_poly.length;
-    for (var j = 0; j < len; j++) {
-      let polyCoordi = [];
-      let polyTemp = new_poly[j].split(",");
-      for (i = 0; i < polyTemp.length; i++) {
-        let temp = polyTemp[i].split(" ");
-        polyCoordi.push({
-          lat: parseFloat(temp[1]),
-          lng: parseFloat(temp[0])
-        });
-      }
-      shape_s[j] = polyCoordi;
+        let new_poly = poly.slice(9, -2);
+        new_poly = new_poly.split("),(");
+        let len = new_poly.length;
+        for (var j = 0; j < len; j++) {
+            let polyCoordi = [];
+            let polyTemp = new_poly[j].split(",");
+            for (i = 0; i < polyTemp.length; i++) {
+                let temp = polyTemp[i].split(" ");
+                polyCoordi.push({
+                    lat: parseFloat(temp[1]),
+                    lng: parseFloat(temp[0])
+                });
+            }
+            shape_s[j] = polyCoordi;
+        }
     }
-  }
-  return shape_s;
+    return shape_s;
 }
 
 // function wkt_points(blob){
@@ -891,134 +807,135 @@ function wktFormatter(poly) {
 
 // }
 function wktFormatterPoint(point) {
-  // let name = point.slice(0,5);
-  // console.log(name);
-  let shape_s = [];
-  // console.log(point);
-  let new_point = point.slice(6, -2);
-  // console.log(new_point);
-  new_point = new_point.split("),(");
-  //console.log(new_point);
-  let len = new_point.length;
-  for (var j = 0; j < len; j++) {
-    let pointCoordi = [];
-    let pointTemp = new_point[j].split(",");
-    for (i = 0; i < pointTemp.length; i++) {
-      let temp = pointTemp[i].split(" ");
-      pointCoordi.push({
-        lat: parseFloat(temp[1]),
-        lng: parseFloat(temp[0])
-      });
+    // let name = point.slice(0,5);
+    // console.log(name);
+    let shape_s = [];
+    // console.log(point);
+    let new_point = point.slice(6, -2);
+    // console.log(new_point);
+    new_point = new_point.split("),(");
+    //console.log(new_point);
+    let len = new_point.length;
+    for (var j = 0; j < len; j++) {
+        let pointCoordi = [];
+        let pointTemp = new_point[j].split(",");
+        for (i = 0; i < pointTemp.length; i++) {
+            let temp = pointTemp[i].split(" ");
+            pointCoordi.push({
+                lat: parseFloat(temp[1]),
+                lng: parseFloat(temp[0])
+            });
+        }
+        shape_s[j] = pointCoordi;
     }
-    shape_s[j] = pointCoordi;
-  }
-  return shape_s;
+    return shape_s;
 }
 
 // adds a hover effect on polygons(google api has not provided functionality for it)
 function injectTooltip(event, data) {
-  if (!tipObj && event) {
-    //create the tooltip object
-    tipObj = document.createElement("div");
-    tipObj.style.width = '100px';
-    tipObj.style.height = '40px';
-    tipObj.style.backgroundColor = "white";
-    tipObj.style.borderRadius = "5px";
-    tipObj.style.padding = "10px";
-    tipObj.style.fontFamily = "Arial,Helvetica";
-    tipObj.style.textAlign = "center";
-    tipObj.innerHTML = data;
+    if (!tipObj && event) {
+        //create the tooltip object
+        tipObj = document.createElement("div");
+        tipObj.style.width = '100px';
+        tipObj.style.height = '40px';
+        tipObj.style.backgroundColor = "white";
+        tipObj.style.borderRadius = "5px";
+        tipObj.style.padding = "10px";
+        tipObj.style.fontFamily = "Arial,Helvetica";
+        tipObj.style.textAlign = "center";
+        tipObj.innerHTML = data;
 
-    //fix for the version issue
-    eventPropNames = Object.keys(event);
-    if (!coordPropName) {
-      //discover the name of the prop with MouseEvent
-      for (var i in eventPropNames) {
-        var name = eventPropNames[i];
-        if (event[name] instanceof MouseEvent) {
-          coordPropName = name;
-          break;
+        //fix for the version issue
+        eventPropNames = Object.keys(event);
+        if (!coordPropName) {
+            //discover the name of the prop with MouseEvent
+            for (var i in eventPropNames) {
+                var name = eventPropNames[i];
+                if (event[name] instanceof MouseEvent) {
+                    coordPropName = name;
+                    break;
+                }
+            }
         }
-      }
-    }
 
-    if (coordPropName) {
-      //position it
-      tipObj.style.position = "fixed";
-      tipObj.style.top = event[coordPropName].clientY + window.scrollY + offset.y + "px";
-      tipObj.style.left = event[coordPropName].clientX + window.scrollX + offset.x + "px";
+        if (coordPropName) {
+            //position it
+            tipObj.style.position = "fixed";
+            tipObj.style.top = event[coordPropName].clientY + window.scrollY + offset.y + "px";
+            tipObj.style.left = event[coordPropName].clientX + window.scrollX + offset.x + "px";
 
-      //add it to the body
-      document.body.appendChild(tipObj);
+            //add it to the body
+            document.body.appendChild(tipObj);
+        }
     }
-  }
 }
 
 // continues hover effect while moving within the polygon
 function moveTooltip(event) {
-  if (tipObj && event && coordPropName) {
-    //position it
-    tipObj.style.top = event[coordPropName].clientY + window.scrollY + offset.y + "px";
-    tipObj.style.left = event[coordPropName].clientX + window.scrollX + offset.x + "px";
-  }
+    if (tipObj && event && coordPropName) {
+        //position it
+        tipObj.style.top = event[coordPropName].clientY + window.scrollY + offset.y + "px";
+        tipObj.style.left = event[coordPropName].clientX + window.scrollX + offset.x + "px";
+    }
 }
 
 // removes hover effect when exiting polygon
 function deleteTooltip(event) {
-  if (tipObj) {
-    //delete the tooltip if it exists in the DOM
-    document.body.removeChild(tipObj);
-    tipObj = null;
-  }
+    if (tipObj) {
+        //delete the tooltip if it exists in the DOM
+        document.body.removeChild(tipObj);
+        tipObj = null;
+    }
 }
 
 function clearMetadata() {
-  for (var i = 0; i < polylines.length; i++) {
-    polylines[i].setMap(null);
-  }
-  for (var i = 0; i < points.length; i++) {
-      points[i].setMap(null);
-      console.log('points off');
-  }
-  for (var i = 0; i < polygons.length; i++) {
-    polygons[i].setMap(null);
-  }
-  for (let i = 0; i < components.length; i++) {
-    components[i].clean();
-  }
-  
-  for (let id in components) {
-    ////console.log('cleaning ' + id);
-      components[id].clean();
-  }
-  //switch_AOI();
- // active_pm_for_AOI=0;
-  polylines = [];
-  points = [];
-  polygons = [];
-  clusters = [];
-  components = {};
+    for (var i = 0; i < polylines.length; i++) {
+        polylines[i].setMap(null);
+    }
+    for (var i = 0; i < points.length; i++) {
+        points[i].setMap(null);
+        console.log('points off');
+    }
+    for (var i = 0; i < polygons.length; i++) {
+        polygons[i].setMap(null);
+    }
+    for (let i = 0; i < components.length; i++) {
+        components[i].clean();
+    }
 
-  markerClusterSafeDelete();
+    for (let id in components) {
+        ////console.log('cleaning ' + id);
+        components[id].clean();
+    }
+    //switch_AOI();
+    // active_pm_for_AOI=0;
+    polylines = [];
+    points = [];
+    polygons = [];
+    clusters = [];
+    components = {};
+
+    markerClusterSafeDelete();
 }
- 
-/** Get SUM of array 
- * | Input: array 
+
+/** Get SUM of array
+ * | Input: array
  * | Output: integer || float*/
-function arrSum(list){
-  let sum= 0;
-  list.forEach(element => {
-      sum += element;
-  });
-  return sum;
-}
+// function arrSum(list){
+//   let sum= 0;
+//   for(let i = 0; i < list.length; i++){
+//     sum = sum + list[i];
+//   }
+//   return sum;
+// }
 
 
-/** Get AVG of array 
-* | Input: array 
+/** Get AVG of array
+* | Input: array
 * | Output: integer || float*/
-function arrAvg(list){
-  let x= 0;
-  x = arrSum(list);
-  return x/list.length;
-}
+// function arrAvg(list){
+//   let avg = 0;
+//   let sum = arrSum(list);
+//   avg = sum / list.length;
+//   return avg;
+// }

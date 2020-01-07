@@ -6,6 +6,18 @@ function polygonHandler(found) {
         currentType = "driving";
         currentPM = 1;
         pm1Data(1, '');
+    }else if (found == "PM2T") {
+        currentType = "transit";
+        currentPM = 2;
+        pm2Data(1, '');
+    } else if (found == "PM2W") {
+        currentType = "walking";
+        currentPM = 2;
+        pm2Data(1, '');
+    } else if (found == "PM2B") {
+        currentType = "biking";
+        currentPM = 2;
+        pm2Data(1, '');
     }
     else if (found == "PM5") {
         currentType = "transit";
@@ -33,6 +45,11 @@ function polygonHandler(found) {
         currentType = "transit";
         currentPM = 10;
         pm10Data(1, '');
+    }
+    else if (found == "PM7") {
+        currentType = "transit";
+        currentPM = 7;
+        pm7Data(1, '');
     }
     else if (found == "pm4Walking" || found == "0pm4W") {
         currentType = "walking";

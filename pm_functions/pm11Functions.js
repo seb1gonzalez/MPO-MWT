@@ -1,7 +1,7 @@
 
 
-function pm11Data(mode, example) {
-    let caller = "mwt_handler.php";
+function pm11Data(mode, php_data) {
+    let php_handler = "mwt_handler.php";
     let shape = "shape";
     let key = 'all_pm11';
 
@@ -10,13 +10,15 @@ function pm11Data(mode, example) {
         pm11Slength:0
     }
     if (mode == 0 || mode == 1) {
-        example = { key: key };
+        php_data = { key: key };
     } else if (mode == 2) {
-        caller = "corridor_handlerB.php";
+        php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
     }
-
-    $.get(caller, example, function (data) { // ajax call to populate pavement lines
+    else if(mode == 4){
+        php_handler = "./backend/AOI.php";
+    }
+    $.get(php_handler, php_data, function (data) { // ajax call to populate pavement lines
         let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
         for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
             let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING
@@ -25,7 +27,7 @@ function pm11Data(mode, example) {
 
             pmdata.pm11Slength += parseFloat(data.shape_arr[index].length);
 
-            if (mode == 1 || mode == 2) {
+            if (mode == 1 || mode == 2 || mode == 4) {
 
                 if ('geometries' in r) { //multilinestrings
                     to_visualize = pm3_polyline_geojson_formatter(r);
@@ -53,18 +55,13 @@ function pm11Data(mode, example) {
                             zIndex: 99 // on top of every other shape
                         });
                         line.setMap(map);
-                        polylines.push(line);
-                    
+                        polylines.push(line);     
                 }
-
-           
-         
             }
         }
 
 
-        let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
-
+        let corr = translateCorridor(php_data.corridors_selected); // what corridor are we on?
         //convert feet to miles
         pmdata.pm11Slength = pmdata.pm11Slength * 0.000189393939;
 
@@ -74,6 +71,9 @@ function pm11Data(mode, example) {
             regionalText(pmdata);
         } else if (mode == 2) {
             dynamicCorridorText(corr, pmdata);
+        }
+        else if (mode == 4) {
+            dynamicCorridorText("AOI", pmdata);
         }
 
     });

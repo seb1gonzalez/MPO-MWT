@@ -1,6 +1,7 @@
 
 function pm16Data(mode) {
     var pm16Data = [];
+	var greatest = [];
     let images = [];
 
     //store all colors for points
@@ -20,11 +21,12 @@ function pm16Data(mode) {
 
     let key = 'all_pm15_16_17g';
     let example = { key: key };
-
     //for calculations
+	
     let greathestNum = 0;
     let greathestStat = '';
     let year = 0;
+
     let i = 0; //helps on index of CO 
 
 
@@ -42,15 +44,15 @@ function pm16Data(mode) {
            
 
             if (category == "CO") {
-                console.log("inside Updated");
+   
                 pm16Data[i] = {
                     name: stationName,
                     graphData: [g2014, g2015, g2016, g2017, g2018]
                 };
-                console.log(i);
+           
                 i++;
-                console.log(i);
-                if (greathestNum < g2014) {
+
+                if (greathestNum < g2014) {				
                     greathestNum = g2014;
                     year = 2014;
                     greathestStat = stationName;
@@ -75,19 +77,38 @@ function pm16Data(mode) {
                     year = 2018;
                     greathestStat = stationName;
                 }
+				
+				//store greatest on current station
+				greatest[i] = {
+					name: greathestStat,
+					year: year,
+					greathestNum: greathestNum
+				};
+				// reset
+				greathestNum = 0;
+				greathestStat = '';
+				year = 0;
            
             }
         }
-        console.log("**********************************");
-        console.log(pm16Data);
+
+		// sort all the greathest stations from highest to lowest 
+		greatest.sort(function(a, b){
+			return b.greathestNum-a.greathestNum
+		})
+		
+		
         //adding dynamic variables to last element of our data 
         pm16Data[pm16Data.length] = {
-            num: greathestNum,
-            station: greathestStat,
-            year: year,
- 
+            num: greatest[0].greathestNum,
+            station: greatest[0].name,
+            year: greatest[0].year,
+			
+			num2: greatest[1].greathestNum,
+			station2:  greatest[1].name,
+			year2:  greatest[1].year
         };
-        console.log(pm16Data);
+ 
 
         //print points 
         if (mode == 1) {
@@ -156,6 +177,10 @@ function pm16Data(mode) {
             ]
         };
 
+		
+
+		
+		
         //options
         var options = {
             scales: {

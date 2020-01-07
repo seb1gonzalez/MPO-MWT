@@ -12,13 +12,13 @@
  *  * Mode 4: AOI
  */
 function pm18Data(mode, ex) {
-    //console.log('debugging pm18');
-  //  console.log(currentType);
     let pedCrash = [];
     let commCrash = [];
     let genCrash = [];
     let bikeCrash = [];
-
+    let data_for_php = {};
+    console.log(ex);
+    console.log(currentType);
 
     //stores graph values
     var pm18data= {
@@ -34,9 +34,10 @@ function pm18Data(mode, ex) {
         ftW13: 0, ftW14: 0, ftW15: 0, ftW16: 0, ftW17: 0, //walking
         ftB13: 0, ftB14: 0, ftB15: 0, ftB16: 0, ftB17: 0, //bike
         tot13: 0, tot14: 0, tot15: 0, tot16: 0, tot17: 0,  //totals
-        //T0TS per category
+        // Deaths Total  per category
         dtot18: 0, ftot18: 0, wtot18: 0, btot18:0,
         currentCorridor: 'Entire Region',
+		crashCountD:0, crashCountF:0, crashCountW:0, crashCountB:0,
         GEN_: 0, //dynamic text total crashes
         GEN_Fatal: 0, //crashes of fatalities only, 4 types used this variable
         dtextPercent: 0, 
@@ -44,28 +45,36 @@ function pm18Data(mode, ex) {
 
     }
 
-    let data_for_php = 0;
+    //let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
-
-    if (mode == 0 || mode == 1) { // if we want regional (default) data
-        let key = 'all_pm18_19';
-        data_for_php = { key: key };
-    } else if (mode == 2) { // if we want corridors
-        data_for_php = ex;
-        shape = 'ST_AsText(SHAPE)';
-        php_handler = "corridor_handlerB.php";
-       // console.log(data_for_php);
-    }
-    else if(mode == 4){
+    let key = "";
+    if(mode == 4){
         data_for_php = ex;
         php_handler = "./backend/AOI.php";
     }
 
+    if (mode == 0 || mode == 1) {
+        key = 'all_pm18_19';
+         data_for_php = { key: key };
+    } else if (mode == 2) {
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 18,
+            corridors_selected: ex,
+            tableName: "pm18_19txdotall"
+        };
+    }
+    console.log("**************************************************** 18 debug");
+    console.log(data_for_php);
+    console.log(php_handler);
     let image = "./img/markers/crash.png";
     //Crash Points
     let tshape = "shape";
     $.get(php_handler, data_for_php, function (data) {
+        console.log(data);
         for (index in data.shape_arr) {
             let holder = [];
             let type = data.shape_arr[index]['type'];
@@ -104,21 +113,26 @@ function pm18Data(mode, ex) {
                 }
             }
            
+		   
             //count total crashes by category
-            if (currentType == 'driving') {
-                pm18data.GEN_++; //count crash
-            } else if (currentType == 'walking') {
-                pm18data.GEN_++; //count crash
-            } else if (currentType == 'biking') {
-                pm18data.GEN_++; //count crash
-            } else if (currentType == 'freight') {
-                pm18data.GEN_++; //count crash
+            if (currentType == 'driving' && type == "GEN" ) {
+                pm18data.crashCountD++; //count crash
+            } else if (currentType == 'walking' && type == "Pedestrian" || type == "PED") {
+                pm18data.crashCountW++; //count crash
+            } else if (currentType == 'biking' && type == "Pedcyclists" || type == "BIKE") {
+                pm18data.crashCountB++; //count crash
+            } else if (currentType == 'freight' && type == "COMV" || type == "Commerical_Vehicles") {
+                pm18data.crashCountF++; //count crash
             }
-   
+			
+			
+			//count all crashes
+			   pm18data.GEN_++; //count crash
 
-            // count crashes on current type.
+     
             if (fatalities > 0) {
-                if (currentType == 'driving') {
+				  pm18data.GEN_Fatal++;
+            /*    if (currentType == 'driving') {
                     pm18data.GEN_Fatal++; //crashes
                 } else if (currentType == 'walking') {
                     pm18data.GEN_Fatal++; //crashes
@@ -126,7 +140,7 @@ function pm18Data(mode, ex) {
                     pm18data.GEN_Fatal++; //crashes
                 } else if (currentType == 'freight') {
                     pm18data.GEN_Fatal++; //crashes
-                }
+                }*/
             }
 
             //filter values by year
@@ -291,18 +305,23 @@ function pm18Data(mode, ex) {
         pm18data.tot17 = pm18data.ftD17 + pm18data.ftF17 + pm18data.ftW17 + pm18data.ftB17;
 
         //calculations for static text
-        dtextPercent = (pm18data.GEN_Fatal / pm18data.GEN_) * 100; 
-     
+		  if(currentType == 'driving') {
+			pm18data.dtextPercent = (pm18data.dtot18 / pm18data.crashCountD) * 100; 
+          } else if (currentType == 'walking') {
+				pm18data.dtextPercent = (pm18data.wtot18 / pm18data.crashCountW) * 100;  
+          } else if (currentType == 'biking') {
+				pm18data.dtextPercent = (pm18data.btot18 / pm18data.crashCountB) * 100; 
+          } else if (currentType == 'freight') {
+				pm18data.dtextPercent = (pm18data.ftot18 / pm18data.crashCountF) * 100; 
+          }
+		  
+		  
         if (mode == 1) {
             regionalText(pm18data);
         }
         else if (mode == 2 || mode == 3 ) {
             let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
             pm18data.currentCorridor = corr;
-           // console.log('testing 18');
-            // console.log(corr);
-            // console.log(pm18data.currentCorridor);
-
             dynamicCorridorText(corr, pm18data); // Send graph data and current corridor to dynamic text for corridors
         }
         else if(mode == 4){
@@ -406,7 +425,7 @@ function pm18chartLine(ctx, data) {
 function pm18StackedChart(ctx, data) {
     let titleH = data.currentCorridor;
     console.log(titleH);
-    if (titleH != 'Entire Region') { //if corridor fix wording
+    if (titleH != 'Entire Region') { //if corridor, fix wording
         titleH = wordFix(titleH + " Corridor");
         console.log(titleH);
     }

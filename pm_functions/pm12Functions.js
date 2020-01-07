@@ -18,6 +18,9 @@ function pm12Data(mode, example) {
         caller = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
     }
+    else if (mode == 4) {
+        caller =" ./backend/AOI.php";
+    }
     console.log('12.2');
     console.log(example);
     console.log(caller);
@@ -37,7 +40,7 @@ function pm12Data(mode, example) {
             let pm12bikepath = data.shape_arr[index].bikepath;
             let pm12mile = data.shape_arr[index].mile;
 
-            if (mode == 1 || mode == 2) {
+            if (mode == 1 || mode == 2 || mode == 4) {
                 for (let i = 0; i < ln.length; i++) {
                     coord = { lat: ln[i]['y'], lng: ln[i]['x'] };
                     to_visualize.push(coord); 
@@ -100,13 +103,10 @@ function pm12Data(mode, example) {
         } else if (mode == 2) {
             dynamicCorridorText(corr, pm12Info);
         }
-
-   
-    });
-       
-    
-              
-               
+        else if (mode == 4) {
+            dynamicCorridorText('AOI', pm12Info);
+        }
+    });           
 }
 
 function pm12StackedChart(ctx,data) {

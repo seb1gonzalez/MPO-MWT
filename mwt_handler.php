@@ -22,8 +22,27 @@ $shape = array();								// for the data that will be returned, shape and value
 
 // ! some repetition needs to be addressed 
 
-if($key == "all_pm1"){ 
-	$query = "select astext(SHAPE) as shape,b08301e1,b08301e3,b08301m1,b08301m3,nonsov_e,nonsov_m,b08301e10,b08301m10,b08301e18,b08301m18,b08301e19,b08301m19,ratio_area from $pm_table where corridor_key = '$key'";
+if($key == "all_pm1" || $key == "all_pm2"){ 
+	$query = "select astext(SHAPE) as shape,
+	b08301e1 as e1,
+	b08301e3 as e3,
+	b08301m1 as m1,
+	b08301m3 as m3,
+	nonsov_e,
+	nonsov_m,
+	b08301e10 as e10,
+	b08301m10 as m10,
+	b08301e18 as e18,
+	b08301m18 as m18,
+	b08301e19 as e19,
+	b08301m19 as m19,
+	pm_prcnt_1,
+	prcnt_publ,
+	prcnt_walk,
+	prcnt_bike,
+
+	ratio_area from $pm_table where corridor_key = '$key'";
+	
 }else if($key == "all_pmbridge"){ 
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm26"){ 
@@ -34,11 +53,11 @@ if($key == "all_pm1"){
 	$query = "select tactcnt, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm4W"){
 	$query = "select tactcnt, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
-}else if($key == "all_pm7"){
+}else if($key == "all_pm7B"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
-}else if($key == "all_pm7P"){
+}else if($key == "all_pm7S"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
-}else if($key == "all_pm7PK"){
+}else if($key == "all_pm7K"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm8_b"){
 	$query = "select status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
@@ -73,11 +92,11 @@ if($key == "all_pm1"){
 	$query = "select station_na, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm15_16_17g"){
 	$query = "select Station, g2014,g2015,g2016,g2017,g2018,Pollutant from $pm_table where corridor_key = '$key'"; 
-}else if($key == "all_pm20_p"){
-	$query = "select type, OGR_FID, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
-}else if($key == "all_pm20_s"){
-	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; // ! repetition
-}else if($key == "all_pm20_b"){
+}else if($key == "all_pm20B"){
+	$query = "select type,address, on_st,at_strt,count_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
+}else if($key == "all_pm20P"){
+	$query = "select type,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; // ! repetition
+}else if($key == "all_pm20_bus"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; // ! repetition
 }
 else{

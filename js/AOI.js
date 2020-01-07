@@ -101,6 +101,8 @@ function AOI(AOI_STRING){
         'all_pm4B':'pm4_bike',
         'all_pm4W':'pm4_walking',
         'all_pm3':'pm3final',
+        'all_pm11':'pm11_sidewalks',
+        'all_pm12':'pm12'
 
     }
     let table_wanted = tables_reference[active_pm_for_AOI];
@@ -115,15 +117,22 @@ function AOI(AOI_STRING){
          if (table_wanted == 'pm26'){
             pm26Data(4,to_php);
           
+        }  
+        else if (table_wanted == 'pm3final'){
+            pm3Data(4, to_php);
         }
         else if (table_wanted == 'pm4_bike' || table_wanted == 'pm4_walking'){
             pm4Data(4, to_php);
         }
-        else if (table_wanted == 'pm3final'){
-            pm3Data(4, to_php);
+      
+        else if(table_wanted =='pm11_sidewalks'){
+            pm11Data(4,to_php);
         }
         else if (table_wanted == 'pm18_19txdotall'){
             pm18Data(4, to_php);
+        }
+        else if (table_wanted == 'pm12'){
+            pm12Data(4, to_php);
         }
 
 

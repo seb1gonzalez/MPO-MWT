@@ -66,6 +66,7 @@ $("#toggle1").on('change', function () {
             pm6Data(1, "e");
         } else if (currentPM == 7) {
             PM_existing_selected.PM7 = true;
+            pm7Data(1, "e");
           //  get_exist_plan("all_pm7", "e");
         } else if (currentPM == 8) {
             PM_existing_selected.PM8 = true;

@@ -45,7 +45,7 @@ function clean() {
     markerClusterSafeDelete();
     toggleSafeRemove();
     turnoff_Corridors();
-    resetRadioBtn();
+    resetRadioBtn("optradio");
     console.log("calling clean");
     
 }
@@ -244,15 +244,25 @@ function idChanger(old, newId) {
     holder.id = newId;
 }
 
+function toggleRadioVisible(){
+    document.getElementById("radioH").style.visibility = "visible";
+    toggleOn = true;
+}
+
+function toggleRadioHide(){
+	document.getElementById("radioH").style.visibility = "hidden";
+    // toggleIdRestore();
+    toggleOn = false;
+}
 
 function toggleHide() {
-    document.getElementById("ToggleHolder").style.visibility = "hidden";
+    document.getElementById("ToggleHolder").style.display = "none";
     // toggleIdRestore();
     toggleOn = false;
 }
 
 function togglevisible() {
-    document.getElementById("ToggleHolder").style.visibility = "visible";
+    document.getElementById("ToggleHolder").style.display = "inline";
     toggleOn = true;
 }
 
@@ -305,14 +315,20 @@ function translateCorridor(corridors_selected) {
     return corr;
 }
 
-function resetRadioBtn() {
-    var ele = document.getElementsByName("radio1");
-    ele.checked = true;
+function resetRadioBtn(GroupName) {
+  var ele = document.getElementsByName(GroupName);
+	for(var i=0;i<ele.length;i++){
+		if(i ==0)
+			ele[i].checked = true; // Leave element 0 on since its default
+		else 
+			ele[i].checked = false;
+	}  
 }
 
 // displays loading animation
 function displaySpinner() {
     toggleElements("on", "spinner");
+	toggleHide();
     toggleElements("off", "rad1");
     toggleElements("off", "rad2");
     toggleElements("off", "rad3");

@@ -7,13 +7,13 @@
  */
 
 function pm19Data(mode, ex) {
-
     let pm19Points = {
         pedCrash: [],
         commCrash: [],
         genCrash: [],
         bikeCrash: []
     }
+
     //stores line values
     let pm19Data = { // 2013 TO 2017, 5 year holder,  starts at index 0
         ID: [0, 0, 0, 0, 0], //SERIOUS Injuries driving
@@ -29,6 +29,7 @@ function pm19Data(mode, ex) {
         F17: 0, S17: 0, N_I_I17: 0, P17: 0, NI17: 0,
 
         //take advantage of this dictionary and send dynamic variables for the dynamic text
+		crashCountD:0, crashCountF:0, crashCountW:0, crashCountB:0,
         GEN_: 0, //dynamic text total crashes
         dtextpercent: 0, //(GEN_Serious_Injury / GEN_ ) * 100
         dtextinjured: 0, //sumation of class A 
@@ -36,25 +37,28 @@ function pm19Data(mode, ex) {
          
     }
 
-    let example = 0;
+    let data_for_php = 0;
     let shape = "shape";
-    let caller = "mwt_handler.php";
+    let php_handler = "mwt_handler.php";
 
     if (mode == 0 || mode == 1) { // if we want regional (default) data
         let key = 'all_pm18_19';
-        example = { key: key };
-    } else if (mode > 1) { // if we want corridors
-        example = ex;
+        data_for_php = { key: key };
+    } else if (mode == 2) { // if we want corridors
+        data_for_php = ex;
         shape = 'ST_AsText(SHAPE)';
-        caller = "corridor_handlerB.php";
+        php_handler = "corridor_handlerB.php";
+    } else if (mode == 4) {
+        data_for_php = ex;
+        php_handler = "./backend/AOI.php";
     }
-
-    $.get(caller, example, function (data) {
+    console.log(data_for_php);
+    $.get(php_handler, data_for_php, function (data) {
+        console.log(data_for_php);
         let image = "./img/markers/crash.png";
         for (index in data.shape_arr) { // Organize information into dictionaries
             //hold info of 1 point at a time
             let holder = [];
-     
             let type = data.shape_arr[index]['type'];
             let year = parseInt(data.shape_arr[index]['year']);
 
@@ -63,10 +67,11 @@ function pm19Data(mode, ex) {
             let serious = parseInt(data.shape_arr[index]['suspected_']);
             let nonIncapa = parseInt(data.shape_arr[index]['non_incapa']);
             let possible = parseInt(data.shape_arr[index]['possible_i']);
+            let unknown = parseInt(data.shape_arr[index]['unknown_in']);
+            let ogrID = parseInt(data.shape_arr[index]['OGR_FID']);
 
 
-
-            if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points 
+            if (mode == 1 || mode == 2 || mode == 4) { // mode 1 and 2 allows us to store points 
                 holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
                 holder = holder[0][0]; // Fixes BLOBs
 
@@ -75,7 +80,7 @@ function pm19Data(mode, ex) {
                 let point = new google.maps.Marker({
                     position: to_visualize,
                     title: "Year: " + year + " \nSerious Injuries " + serious + " \nNon-Incapacitating Injuries: " + nonIncapa + "\nPossible Injuries: " + possible + "\nNon-Injury: " + nonInjury + "\nFatalities: " + fatalities,
-                    value: '0',
+                    value: ogrID,
                     icon: image
                 });
 
@@ -96,6 +101,18 @@ function pm19Data(mode, ex) {
             }
             // all modes store graph values, but not all modes store points
 
+			//count total crashes by category
+            if (currentType == 'driving' && type == "GEN" ) {
+                pm19Data.crashCountD++; //count crash
+            } else if (currentType == 'walking' && type == "Pedestrian" || type == "PED") {
+                pm19Data.crashCountW++; //count crash
+            } else if (currentType == 'biking' && type == "Pedcyclists" || type == "BIKE") {
+                pm19Data.crashCountB++; //count crash
+            } else if (currentType == 'freight' && type == "COMV" || type == "Commerical_Vehicles") {
+                pm19Data.crashCountF++; //count crash
+            }
+			
+			
             //filter graph values by year
             if (year == 2013) {
                 //for bar graph
@@ -108,7 +125,7 @@ function pm19Data(mode, ex) {
                     pm19Data.P13 += possible;
                 }
 
-               
+     
        
                 //for line graph
                 if (type == "Pedestrian" || type == "PED") {
@@ -200,6 +217,7 @@ function pm19Data(mode, ex) {
             }
 
             pm19Data.GEN_++; //add total crashes For dynamic Text in corridor and Regional
+
             //store total serious in a single variable to return to Dynamic text, will store CURRENT TYPE only  
             if (currentType == "driving" && type =="GEN" ) pm19Data.dtextinjured += serious;
             else if (currentType == "freight" && type == "Commerical_Vehicles") pm19Data.dtextinjured += serious;
@@ -212,7 +230,7 @@ function pm19Data(mode, ex) {
 
 
         // if mode 1 or 2 print points 
-        if (mode == 1 || mode == 2) {
+        if (mode == 1 || mode == 2 || mode == 4) {
             if (currentType == "driving") {
                 for (index in pm19Points.genCrash) {
                     pm19Points.genCrash[index].setMap(map);
@@ -266,18 +284,34 @@ function pm19Data(mode, ex) {
         pm19Data.TOT[4] = pm19Data.ID[4] + pm19Data.IF[4] + pm19Data.IW[4] + pm19Data.IB[4];
 
         //calculations for static text
-        pm19Data.dtextpercent = (pm19DT / pm19Data.GEN_) * 100; //(GEN_Serious_Injury / GEN_ ) * 100
+		if(currentType == 'driving') {
+            pm19Data.dtextpercent = (pm19DT / pm19Data.crashCountD) * 100; 
+            console.log("******");
+            console.log(pm19Data.dtextpercent);
+            console.log(pm19DT);
+            console.log(pm19Data.crashCountD);
+          } else if (currentType == 'walking') {
+                pm19Data.dtextpercent = (pm19WT / pm19Data.crashCountW) * 100;  
+          } else if (currentType == 'biking') {
+                pm19Data.dtextpercent = (pm19BT / pm19Data.crashCountB) * 100; 
+          } else if (currentType == 'freight') {
+                pm19Data.dtextpercent = (pm19FT / pm19Data.crashCountF) * 100; 
+          }
+     //   pm19Data.dtextpercent = (pm19DT / pm19Data.GEN_) * 100; //(GEN_Serious_Injury / GEN_ ) * 100
        // dtextinjured: 0 //sumation of class A in general crashes
 
 
         if (mode == 1) {
             regionalText(pm19Data);
         }
-        else if (mode > 1) {
-            let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
+        else if (mode == 2 || mode == 3) {
+            let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
             pm19Data.currentCorridor = corr;
 
             dynamicCorridorText(corr, pm19Data); // Send graph data and current corridor to dynamic text for corridors
+        }
+        else if (mode == 4) {
+            dynamicCorridorText("AOI", pm19Data); // Send graph data and current corridor to dynamic text for corridors
         }
     });
 
@@ -310,7 +344,7 @@ function pm19chartLine(ctx, pm19_graphValues) {
             {
                 label: pm19_graphTitle,
                 data: gData,
-                backgroundColor: "blue",
+                backgroundColor: "purple",
                 borderColor: "lightblue",
                 fill: false,
                 lineTension: 0,

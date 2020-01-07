@@ -114,17 +114,20 @@ function loadpm21H(mode, ex) {
                 fillColor: color,
                 fillOpacity: 0.60,
                 zIndex: -1,
-                title: pattern,
-
+                title: pattern + "\n" + "Project name here"
             });
-
+	
             polyToErase.exist.push(polygon);
+			
+		
 
             // Hover Effect for Google API Polygons
-            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
+	        google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
             google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
             google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-
+			
+	
+			
             polygon.setMap(map);
             polygons.push(polygon);
         }
@@ -132,6 +135,7 @@ function loadpm21H(mode, ex) {
         loadpm21P(mode, ex);
     });
 }
+
 
 function loadpm21Projected(mode, ex) {
     let data_for_php = 0;
@@ -146,10 +150,7 @@ function loadpm21Projected(mode, ex) {
         shape = 'ST_AsText(SHAPE)';
         php_handler = "corridor_handlerB.php";
     }
-    console.log("about to leave");
-    console.log(php_handler);
-    console.log(data_for_php);
-    console.log(mode);
+
     $.get(php_handler, data_for_php, function (data) {
         console.log("returned from uterp");
         let color = "#E91E63";
@@ -236,16 +237,22 @@ function loadpm21Lines(mode, ex) {
 
                 if ('geometries' in r) { //multilinestrings
                     to_visualize = pm3_polyline_geojson_formatter(r);
-                    console.log(to_visualize);
+                   
 
                     for (i in to_visualize) {
                         let line = new google.maps.Polyline({ // it is a POLYLINE
+							title:'bETO', // Add column that has name of project here !!!!!
                             path: to_visualize[i], // polyline has a path, defined by lat & lng 
                             strokeColor: color,
                             strokeOpacity: .50,
                             strokeWeight: 4,
                             zIndex: 99 // on top of every other shape
                         });
+						
+						google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event, line.title); });
+						google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
+						google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
+							
                         line.setMap(map);
                         polylines.push(line);
                     }
@@ -253,12 +260,18 @@ function loadpm21Lines(mode, ex) {
                     to_visualize = pm3_line_geojson_formatter(r);
 
                     let line = new google.maps.Polyline({ // it is a POLYLINE
+						title:'Brian', // Add column that has name of project here !!!!!
                         path: to_visualize, // polyline has a path, defined by lat & lng 
                         strokeColor: color,
                         strokeOpacity: .50,
                         strokeWeight: 4,
                         zIndex: 99 // on top of every other shape
                     });
+					
+					google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event, line.title); });
+					google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
+					google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
+					
                     line.setMap(map);
                     polylines.push(line);
 

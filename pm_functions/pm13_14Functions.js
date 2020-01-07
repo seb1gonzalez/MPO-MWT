@@ -2,12 +2,12 @@
 PM 13: Northbound border crossings 
 
 
-NOTE: There are 5 tables in the DB related to PM 13 and PM 14
+NOTE: There are 3  tables in the DB related to PM 13 
     TABLE 1 : pm13_frgt
     TABLE 2 : pm13_ped
     TABLE 3 : pm13_psgrveh
-    TABLE 4 : pm14
-    TABLE 5 : pm14points
+  
+    For bridge locations : pm14points
 
 FIX THIS -> Uses JSON to get the calculations and then calculates values for graph and text ONLY
 */
@@ -56,217 +56,12 @@ var pm14_pedestrians = {
 };
 
 //Pm13
-function pm13_14Data(){ 
-    fetch('./results.json')
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (myJson) {
-
-            //filter PM14 graph data by year and category
-            for(let i = 0; i < myJson.PM14.year.length; i++){
-                if(myJson.PM14.year[i] == "2014"){
-                    if(myJson.PM14.Mode[i] == "psgrveh"){
-                        pm14_personal_vehicles.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_personal_vehicles.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_personal_vehicles.BOTA.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_personal_vehicles.BOTA_R.push(parseFloat(myJson.PM14.Bota_Ready[i]));
-                        pm14_personal_vehicles.Y.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_personal_vehicles.Y_R.push(parseFloat(myJson.PM14.ysleta_Ready[i]));
-                    }else if(myJson.PM14.Mode[i] == "freight"){
-                        pm14_cargo.BOTA_C.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_cargo.BOTA_F.push(parseFloat(myJson.PM14.Bota_Fast[i]));
-                        pm14_cargo.Y_C.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_cargo.Y_CF.push(parseFloat(myJson.PM14.Ysleta_Fast[i]));
-                    }else if(myJson.PM14.Mode[i] == "pedestrian"){
-                        pm14_pedestrians.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_pedestrians.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_pedestrians.BOTA_P.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_pedestrians.Y_P.push(parseFloat(myJson.PM14.Ysleta[i]));
-                    }
-                }else if(myJson.PM14.year[i] == "2015"){
-                    if(myJson.PM14.Mode[i] == "psgrveh"){
-                        pm14_personal_vehicles.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_personal_vehicles.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_personal_vehicles.BOTA.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_personal_vehicles.BOTA_R.push(parseFloat(myJson.PM14.Bota_Ready[i]));
-                        pm14_personal_vehicles.Y.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_personal_vehicles.Y_R.push(parseFloat(myJson.PM14.ysleta_Ready[i]));
-                    }else if(myJson.PM14.Mode[i] == "freight"){
-                        pm14_cargo.BOTA_C.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_cargo.BOTA_F.push(parseFloat(myJson.PM14.Bota_Fast[i]));
-                        pm14_cargo.Y_C.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_cargo.Y_CF.push(parseFloat(myJson.PM14.Ysleta_Fast[i]));
-                    }else if(myJson.PM14.Mode[i] == "pedestrian"){
-                        pm14_pedestrians.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_pedestrians.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_pedestrians.BOTA_P.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_pedestrians.Y_P.push(parseFloat(myJson.PM14.Ysleta[i]));
-                    }
-                 
-
-                }else if(myJson.PM14.year[i] == "2016"){
-                    if(myJson.PM14.Mode[i] == "psgrveh"){
-                        pm14_personal_vehicles.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_personal_vehicles.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_personal_vehicles.BOTA.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_personal_vehicles.BOTA_R.push(parseFloat(myJson.PM14.Bota_Ready[i]));
-                        pm14_personal_vehicles.Y.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_personal_vehicles.Y_R.push(parseFloat(myJson.PM14.ysleta_Ready[i]));
-                    }else if(myJson.PM14.Mode[i] == "freight"){
-                        pm14_cargo.BOTA_C.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_cargo.BOTA_F.push(parseFloat(myJson.PM14.Bota_Fast[i]));
-                        pm14_cargo.Y_C.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_cargo.Y_CF.push(parseFloat(myJson.PM14.Ysleta_Fast[i]));
-                    }else if(myJson.PM14.Mode[i] == "pedestrian"){
-                        pm14_pedestrians.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_pedestrians.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_pedestrians.BOTA_P.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_pedestrians.Y_P.push(parseFloat(myJson.PM14.Ysleta[i]));
-                    }
-               
-                }else if(myJson.PM14.year[i] == "2017"){
-                    if(myJson.PM14.Mode[i] == "psgrveh"){
-                        pm14_personal_vehicles.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_personal_vehicles.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_personal_vehicles.BOTA.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_personal_vehicles.BOTA_R.push(parseFloat(myJson.PM14.Bota_Ready[i]));
-                        pm14_personal_vehicles.Y.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_personal_vehicles.Y_R.push(parseFloat(myJson.PM14.ysleta_Ready[i]));
-                    }else if(myJson.PM14.Mode[i] == "freight"){
-                        pm14_cargo.BOTA_C.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_cargo.BOTA_F.push(parseFloat(myJson.PM14.Bota_Fast[i]));
-                        pm14_cargo.Y_C.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_cargo.Y_CF.push(parseFloat(myJson.PM14.Ysleta_Fast[i]));
-                    }else if(myJson.PM14.Mode[i] == "pedestrian"){
-                        pm14_pedestrians.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_pedestrians.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_pedestrians.BOTA_P.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_pedestrians.Y_P.push(parseFloat(myJson.PM14.Ysleta[i]));
-                    }
-                 
-
-                }else if(myJson.PM14.year[i] == "2018"){
-                    if(myJson.PM14.Mode[i] == "psgrveh"){
-                        pm14_personal_vehicles.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_personal_vehicles.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_personal_vehicles.BOTA.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_personal_vehicles.BOTA_R.push(parseFloat(myJson.PM14.Bota_Ready[i]));
-                        pm14_personal_vehicles.Y.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_personal_vehicles.Y_R.push(parseFloat(myJson.PM14.ysleta_Ready[i]));
-                    }else if(myJson.PM14.Mode[i] == "freight"){
-                        pm14_cargo.BOTA_C.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_cargo.BOTA_F.push(parseFloat(myJson.PM14.Bota_Fast[i]));
-                        pm14_cargo.Y_C.push(parseFloat(myJson.PM14.Ysleta[i]));
-                        pm14_cargo.Y_CF.push(parseFloat(myJson.PM14.Ysleta_Fast[i]));
-                    }else if(myJson.PM14.Mode[i] == "pedestrian"){
-                        pm14_pedestrians.PDN.push(parseFloat(myJson.PM14.pdn[i]));
-                        pm14_pedestrians.PDN_R.push(parseFloat(myJson.PM14.pdn_ready[i]));
-                        pm14_pedestrians.BOTA_P.push(parseFloat(myJson.PM14.Bota[i]));
-                        pm14_pedestrians.Y_P.push(parseFloat(myJson.PM14.Ysleta[i]));
-                    }
-                }
-            }
-            /******* Calculations for Driving Text */
-            let t2018D= []; // temp array holds 2018 values for driving only
-            t2018D[0] = pm14_personal_vehicles.PDN[pm14_personal_vehicles.PDN.length-1];
-            t2018D[1] = pm14_personal_vehicles.PDN_R[pm14_personal_vehicles.PDN_R.length-1]
-            t2018D[2] = pm14_personal_vehicles.BOTA[pm14_personal_vehicles.BOTA.length-1]
-            t2018D[3] = pm14_personal_vehicles.BOTA_R[pm14_personal_vehicles.BOTA_R.length-1]
-            t2018D[4] = pm14_personal_vehicles.Y[pm14_personal_vehicles.Y.length-1];
-            t2018D[5] = pm14_personal_vehicles.Y_R[pm14_personal_vehicles.Y_R.length-1];
-
-            //Average time on 2018 only
-            pm14Calculations.vehAvgTime = Math.round(calAverageTime(t2018D)* 100) / 100;//((pm14_personal_vehicles.PDN[pm14_personal_vehicles.PDN.length-1] + pm14_personal_vehicles.PDN_R[pm14_personal_vehicles.PDN_R.length-1] + pm14_personal_vehicles.BOTA[pm14_personal_vehicles.BOTA.length-1] + pm14_personal_vehicles.BOTA_R[pm14_personal_vehicles.BOTA_R.length-1] + pm14_personal_vehicles.Y[pm14_personal_vehicles.Y.length-1] + pm14_personal_vehicles.Y_R[pm14_personal_vehicles.Y_R.length-1]) / 6);
-
-            let tmp = calHighestWaitTime(t2018D); // returns index of highest wait time, index on vehHighestWait
-
-            // 2018 Driving names 
-            let tvehHighestWait = [];
-            tvehHighestWait[0] = "PDN";
-            tvehHighestWait[1] = "PDN";
-            tvehHighestWait[2] ="BOTA";
-            tvehHighestWait[3] = "BOTA";
-            tvehHighestWait[4] = "Ysleta";
-            tvehHighestWait[5] = "Ysleta";
+function pm13_data(){ 
     
-            pm14Calculations.vehHighestWait = tvehHighestWait[tmp];
 
-            /******* Calculations for Text End*/
-
-            /******* Calculations for Freight Text */
-            let t2018F= []; // temp array holds 2018 values for cargo only
-            t2018F[0] = pm14_cargo.BOTA_C[pm14_cargo.BOTA_C.length];
-            t2018F[1] = pm14_cargo.BOTA_F[pm14_cargo.BOTA_F.length]
-            t2018F[2] = pm14_cargo.Y_C[pm14_cargo.Y_C.length]
-            t2018F[3] = pm14_cargo.Y_CF[pm14_cargo.Y_CF.length]
-        
-            //Average time on 2018 only
-            pm14Calculations.freightAvgTime = Math.round(calAverageTime(t2018F)*100)/100;//((pm14_personal_vehicles.PDN[pm14_personal_vehicles.PDN.length-1] + pm14_personal_vehicles.PDN_R[pm14_personal_vehicles.PDN_R.length-1] + pm14_personal_vehicles.BOTA[pm14_personal_vehicles.BOTA.length-1] + pm14_personal_vehicles.BOTA_R[pm14_personal_vehicles.BOTA_R.length-1] + pm14_personal_vehicles.Y[pm14_personal_vehicles.Y.length-1] + pm14_personal_vehicles.Y_R[pm14_personal_vehicles.Y_R.length-1]) / 6);
-
-            tmp = calHighestWaitTime(t2018F); // returns index of highest wait time, index on vehHighestWait
-
-            // 2018 Freight names 
-            let tFHighestWait = [];
-            tFHighestWait[0] = "BOTA";
-            tFHighestWait[1] = "BOTA";
-            tFHighestWait[2] ="Ysleta";
-            tFHighestWait[3] = "Ysleta";
-
-            pm14Calculations.freightHigherstWait = tFHighestWait[tmp];
-            
-            // Calculations for Freight Text End
-
-            /** Calculations for Walking */
-            let t2018W= []; // temp array holds 2018 values for driving only
-            t2018W[0] = pm14_pedestrians.PDN[pm14_pedestrians.PDN.length-1];
-            t2018W[1] = pm14_pedestrians.PDN_R[pm14_pedestrians.PDN_R.length-1]
-            t2018W[2] = pm14_pedestrians.BOTA_P[pm14_pedestrians.BOTA_P.length-1]
-            t2018W[3] = pm14_pedestrians.Y_P[pm14_pedestrians.Y_P.length-1]
-            
-            //Average time on 2018 only
-            pm14Calculations.WalkAvgTime = Math.round(calAverageTime(t2018W)*100)/100;//((pm14_personal_vehicles.PDN[pm14_personal_vehicles.PDN.length-1] + pm14_personal_vehicles.PDN_R[pm14_personal_vehicles.PDN_R.length-1] + pm14_personal_vehicles.BOTA[pm14_personal_vehicles.BOTA.length-1] + pm14_personal_vehicles.BOTA_R[pm14_personal_vehicles.BOTA_R.length-1] + pm14_personal_vehicles.Y[pm14_personal_vehicles.Y.length-1] + pm14_personal_vehicles.Y_R[pm14_personal_vehicles.Y_R.length-1]) / 6);
-
-            tmp = calHighestWaitTime(t2018W); // returns index of highest wait time, index on vehHighestWait
-
-            // 2018 Walking names 
-            let tWHighestWait = [];
-            tWHighestWait[0] = "PDN";
-            tWHighestWait[1] = "PDN";
-            tWHighestWait[2] ="BOTA";
-            tWHighestWait[3] = "Ysleta";
-
-            pm14Calculations.walkHighestWait = tWHighestWait[tmp];
-            
-            /******* Calculations for Pedestrians Text End*/
-             document.getElementById("pm14DText").innerHTML = pm14Calculations.vehAvgTime + " min";
-             document.getElementById("pm14FText").innerHTML = pm14Calculations.freightAvgTime + " min";
-             document.getElementById("pm14WText").innerHTML = pm14Calculations.WalkAvgTime + " min";
-        
-        });
+  
 }
-// returns the *index* of the higher Wait time 
-function calHighestWaitTime(times){
-    let highestT = 0; // highest time
-    let highest_I = 0; // highest time position on array
-    let i =0;
-    while(times[i] != null){
-        if(times[i] > highestT){
-            highestT = times[i];
-            highest_I = i;
-        }
-        i++;
-    }
-    return highest_I;
-}
-//calculates the average time 
-function calAverageTime(times){
-    let sum = 0;
-    for(let i =0; i < times.length; i++){
-        sum += times[i];
-    }
-    return sum/times.length;
-}
+
 // Graph Here
 function pm14DrivingChart(ctx){ 
     var data = {

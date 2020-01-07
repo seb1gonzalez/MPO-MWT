@@ -1,7 +1,7 @@
 //**************************************************************** pm5 shares table with pm9 on database
 //Handles 2 toggles of Exist/Plan for Polygons.
 
-function pm5Data(mode, condition) {
+function pm5Data(mode, status) {
     let pm5Data = {
         tot_jobs: 0,
         ratioPrim: 0,
@@ -31,11 +31,11 @@ function pm5Data(mode, condition) {
 
             // if the status of a shape exists, push to visualize
             for (let i = 0; i < temp.length; i++) {
-                if (status == "exist" && condition == "e") {
+                if (status == "exist" && status == "e") {
                     color = "#039BE5";//blue
                     to_visualize.push(temp[i]);
                     polyToErase.exist.push();
-                } else if (status == "planned" && condition == "p") {
+                } else if (status == "planned" && status == "p") {
                     color = "#9E9E9E"; //gray
                     to_visualize.push(temp[i]);
                     polyToErase.plan.push();
@@ -54,8 +54,8 @@ function pm5Data(mode, condition) {
                 zIndex: -1,
                 title: prctprim.toFixed(2) + "%",
             });
-            if (condition == "e") polyToErase.exist.push(polygon);
-            if (condition == "p") polyToErase.plan.push(polygon);
+            if (status == "e") polyToErase.exist.push(polygon);
+            if (status == "p") polyToErase.plan.push(polygon);
 
             // Hover Effect for Google API Polygons
             google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });

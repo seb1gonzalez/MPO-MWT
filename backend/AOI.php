@@ -56,6 +56,13 @@ else if($active_pm =="pm4_walking"){
 else if($active_pm =="pm3final"){ 
 	$query = "SELECT AVG_ridership, routeName,ST_AsText(SHAPE) as shape FROM $active_pm as p WHERE  ST_INTERSECTS( st_geomfromtext( st_astext(@poly),4), p.SHAPE );";
 }
+else if($active_pm == "pm11_sidewalks"){
+	$query = "SELECT length, status, astext(SHAPE) as shape FROM $active_pm as p WHERE  ST_INTERSECTS( st_geomfromtext( st_astext(@poly),8), p.SHAPE );"; 
+}
+else if($active_pm == "pm12"){
+	$query = "SELECT status, bikepath, mile, astext(SHAPE) as shape FROM $active_pm as p WHERE  ST_INTERSECTS( st_geomfromtext( st_astext(@poly),4), p.SHAPE );"; 
+	
+}
 else{
 	$query = "SELECT ST_AsText(SHAPE) as shape FROM $active_pm as p WHERE  ST_INTERSECTS( st_geomfromtext( st_astext(@poly), 6), p.SHAPE );";
 }
