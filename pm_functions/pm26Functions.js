@@ -72,7 +72,7 @@ function pm26Data(mode, ex) {
 
         for (index in data.shape_arr) { // Organize information into dictionaries
             //hold info of 1 point at a time
-            let holder = [];
+           
 
             deck_cond_ = data.shape_arr[index]['deck_cond_'];
             superstruc = data.shape_arr[index]['superstruc'];
@@ -157,11 +157,10 @@ function pm26Data(mode, ex) {
                     pm26Data.nm_no_data_count++;
                 }
             }
-
+                let holder = [];
             if (mode == 1 || mode == 2 || mode == 4)  { // mode 1 and 2 allows us to store points 
                 holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
                 holder = holder[0][0]; // Fixes BLOBs
-
                 let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
                 let titleH = condition + ": " + lowestRating;
                 if (lowestRating == 999) {
@@ -173,7 +172,6 @@ function pm26Data(mode, ex) {
                    // value: '',
                     icon: image
                 });
-        
                 point.setMap(map);
                 points.push(point);
             }

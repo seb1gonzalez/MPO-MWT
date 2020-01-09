@@ -55,6 +55,20 @@ function lineHandler(found) {
         //active_pm_for_AOI = 'all_pm25';
         pm21Data(1, '');
     }
+    else if (found == "PM24D") {
+   
+        currentType = "driving";
+        currentPM = 24;
+        active_pm_for_AOI = 'all_pm24';
+        pm24Data(1, '');
+    }
+    else if (found == "PM24F") {
+ 
+        currentType = "freight";
+        currentPM = 24;
+        active_pm_for_AOI = 'all_pm24';
+        pm24Data(1, '');
+    }
     else if (found == "PM25") {
         currentType = "driving";
         currentPM = 25;

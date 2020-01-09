@@ -67,7 +67,6 @@ $("#toggle1").on('change', function () {
         } else if (currentPM == 7) {
             PM_existing_selected.PM7 = true;
             pm7Data(1, "e");
-          //  get_exist_plan("all_pm7", "e");
         } else if (currentPM == 8) {
             PM_existing_selected.PM8 = true;
             pm8Data(1, "e");
@@ -87,12 +86,11 @@ $("#toggle1").on('change', function () {
             PM_existing_selected.PM6 = false;
             clear_Exist();
         } else if (currentPM == 7) {
-            //PM_existing_selected.PM7 = false;
+            PM_existing_selected.PM7 = false;
             clear_Exist();
         } else if (currentPM == 8) {
             PM_existing_selected.PM8 = false;
             clear_Exist();
-            clearMetadata(); //points
         } else if (currentPM == 10) {
             PM_existing_selected.PM10 = false;
             clear_Exist();
@@ -115,7 +113,7 @@ $("#toggle2").on('change', function () {
             pm6Data(1, "p");
         } else if (currentPM == 7) {
             PM_planned_selected.PM7 = true;
-            //get_exist_plan("all_pm7", "p");
+            pm7Data(1, "p");
         } else if (currentPM == 8) {
             PM_planned_selected.PM8 = true;
             pm8Data(1, "p");
@@ -134,11 +132,10 @@ $("#toggle2").on('change', function () {
             PM_planned_selected.PM6 = false;
             clear_Planned();
         } else if (currentPM == 7) {
-         //   PM_planned_selected.PM7 = false;
+            PM_planned_selected.PM7 = false;
             clear_Planned();
         } else if (currentPM == 8) {
             PM_planned_selected.PM8 = false;
-            clearMetadata();
             clear_Planned();
         } else if (currentPM == 10) {
             PM_planned_selected.PM10 = false;

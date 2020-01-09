@@ -15,7 +15,7 @@ function pm5Data(mode, status) {
         for (index in data.shape_arr) {
             let temp = wktFormatter(data.shape_arr[index]['shape']);
             let to_visualize = [];
-            let status = data.shape_arr[index].status;
+            let status2 = data.shape_arr[index].status;
             let prctprim = parseFloat(data.shape_arr[index].prcnt_prim);  //filter values on polygons
 
             //update Dynamic Data
@@ -31,11 +31,11 @@ function pm5Data(mode, status) {
 
             // if the status of a shape exists, push to visualize
             for (let i = 0; i < temp.length; i++) {
-                if (status == "exist" && status == "e") {
+                if (status2 == "exist" && status == "e") {
                     color = "#039BE5";//blue
                     to_visualize.push(temp[i]);
                     polyToErase.exist.push();
-                } else if (status == "planned" && status == "p") {
+                } else if (status2 == "planned" && status == "p") {
                     color = "#9E9E9E"; //gray
                     to_visualize.push(temp[i]);
                     polyToErase.plan.push();

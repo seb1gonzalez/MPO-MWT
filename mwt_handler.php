@@ -10,7 +10,7 @@ $toReturn = array();
 $tables = array(); // used to store where the pm will be found ("found_in_table")
 $query = "select * from pms where pms_key = '$key';"; // return all the information for ONE pm, because $key is unique
 $result = mysqli_query($conn, $query); 			// do the query, store in result
-
+$temporal = 0;
 while($temporal = mysqli_fetch_assoc($result)){ // loops through $result array, stores into $temporal
 	array_push($tables, $temporal); 			// pushes $temporal to our desired array
 }
@@ -54,21 +54,21 @@ if($key == "all_pm1" || $key == "all_pm2"){
 }else if($key == "all_pm4W"){
 	$query = "select tactcnt, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm7B"){
-	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+	$query = "select type, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm7S"){
-	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+	$query = "select status, stopname,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm7K"){
-	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
-}else if($key == "all_pm8_b"){
-	$query = "select status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
-}else if($key == "all_pm8P"){
-	$query = "select name, status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+	$query = "select display,type,existing,planned,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+}else if($key == "all_pm8B"){
+	$query = "select type, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+}else if($key == "all_pm8K"){
+	$query = "select display,type,existing,planned, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm9"){ // Pm5 and PM9 share table both have all_pm9
 	$query = "select status, b00001e1, ratio_prim, prcnt_prim, ratio_pop,prim_jobs_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm10"){ // Pm6 and pm10 share table
 	$query = "select status, b00001e1, ratio_pop, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm11"){
-	$query = "select length, status, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
+	$query = "select Sidewalk_4, Roads_LA_3, Roads_LA_6, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm12"){
 	$query = "select status, bikepath, mile, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm18_19"){
@@ -83,17 +83,28 @@ if($key == "all_pm1" || $key == "all_pm2"){
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm22nm"){ 
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
+}else if($key == "all_pm24"){ 
+	$query = "select tti,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm25"){
 	$query = "select state_code,year,iri_vn, miles, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
-}else if($key == "all_pm13_14"){
-	
-	$query = "select port_of_en, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
+}else if($key == "all_pm13_14"){ // here we need 2 tables, one for data, one for the ports of entry geo-objects
+	$query = "SET @year_ = (SELECT Max(Period) FROM mpo_test_jhuerta.pm13_all);";
+	$result = mysqli_query($conn, $query); 
+	$query = "SET @year_ = @year_ - 4; ";
+	$result = mysqli_query($conn, $query); 
+	$query = "SELECT * FROM mpo_test_jhuerta.pm13_all WHERE Period >= @year_;";
+	$result = mysqli_query($conn, $query); 
+	while($temporal = mysqli_fetch_assoc($result)){ 
+		array_push($shape, $temporal);
+	}
+	$query = "select port_of_en, latitude,longitude from pm14points"; 
+
 }else if($key == "all_pm15_16_17"){
 	$query = "select station_na, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm15_16_17g"){
 	$query = "select Station, g2014,g2015,g2016,g2017,g2018,Pollutant from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm20B"){
-	$query = "select type,address, on_st,at_strt,count_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
+	$query = "select count_bike,count_ped,address,on_st,at_strt, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm20P"){
 	$query = "select type,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; // ! repetition
 }else if($key == "all_pm20_bus"){
@@ -103,16 +114,12 @@ else{
 	$query = "select astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; // temporal note: find an elegant way to generalize this
 }
 
-
-// another temporal note: not all lines will be pavement that will fetch "iri as value"
 $result = mysqli_query($conn, $query); 
-
 while($temporal = mysqli_fetch_assoc($result)){ 
 	array_push($shape, $temporal);
 }
 
 $toReturn['shape_arr'] = $shape; // store it in an index on our array, by name == more significant
-
 header('Content-Type: application/json'); //specifies how the data will return 
 echo json_encode($toReturn); //encodes our array to json, which lets us manipulate in front-end
 $conn->close();

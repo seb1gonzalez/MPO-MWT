@@ -63,7 +63,13 @@ function regionalText(data) {
         pm20R(data);
     }
     else if (currentPM == 21) {
-        pm21R();
+        pm21R(data);
+    }
+    else if (currentPM == 22) {
+        pm22R(data);
+    }
+    else if (currentPM == 24) {
+        pm24R(data);
     }
     else if (currentPM == 25) {
        pm25R(data);
@@ -72,8 +78,31 @@ function regionalText(data) {
         pm26R(data);
     }
 }
+
+function pm24R(data) {
+    canvasMaker('chart1', 'myChart');
+    var ctx = document.getElementById('myChart').getContext('2d');
+    pm24BarGraph(ctx, data);
+    if (currentType == "driving") {
+        headerAdder("Travel time index - Driving  ", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        paragraphAdder("In the El Paso MPO region, the average travel time index is " + data.ttiAvg+".In "+1+" % (_ miles) of roadways, the travel time index is 1.5 and greater.", "paragraph", "summary-info");
+    } else if (currentType =="freight") {
+        headerAdder("Travel time index - Freight  ", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        paragraphAdder("In the El Paso MPO region, the average travel time index is _.In _ % (_ miles) of roadways, the travel time index is 1.5 and greater.", "paragraph", "summary-info");
+    }
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("2018", "paragraph", "analysis-info");
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    anchorAdder("2018 Congestion Management process assessment tools (COMPAT).  ", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2017.html");
+    paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("The travel time index is categorized in the following travel times: 1-1.1, 1.1-1.2, 1.2-1.3, 1.3-1.5, and more than 1.5. This performance measure shows the travel time index for passenger vehicles as well as commercial vehicles in the El Paso MPO region based on data reported in the National Performance Management Research Data Set (NPMRDS). The number of miles are summed per categorization and displayed in the graph.  ", "paragraph", "calc-info");
+
+    openNav();
+}
 function pm21R() {
-    console.log('regional text of 25');
+    toggleRadioHide();
     headerAdder("Number of projects that include safety enhancements located near crash hotspots.", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
 
@@ -147,12 +176,12 @@ function pm1R(data) {
         + " and ferryboat. Some workers also used a taxicab, motorcycle, bicycle, walking, and other means to go to work or they worked"
         + " at home.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("2012-2016 5-year average estimates", "paragraph", "analysis-info");
+    paragraphAdder("2012-2016 ACS 5-Year Estimates", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
-    anchorAdder("American Community Survey 5-Year Estimates", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2017.html");
-    anchorAdder("TIGER/Line Shapefiles and TIGER/Line Files ", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-data.2016.html");
+    anchorAdder("American Community Survey 5-Year Estimates", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-data.2016.html");
+    anchorAdder("TIGER/Line Shapefiles and TIGER/Line Files. ", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2016.html");
     paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("PM1 is calculated as:", "paragraph", "calc-info");
+    paragraphAdder("Percent of non-single occupancy vehicle (SOV) commute is calculated as:", "paragraph", "calc-info");
     imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
     openNav();
 }
@@ -162,15 +191,16 @@ function pm2R(data) {
     piechartpm2(ctx2pm1,data);
     headerAdder("Percent of Workers commuting by transit/walking/biking. ", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder(" During 2012-2016 __% of workers living in the El Paso MPO area reported to walk to work, __% of workers bike,"
-        + "and __ % of workers reported to commute by public transit. ", "paragraph", "summary-info");
+    paragraphAdder(" During 2012-2016 __% of workers living in the El Paso MPO area reported to walk to work, __% of workers bike, and __% of workers reported to commute by public transit.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("2007-2011 and 2012-2016 5-year average estimates", "paragraph", "analysis-info");
+    paragraphAdder("2012-2016 ACS 5-Year Estimates", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
-    anchorAdder("American Community Survey 5-Year Estimates", "https://www.census.gov/geo/maps-data/data/tiger-data.html");
-    anchorAdder("TIGER/Line Shapefiles and TIGER/Line Files", "https://www.census.gov/geo/maps-data/data/tiger-line.html");
+    anchorAdder("American Community Survey 5-Year Estimates", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.2017.html");
+    anchorAdder("TIGER/Line Shapefiles and TIGER/Line Files", "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-data.2016.html");
     paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
     paragraphAdder("PM1 is calculated as:", "paragraph", "calc-info");
+    imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
+    imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
     imageAdder('./img/performance_measures/pm1/pm1Eqn.PNG', 'calc-info');
     openNav();
 
@@ -279,16 +309,15 @@ function pm25R(data) {
     legendMaker("Legend", names, colors);
 }
 function pm3R(data) {
-
     headerAdder("Transit ridership", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("The routes with most ridership in the city are mainly the ones that go from the far places (Eastside, North and Westside) to downtown. The route " + commafy(data.highRoute) + " has the highest ridership with an average of " + commafy(data.highAvg) + ". The route " + data.lowRoute + " has the lowest ridership with an average of " + commafy(data.lowAvg) + ".", "paragraph", "summary-info");
+    paragraphAdder("Within el paso region, the total ridership is " + commafy(data.tot) +". The route " + commafy(data.highRoute) + " has the highest ridership with an average of " + commafy(data.highAvg) + ". The route " + data.lowRoute + " has the lowest ridership with an average of " + commafy(data.lowAvg) + ".", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
     paragraphAdder("Data provided by Sun Metro", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("The received data was separated by years and routes. The average of the 5 years was calculated to create the symbology; 2,777-107,272 (Green), 107,272-388,321 (Orange), 388,321-1,144,232 (Red). Since Sun Metro stopped using route 204 in 2014 data was not included. Route 205 from BRIO was included in the map. ", "paragraph", "calc-info");
+    paragraphAdder("The received data was separated by years and routes. The average ridership overt eh 5 years is shown in the map based on geometric interval; 2,777-107,272 (Yellow), 107,272-388,321 (Orange), 388,321-1,144,232 (Blue). Since Sun Metro stopped using route 204 in 2014 data was not included. ", "paragraph", "calc-info");
     openNav();
     let names = ['2,777 - 107,272', '107,273 - 388,321', '388,321 - 1,144,232'];
     let colors = ['background:#8BC34A;', 'background:#FFCA28;', 'background:#f44336', 'background:#e53935;'];
@@ -302,7 +331,7 @@ function pm4R(data) {
         paragraphAdder("Summary:", "subtitle", "summary-title");
         paragraphAdder("In 2018, a total of " + commafy(data) + " bike trips were recorded by Strava in the El Paso MPO region. ", "paragraph", "summary-info");
         paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-        paragraphAdder("2018 data licensed by Strava", "paragraph", "analysis-info");
+        paragraphAdder("2018 data licensed by Strava.", "paragraph", "analysis-info");
         paragraphAdder("Data Source:", "subtitle", "data-title");
         paragraphAdder("Strava Metro data provided via a sublicense from the Texas Department of Transportation.", "paragraph", "data-info");
         paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
@@ -319,7 +348,7 @@ function pm4R(data) {
         paragraphAdder("Data Source:", "subtitle", "data-title");
         paragraphAdder("Strava Metro (2017) provided via a sublicense from the Texas Department of Transportation.", "paragraph", "data-info");
         paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
-        paragraphAdder("This performance measure reflects the total number of walk trips on the street regardless of the direction (column TACTCNT) recorded by Strava in 2017. Trips recorded on the Interstate 10 were removes from this dataset, since I-10 is a limited access facility. The legend shows the data in a geometric interval, which provides the best viewing distribution.", "paragraph", "calc-info");
+        paragraphAdder("This performance measure reflects the total number of walk trips on the street regardless of the direction (column TACTCNT) recorded by Strava in 2017. Trips recorded on the Interstate 10 were removed from this dataset, since I-10 is a limited access facility. The legend shows the data in a geometric interval, which provides the best viewing distribution.", "paragraph", "calc-info");
         names = ['5.00 - 15', '16 - 129', '130 - 1,305'];
     }
     let colors = ['background:#f44336;', 'background:#64DD17;', 'background:#9C27B0', 'background:#e53935;'];
@@ -329,7 +358,7 @@ function pm4R(data) {
 function pm11R(data) {
     headerAdder("Length of Sidewalks per Mile", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("There are a total of " + data.pm11Slength.toFixed(2)+ " miles of sidewalks along 2,692.873 miles of roadways within the City of El Paso city limits. Assuming that each roadway has a sidewalk on both sides, there are 2,373.390 miles of sidewalks missing.", "paragraph", "summary-info");
+    paragraphAdder("There are a total of " + commafy(data.sideWalks) + " miles of sidewalks along " + commafy(data.roadways) + " miles of roadways within the City of El Paso city limits. Assuming that each roadway has a sidewalk on both sides, there are " + commafy(data.missing)+" miles of sidewalks missing.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Sidewalk GIS layer was provided in 2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -378,6 +407,25 @@ function pm26R(data) {
     paragraphAdder("Following the FHWA guidance, bridges with lowest rating between 7 and 9 are classified as Good, those rated 6 or 5 are classified as Fair and bridges with lowest rating 4 or below are classified as Poor.", "paragraph", "calc-info");
     paragraphAdder("More information about Bridge Condition Performance can be found at this FHWA website: ", "paragraph", "calc-info");
     anchorAdder(1, "https://www.fhwa.dot.gov/bridge/britab.cfm");
+    openNav();
+}
+function pm22R(data) {
+    canvasMaker('chart1/2', 'myChart');
+    canvasMaker('chart2/2', 'myChart2');
+    var ctx = document.getElementById('myChart').getContext('2d');
+ //   var ctx2 = document.getElementById('myChart2').getContext('2d');
+    pm22chartLine(ctx);
+   // pm18StackedChart(ctx2);
+
+    headerAdder("Number of crashes on the CMP network", "title");
+    paragraphAdder("Summary:", "subtitle", "summary-title");
+    paragraphAdder("During a 5-year period (2013-2017), a total of " + 1 + " crashes occurred on the El Paso MPO Congestion Management Process (CMP) network.", "paragraph", "summary-info");
+    paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
+    paragraphAdder("2013 – 2017", "paragraph", "analysis-info");
+    paragraphAdder("Data Source:", "subtitle", "data-title");
+    paragraphAdder("Crash data provided by TxDOT and NMDOT.", "paragraph", "data-info");
+    paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
+    paragraphAdder("This performance measures includes all crashes that occurred within 150 ft. of the CMP network adopted by the MPO in 2019.  ", "paragraph", "calc-info");
     openNav();
 }
 function pm5R(data) {
@@ -458,15 +506,15 @@ function pm10R(data) {
 function pm7R(data) {
     toggleRadioHide();
     canvasMaker('chart1', 'myChart');
-    canvasMaker('chart2', 'myChart2');
+   // canvasMaker('chart2', 'myChart2');
     var ctx = document.getElementById('myChart').getContext('2d');
-    var ctx2 = document.getElementById('myChart2').getContext('2d');
-    pm7HorizontalBar(ctx);
-    pm7HorizontalBar2(ctx2);
+  //  var ctx2 = document.getElementById('myChart2').getContext('2d');
+    pm7HorizontalBar(ctx,data);
+  //  pm7HorizontalBar2(ctx2);
 
     headerAdder("key destinations within ½ mile of high-quality rapid transit", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("In the El Paso MPO region, there are a total of __ key destinations. In a half-mile of existing high-quality rapid transit stations, there are a total of __  (__%) key destinations.  Once all proposed high-quality rapid transit stations are complete, there will be a total of __  (__%)  key destinations within a half-mile of high-quality rapid transit.", "paragraph", "summary-info");
+    paragraphAdder("In the El Paso MPO region, there are a total of " + data.totKeyDest + " key destinations. In a half-mile of existing high-quality rapid transit stations, there are a total of " + data.percentKeyD1.toFixed(2) + "% key destinations.  Once all proposed high-quality rapid transit stations are complete, there will be a total of " + data.percentKeyD2.toFixed(2) + "% key destinations within a half-mile of high-quality rapid transit.", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2019 Transit data", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -480,15 +528,11 @@ function pm7R(data) {
 function pm8R(data) {
     toggleRadioHide();
     canvasMaker('chart1', 'myChart');
-    canvasMaker('chart2', 'myChart2');
     var ctx = document.getElementById('myChart').getContext('2d');
-    var ctx2 = document.getElementById('myChart2').getContext('2d');
-    pm8HorizontalBar(ctx);
-    pm8HorizontalBar2(ctx2);
-
+    pm8HorizontalBar(ctx,data);
     headerAdder("Key Destinations in the El Paso MPO Region ", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder(" In the El Paso MPO region, there are a total of _ key destinations. In a half-mile of existing bikeways, there are a total of __  (__%) key destinations.  Once all proposed bikeways are complete, there will be a total of __  (__%)  key destinations within a half-mile of bikeways. ", "paragraph", "summary-info");
+    paragraphAdder(" In the El Paso MPO region, there are a total of " + data.totKeyDest + " key destinations. In a half-mile of existing bikeways, there are a total of " + data.percentKeyD1.toFixed(2) + "% key destinations.  Once all proposed bikeways are complete, there will be a total of " + data.percentKeyD2.toFixed(2) + "%   key destinations within a half-mile of bikeways. ", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Data was provided by various local agencies in 2018 ", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -569,14 +613,35 @@ function pm17R(data) {
 }
 
 function pm20R(data) {
-    headerAdder("Number of crashes between motorized vehicles and pedestrians/bicyclists nearby bus stops.", "title");
-    paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("62.69% of all pedestrian crashes and 48.80% of all bicycle crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area, Mesa St.Dyer St.and Hondo Pass. The highest observed number of crashes within 200 ft.from a bus stop is " + data.w_greatest + " for pedestrian (on " + data.w_address + " " + data.w_on_st + ") and " + data.b_greatest + " for bicycle(" + data.b_greatestCounter+" locations have the same number).", "paragraph", "summary-info");
+    if (currentType == "walking") {
+        headerAdder("Number of crashes between motorized vehicles and pedestrians nearby bus stops.", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        if (data.w_greatest ==0) {
+            paragraphAdder("No pedestrian crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area.", "paragraph", "summary-info");
+        }
+        else if (data.w_greatestCounter == 1) {
+            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (on " + data.w_on_st + " at " + data.w_at_strt + ")", "paragraph", "summary-info");
+        } else if (data.w_greatestCounter > 1) {
+            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (" + data.w_greatestCounter + " locations have the same number)", "paragraph", "summary-info");
+        }
+      
+    } else if (currentType == "biking") {
+        headerAdder("Number of crashes between motorized vehicles and bicyclists nearby bus stops.", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        if (data.b_greatest == 0) {
+            paragraphAdder("No bicyclists crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area.", "paragraph", "summary-info");
+        } else if (data.b_greatestCounter == 1) {
+            paragraphAdder(data.percentBike.toFixed(2) + "% of all bicyclists crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (on " + data.b_on_st + " at " + data.b_at_strt + ")", "paragraph", "summary-info");
+        } else if (data.b_greatestCounter > 1) {
+            paragraphAdder(data.percentBike.toFixed(2) + "% of all bicyclists crashes in El Paso region occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (" + data.b_greatestCounter + " locations have the same number)", "paragraph", "summary-info");
+        }
+       
+    }
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019", "paragraph", "analysis-info");
+    paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019 ", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
     paragraphAdder("Crash data from TxDOT, location of bus stops from Sun Metro ", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("A buffer of 200 ft. was created from the bus stops to identify how many crashes occurred within that distance.The crashes are from 2013 to 2017, and the bus stop locations are as of 2019. ", "paragraph", "calc-info");
+    paragraphAdder("A buffer of 200 ft. was created from the bus stops to identify how many crashes occurred within that distance. The crashes are from 2013 to 2017, and the bus stop locations are as of 2019.", "paragraph", "calc-info");
     openNav();
 }

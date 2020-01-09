@@ -1,3 +1,6 @@
+#benchmark .modal-dialog{
+  max-width: 90vw;
+}
 #benchmark li{
   float: unset;
 }

@@ -1,106 +1,95 @@
-function pm8Data(mode, condition) {
-
-    let pm8Data = {
-        jobs: 1,
-        ratioPrim: 2,
-        ratioPrimTot: 3
-    };
-    pm8DataBuffer(mode, condition);
-
+function pm8Data(mode, status) {
+    pm8DataBuffer(mode, status);
+    console.log("Update 8");
 }
 
 
-function pm8DataBuffer(mode, condition) {
+function pm8DataBuffer(mode, stat) {
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
 
     if (mode == 0 || mode == 1) { // if we want regional (default) data
-        let key = 'all_pm8_b';
+        let key = 'all_pm8B';
         data_for_php = { key: key };
-    } else if (mode == 2) { // if we want corridors
-        data_for_php = ex;
-        shape = 'ST_AsText(SHAPE)';
-        php_handler = "corridor_handlerB.php";
-    }
+    } 
 
     $.get(php_handler, data_for_php, function (data) {
 
         let color = "#039BE5";//blue
-        for (index in data.shape_arr) {
-            let temp = wktFormatter(data.shape_arr[index][shape]);
-            let to_visualize = [];
-            let status = data.shape_arr[index]['status'];
+        if (mode == 1) {
+            for (index in data.shape_arr) {
+                let temp = wktFormatter(data.shape_arr[index][shape]);
+                let to_visualize = [];
+                let type = data.shape_arr[index]['type'];
 
-            // if the status of a shape exists, push to visualize
-            for (let i = 0; i < temp.length; i++) {
-                if (status == null &&  condition == "e") {
-                    color = "#039BE5";//blue
-                    to_visualize.push(temp[i]);
-                    polyToErase.exist.push();
-                } else if (status == "existingplan" && condition == "p") {
-                    color = "#9E9E9E"; //gray
-                    to_visualize.push(temp[i]);
-                    polyToErase.exist.push();
+                // if the status of a shape exists, push to visualize
+                for (let i = 0; i < temp.length; i++) {
+                    if (type == "existing" && stat == "e") {
+                        color = "#039BE5";//blue
+                        to_visualize.push(temp[i]);
+                      
+                    } else if (type == "plan_ex" && stat == "p") {
+                        color = "#9E9E9E"; //gray
+                        to_visualize.push(temp[i]);
+                      
+                    }
                 }
-          
+
+                let polygon = new google.maps.Polygon({
+                    description: "",
+                    description_value: '',
+                    paths: to_visualize,
+                    strokeColor: 'black',
+                    strokeOpacity: 0.60,
+                    strokeWeight: 0.70,
+                    fillColor: color,
+                    fillOpacity: 0.60,
+                    zIndex: -1,
+                    title: "",
+                });
+
+                if (stat == "e") polyToErase.exist.push(polygon);
+                if (stat == "p") polyToErase.plan.push(polygon);
+
+                polygon.setMap(map);
+                polygons.push(polygon);
             }
-
-            let polygon = new google.maps.Polygon({
-                description: "",
-                description_value: '',
-                paths: to_visualize,
-                strokeColor: 'black',
-                strokeOpacity: 0.60,
-                strokeWeight: 0.70,
-                fillColor: color,
-                fillOpacity: 0.60,
-                zIndex: -1,
-                title: "",
-
-            });
-
-            polyToErase.exist.push(polygon);
-
-            // Hover Effect for Google API Polygons
-            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
-            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-
-            polygon.setMap(map);
-            polygons.push(polygon);
         }
-
-        if (mode == 0) {
-            document.getElementById("pm5Text").innerHTML = String(pm5Data.ratioPrim.toFixed(2)) + "%"; // menu text
-        } else if (mode == 1) {
-            regionalText('');
-        }
-       // pm8DataP(mode, ex);
+       
+        pm8DataP(mode, stat);
     });
 }
-function pm8DataP(mode, condition) {
-    console.log('en puntos');
-    let pm8Data = {
-        jobs: 1,
-        ratioPrim: 2,
-        ratioPrimTot: 3
-    };
-    let key = 'all_pm8P';
+function pm8DataP(mode, stat) {
+    let key = 'all_pm8K';
     let example = { key: key };
     let color = "#039BE5";
 
-    p = [];
+    let pm8Data = {
+        existing: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        planned: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        totKeyDest: 0,
+        percentKeyD1: 0,
+        percentKeyD2: 0,
+    };
+
 
     $.get('mwt_handler.php', example, function (data) {
-        let image = "./img/markers/crash.png";
+
+        let image = "./img/markers/red.png";
+
+        pm8Data.totKeyDest = data.shape_arr.length+1; // we are adding 1 since we are also counting the null value on this table
+        let existingCount = 0;
+        let proposedCount = 0;
         for (index in data.shape_arr) { // Organize information into dictionaries
             //hold info of 1 point at a time
             let holder = [];
-            let status = data.shape_arr[index].status;
-            let name = data.shape_arr[index].name;
+            let existing = data.shape_arr[index].existing;
+            let planned = data.shape_arr[index].planned;
+            let type = data.shape_arr[index].type;
+            let display = data.shape_arr[index].display;
 
-            if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points 
+            if (mode == 1) {
                 holder.push(wktFormatterPoint(data.shape_arr[index]['shape']));
                 holder = holder[0][0]; // Fixes BLOBs
 
@@ -108,47 +97,121 @@ function pm8DataP(mode, condition) {
 
                 let point = new google.maps.Marker({
                     position: to_visualize,
-                    title: name, 
-                    icon: image
+                    icon: image,
+                    title: type
                 });
 
-                if (status == "existing" && condition == "e") {
-                    p.push(point);
-                } else if (status == "planned_existing" && condition == "p") {
-                    p.push(point);
+                if (existing == "yes" && stat == "e") {
+                    pointsToErase.exist.push(point);
+                    point.setMap(map);
+                    points.push(point);
+                } else if (planned == "yes" && stat == "p") {
+                    pointsToErase.plan.push(point);
+                    point.setMap(map);
+                    points.push(point);
                 }
-          
             }
-        } // at this point all data is organized by dictionaries
 
-        for (index in p) {
-            p[index].setMap(map);
-            points.push(p[index]);
+            if (display == 1 || display == 9) {
+                existingCount++;
+            }
+            if (display > 0) {
+                proposedCount++;
+            }
+
+            //COUNT
+            if (type == "Airport") {
+                if (existing == "yes") {
+                    pm8Data.existing[0]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[0]++;
+                }
+            } else if (type == "Hospital") {
+                if (existing == "yes") {
+                    pm8Data.existing[1]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[1]++;
+                }
+            } else if (type == "Leisure Time Activity") {
+                if (existing == "yes") {
+                    pm8Data.existing[2]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[2]++;
+                }
+            } else if (type == "Mall") {
+                if (existing == "yes") {
+                    pm8Data.existing[3]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[3]++;
+                }
+            } else if (type == "Military Base") {
+                if (existing == "yes") {
+                    pm8Data.existing[4]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[4]++;
+                }
+            } else if (type == "Natural and Heritage") {
+                if (existing == "yes") {
+                    pm8Data.existing[5]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[5]++;
+                }
+            } else if (type == "Nursing Home") {
+                if (existing == "yes") {
+                    pm8Data.existing[6]++;
+                } else if (existing == "yes") {
+                    pm8Data.planned[6]++;
+                }
+            } else if (type == "Prison/Jail") {
+                if (existing == "yes") {
+                    pm8Data.existing[7]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[7]++;
+                }
+            } else if (type == "Shelter") {
+                if (existing == "yes") {
+                    pm8Data.existing[8]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[8]++;
+                }
+            } else if (type == "Transit Center") {
+                if (existing == "yes") {
+                    pm8Data.existing[9]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[9]++;
+                }
+            } else if (type == "University/College") {
+                if (existing == "yes") {
+                    pm8Data.existing[10]++;
+                } else if (planned == "yes") {
+                    pm8Data.planned[10]++;
+                }
+            }
+
         }
+        console.log(existingCount);
+        console.log(proposedCount);
+        //calculations
+        pm8Data.percentKeyD1 = (existingCount / pm8Data.totKeyDest) * 100;
+        pm8Data.percentKeyD2 = (proposedCount / pm8Data.totKeyDest) * 100;
 
-        if (mode == 0) { // menu text, this is only done once
-            // Send to menu Text
-            document.getElementById("pm19DrivingText").innerHTML = "val";
+        if (mode == 0) {
+            document.getElementById("pm8Text").innerHTML = pm8Data.percentKeyD1.toFixed(2) + "%";
         }
-
-        let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
-        if (mode == 1) {
+        else if (mode == 1) {
             regionalText(pm8Data);
-        }
-        else if (mode > 1) {
-            dynamicCorridorText(corr, pm8Data); // Send graph data and current corridor to dynamic text for corridors
         }
     });
 }
-function pm8HorizontalBar(ctx){
+function pm8HorizontalBar(ctx,data){
     var myBarChart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
             labels:["Millitary Base","Airport","University/College", "Transit Center", "Shelter", "Prison/jail", "Nursing Home", "Natural and heritage", "Mall", "Leisure Time Activity", "Hospital"],
             datasets:[
                 {
-                    label:"Number of Key Destinations in El Paso MPO Region",
-                    data:[1,5,8,5,6,7,8,9,4,6,11],
+                    label: "Number of Key Destinations in El Paso MPO Region",
+                    data: data.existing,
                     fill: false,
                     backgroundColor:['rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)','rgb(255,112,67)' ],
                     borderColor:['rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)','rgb(255,87,34)'],
@@ -156,7 +219,7 @@ function pm8HorizontalBar(ctx){
                 },
                 {
                     label:"Number of Key Destinations in 0.5 mi of high-quality rapid transit",
-                    data:[1,5,8,4,8,9,6,3,4,7,8],
+                    data:data.planned,
                     fill: false,
                     backgroundColor:['rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)','rgba(33,150,243 ,1)'],
                     borderColor:['rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)','rgb(33,150,243)'],

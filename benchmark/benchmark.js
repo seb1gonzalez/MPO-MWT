@@ -8,7 +8,9 @@
     curly: true,
     loopfunc: true
 */
-let id = 0;
+let id = 0;  //* reference to the different layouts
+let benchmark_data; //* results of the data.
+let benchmar_layout; //* rows and options for the each of the tables
 const corridors = [
     'Regional',
     'Alameda',
@@ -74,6 +76,8 @@ const pm_categories = {
         'Corridor Test',
     ],
 };
+
+
 function benchmark() {
     clean();
     id = 0;
@@ -81,29 +85,94 @@ function benchmark() {
     target.innerHTML = `
     <!-- benchmark_handler -->
         <div id="benchmark" class=" sidenav rounded-left mb-2 bg-light text-dark" ondblclick="openNavBenchmark();" data-toggle="tooltip" data-placement="left" title="Double click to Open">
-            <a href="javascript:void(0)" href="javascript:void(0)" class="closebtn" onclick="closeNavBenchmark();">&times;</a>
+            <a href="javascript:void(0)" href="javascript:void(0)" class="closebtn" onclick="closeNavBenchmark();"><i class="fa fa-times"></i></a>
+
             <div id="benchmark-content" class ="container-fluid">
                 <div id="benchmark-table" class="row">
                 <!--contains the left most column. this one displays the names of the categories of the PM's-->
-                <div class="col-lg-7">
-                    <div id="benchmark-containers" class="row"></div>
-                </div>
-                <!--this one contains all the other cards that are held insides. \
+                    <div class="col-lg-7">
+                        <div id="benchmark-containers" class="row"></div>
+                    </div>
+                <!--this one contains all the other cards that are held inside. \
                 this will contain the data of each of the corridors.-->
-            </div>
+                </div>
             </div>
         </div>
     `;
 }
 
-$('#benchmarking').click(function() {
-    benchmark();
+$('#benchmarking').click(() => {
+    //benchmark();
+    load_benchmark_modal();
+    content= $('#benchamark-content');
+
     create_benchmark_categories(pm_categories);
     create_benchmark_column(corridors, pm_categories);
-    openNavBenchmark();
 });
 
+function load_benchmark_modal(){
+    //refresh
+    clean();
+    id= 0;
+    let base_content = document.createElement('DIV');
+    base_content.innerHTML = `
+        <div class="modal fade in" id="benchmark">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- Benchmarking Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title text-primary ">Benchmarking</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- benchmarking body -->
+                    <div class="modal-body">
+                        <div class="container-fluid col-lg-12">
+                            <div class="row">
+                                <div id="benchmark-content" class="container-fluid">
+                                    <div id="benchmark-table" class="row">
+                                        <!--contains the left most column. this one displays the names of the categories of the PM's-->
+                                        <div class="col-lg-7">
+                                            <div id="benchmark-containers" class="row"></div>
+                                        </div>
+                                        <!--this one contains all the other cards that are held inside. \
+                                                this will contain the data of each of the corridors.-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    $('#non-pm-content').append(base_content);
+}
 
+function tutorial(params) {
+    load_benchmark_modal();
+    //get references to  the  content divs
+    buttons = $('#tut-categories');
+    video = $('#tut-video');
+    if (buttons.is(':empty')) { //* prevents duplicates.
+        ////console.log('inside loading');
+        if (tutorial_data === undefined || null) { //* prevents redundant requests.
+            get_tut_data()
+                .then(res => {
+                    ////console.log(res);
+                    tutorial_data = res;
+                    load_tut_buttons(buttons, Object.keys(res));
+                    change_tut_video('Multimodal Web Tool');
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else { //*do not use data requests.
+            load_tut_buttons(buttons, Object.keys(tutorial_data));
+            change_tut_video('Multimodal Web Tool');
+        }
+    }
+}
 
 function create_benchmark_categories(categories) {
     let root = document.getElementById('benchmark-table');
@@ -244,37 +313,29 @@ function create_benchmark_column(corridors, categories) {
 }
 function remove_benchmark_column(id) {
     let target = document.getElementById(id);
-    console.log(target);
+    ////console.log(target);
     target.remove();
-    console.log('current column removed');
+    ////console.log('current column removed');
 }
 function add_column() {
-    parent = document.getElementById('benchmark-containers');
+    parent = $('#benchmark-containers')[0];
     if (parent.children.length < 3) {
         create_benchmark_column(corridors, pm_categories);
     }
 }
-function openNavBenchmark() {
-    let nav = document.getElementById('benchmark');
-    nav.className = 'sidenav rounded-left mb-2 bg-light text-dark';
-    // resizing for the table
-    $(nav).tooltip('disable');
-    $(nav).css('overflow', 'auto');
-    nav.style.height = '60vh';
-    $(nav).css('margin-top', '');
-    $(nav).css('top', '20vh');
 
-    nav.style.width = '80vw';
-    nav.style.zIndex = 1;
-    document.getElementById('sidebar').style.zIndex = 0;
-}
-
-function closeNavBenchmark() {
-    let nav = document.getElementById('benchmark');
-    // document.getElementById("mySidenav").style.width = "0%";
-    nav.style.width = '1%';
-    nav.style.height = '2%';
-    nav.style.overflow = 'hidden';
-    nav.className = 'sidenav rounded-left mb-2 bg-info text-dark';
-    $(nav).tooltip('enable');
+function get_benchmark_data(path) {
+    return new Promise((resolve, reject) => {
+        // //console.log('inside promise');
+        //task
+        let result;
+        $.getJSON(path, data => {
+            // console.log(data);
+            resolve(data);
+        });
+        if ((result === undefined, result === null)) {
+            error = new Error('couldn\'t load data');
+            reject(error);
+        }
+    });
 }

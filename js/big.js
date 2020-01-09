@@ -31,7 +31,11 @@ var currentType = "driving||freight||transit||walking||biking";
 
 // var currentCorr  = ""; // current corridor tracker
 var toggleOn = false;
-var polyToErase = { // keeps track what polygons to erase
+var polyToErase = { // keeps track what polygons to erase for toggle
+    exist: [],
+    plan: []
+}
+var pointsToErase = {
     exist: [],
     plan: []
 }
@@ -177,6 +181,8 @@ function turnOn_Switch(selected) {
         regionalCaller();
     } else {
         removeAllElementsBar();
+        get_corridors_buffer(); //draws corridor buffer
+        console.log("buffer called");
         if (selected == "ALAMEDA") {
             corridors_selected.ALAMEDA = true;
             corridors_T.ALAMEDA = true;
@@ -232,7 +238,7 @@ function turnOn_Switch(selected) {
         }
 
         //call these methods to populate corridor
-        get_corridors_buffer(); //draws corridor buffer
+
 
     }
 }
@@ -240,8 +246,16 @@ function turnOn_Switch(selected) {
 //mimics a click of the menu text. 
 function regionalCaller() {
     if (currentPM == 1) {
-        pointHandler("PM1");
-    } else if (currentPM == 3) {
+        polygonHandler('PM1');
+    } else if (currentPM == 2) {
+        if (currentType == "transit") {
+            polygonHandler("PM2T");
+        } else if (currentType == "walking") {
+            polygonHandler("PM2W");
+        } else if (currentType == "biking") {
+            polygonHandler("PM2B");
+        }
+    }else if (currentPM == 3) {
         lineHandler("PM3");
     } else if (currentPM == 4) {
         if (currentType == "biking") lineHandler("pm4Biking");
@@ -311,6 +325,8 @@ function sendCurrentCorridor(corr) {
         corrShape_handlerL("pm4W", corr);
     }else if (currentPM == 1) {
         pm1Data(2, corr);
+    } else if (currentPM == 2) {
+        pm2Data(2, corr);
     }
     
 }
@@ -465,11 +481,17 @@ function clear_Exist() {
     for (var index in polyToErase.exist) {
         polyToErase.exist[index].setMap(null);
     }
+    for (var index in pointsToErase.exist) {
+        pointsToErase.exist[index].setMap(null);
+    }
 }
 
 function clear_Planned() {
     for (var index in polyToErase.plan) {
         polyToErase.plan[index].setMap(null);
+    }
+    for (var index in pointsToErase.plan) {
+        pointsToErase.plan[index].setMap(null);
     }
 }
 
@@ -532,7 +554,13 @@ function get_corridors() {
 
 //polygons
 function get_corridors_buffer() {
+    let color = 'teal'; //default
+    let fillOpacityval = 0.60; //default
     //console.table(corridors_selected);
+    if (currentPM == 20) {
+        color = "#9E9E9E"; //gray
+        fillOpacityval = 0.25;
+    }
     fetch('./corridors_buffers.json').then(function (response) {
         return response.json();
     }).then(function (myJson) {
@@ -556,15 +584,16 @@ function get_corridors_buffer() {
                         };
                         to_visualize.push(coord);
                     }
+             
                     let polygon = new google.maps.Polygon({
                         description: "",
                         description_value: '',
                         paths: to_visualize,
-                        strokeColor: 'teal',
+                        strokeColor: color,
                         strokeOpacity: 0.80,
                         strokeWeight: 2.0,
-                        fillColor: "teal",
-                        fillOpacity: 0.60,
+                        fillColor: color,
+                        fillOpacity: fillOpacityval,
                         zIndex: 99,
                         title: "1 mile buffer",
                     });
@@ -583,9 +612,12 @@ function performanceDataLoader() {
     pm1Data(0, '');
     //pm2Data();
     pm3Data(0, '');
-    lineHandler('0pm4W'); // mode 0 in pm4 Walking
+    pm4Data(0, '');
+    //lineHandler('0pm4W'); // mode 0 in pm4 Walking
     pm5Data(0, '');
     pm6Data(0, '');
+    pm7Data(0, '');
+    pm8Data(0, '');
     pm9Data(0, '');
     pm10Data(0, '');
     pm11Data(0, '');
@@ -599,6 +631,7 @@ function performanceDataLoader() {
 
     pm18Data(0, '');
     pm19Data(0, '');
+    pm20Data(0, '');
     //pm20Data();
     //pm20DataT();
     pm22Data();

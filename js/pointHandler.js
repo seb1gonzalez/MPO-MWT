@@ -87,6 +87,12 @@ function pointHandler(found) {
         currentType = "biking";
         pm20Data(1, "a");
     }
+    else if (found == "PM22") {
+        currentPM = 22;
+        //active_pm_for_AOI = "all_pm18_19";
+        currentType = "driving";
+        pm22Data(1, "a");
+    }
     else if (found == "pm26") {
         currentPM = 26;
         active_pm_for_AOI = "all_pm26";

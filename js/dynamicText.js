@@ -125,7 +125,7 @@ function pm3DynamicText(corridor, data) {
     console.log(corridor);
     headerAdder("Transit ridership", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("Within " + wordFix(corridor) + " corridor. The route " + data.highRoute + " has the highest ridership with an average of " + commafy(data.highAvg) + " passengers. The route " + data.lowRoute + " has the lowest ridership with an average of " + commafy(data.lowAvg) + "  (5 years average).", "paragraph", "summary-info");
+    paragraphAdder("Within " + wordFix(corridor) + " corridor, the total ridership is " + commafy(data.tot) +". The route " + data.highRoute + " has the highest ridership with an average of " + commafy(data.highAvg) + " passengers. The route " + data.lowRoute + " has the lowest ridership with an average of " + commafy(data.lowAvg) + "  (5 years average).", "paragraph", "summary-info");
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("2014-2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -142,23 +142,19 @@ function pm4DynamicText(corridor, data) {
     if (currentType == 'biking') {
         headerAdder("Number of Biking Trips Recorded by Strava", "title");
         paragraphAdder("Summary:", "subtitle", "summary-title");
-        if(corridor == "AOI"){
+        if (corridor == "AOI") {
             paragraphAdder("In 2018, a total of " + commafy(data) + " bike trips were recorded by Strava in the AOI. ", "paragraph", "summary-info");
-
         }
         else {
             paragraphAdder("In 2018, a total of " + commafy(data) + " bike trips were recorded by Strava in the " + wordFix(corridor) + " corridor.", "paragraph", "summary-info");
-
         }
         paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-        paragraphAdder("2018 data licensed by Strava", "paragraph", "analysis-info");
+        paragraphAdder("2018 data licensed by Strava.", "paragraph", "analysis-info");
         paragraphAdder("Data Source:", "subtitle", "data-title");
         paragraphAdder("Strava Metro data provided via a sublicense from the Texas Department of Transportation.", "paragraph", "data-info");
         paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
         paragraphAdder("This performance measure reflects the total number of bike trips on the street regardless of the direction (column TACTCNT) recorded by Strava in 2018. Trips recorded on Interstate 10 were removed from this dataset, since I-10 is a limited access facility. The legend shows the data in a geometric interval, which provides the best viewing distribution.", "paragraph", "calc-info");
         names = ['5 - 30', '30 - 479', '479 - 6,460'];
-
-
     } else if (currentType == 'walking') {
         headerAdder("Number of Walking Trips Recorded by Strava", "title");
         paragraphAdder("Summary:", "subtitle", "summary-title");
@@ -168,7 +164,7 @@ function pm4DynamicText(corridor, data) {
         paragraphAdder("Data Source:", "subtitle", "data-title");
         paragraphAdder("Strava Metro (2017) provided via a sublicense from the Texas Department of Transportation.", "paragraph", "data-info");
         paragraphAdder("How Performance Measure was Calculated:", "subtitle", "calc-title");
-        paragraphAdder("This performance measure reflects the total number of walk trips on the street regardless of the direction (column TACTCNT) recorded by Strava in 2017. Trips recorded on the Interstate 10 were removes from this dataset, since I-10 is a limited access facility. The legend shows the data in a geometric interval, which provides the best viewing distribution.", "paragraph", "calc-info");
+        paragraphAdder("This performance measure reflects the total number of walk trips on the street regardless of the direction (column TACTCNT) recorded by Strava in 2017. Trips recorded on the Interstate 10 were removed from this dataset, since I-10 is a limited access facility. The legend shows the data in a geometric interval, which provides the best viewing distribution.", "paragraph", "calc-info");
         names = ['5 - 15', '16 - 129', '130 -1,305'];
     }
 
@@ -196,10 +192,11 @@ function pm11DynamicText(corridor,data) {
     headerAdder("Length of Sidewalks per Mile", "title");
     paragraphAdder("Summary:", "subtitle", "summary-title");
     if(corridor == "AOI"){
-        paragraphAdder("There are 3,012 miles of sidewalks along " + data.pm11Slength.toFixed(2)+"miles of roadways within the AOI", "paragraph", "summary-info");
+        paragraphAdder("There are " + commafy(data.sideWalks) + " of sidewalks along " + commafy(data.roadways) + " miles of roadways within the AOI", "paragraph", "summary-info");
     }
-    else{    paragraphAdder("There are 3,012 miles of sidewalks along " + data.pm11Slength.toFixed(2)+"miles of roadways within the " + wordFix(corridor) + " corridor.", "paragraph", "summary-info");
-}
+    else {
+        paragraphAdder("There are " + commafy(data.sideWalks) + " miles of sidewalks along " + commafy(data.roadways) + " miles of roadways within the " + wordFix(corridor) + " corridor.", "paragraph", "summary-info");
+    }
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
     paragraphAdder("Sidewalk GIS layer was provided in 2018", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
@@ -317,16 +314,37 @@ function pm19DynamicText(corridor, data) {
     openNav();
 }
 function pm20DynamicText(corridor, data) {
-    console.log("inside 20 dyNAMIC");
-    headerAdder("Number of crashes between motorized vehicles and pedestrians/bicyclists nearby bus stops.", "title");
-    paragraphAdder("Summary:", "subtitle", "summary-title");
-    paragraphAdder("62.69% of all pedestrian crashes and 48.80% of all bicycle crashes " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area, Mesa St.Dyer St.and Hondo Pass. The highest observed number of crashes within 200 ft.from a bus stop is " + data.w_greatest + " for pedestrian (on " + data.w_address + " " + data.w_on_st + ") and " + data.b_greatest + " for bicycle(" + data.b_greatestCounter + " locations have the same number).", "paragraph", "summary-info");
+    if (currentType == "walking") {
+        headerAdder("Number of crashes between motorized vehicles and pedestrians nearby bus stops.", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        if (data.w_greatest == 0) {
+            paragraphAdder("No pedestrian crashes in " + wordFix(corridor) +" corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area.", "paragraph", "summary-info");
+        }
+        else if (data.w_greatestCounter == 1) {
+            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (on " + data.w_on_st + " at " + data.w_at_strt + ")", "paragraph", "summary-info");
+        } else if (data.w_greatestCounter > 1)  {
+            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (" + data.w_count + " locations have the same number)", "paragraph", "summary-info");
+        }
+
+    } else if (currentType == "biking") {
+        headerAdder("Number of crashes between motorized vehicles and bicyclists nearby bus stops.", "title");
+        paragraphAdder("Summary:", "subtitle", "summary-title");
+        if (data.b_greatest == 0) {
+            paragraphAdder("No bicyclists crashes in " + wordFix(corridor) +" corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area.", "paragraph", "summary-info");
+        } else if (data.b_greatestCounter == 1) {
+            paragraphAdder(data.percentBike.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (on " + data.b_on_st + " at " + data.b_at_strt + ")", "paragraph", "summary-info");
+
+        } else if (data.b_greatestCounter > 1) {
+            paragraphAdder(data.percentBike.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (" + data.b_count + " locations have the same number)", "paragraph", "summary-info");
+        }
+
+    }
     paragraphAdder("Analysis Period:", "subtitle", "analysis-title");
-    paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019", "paragraph", "analysis-info");
+    paragraphAdder("Crashes 2013-2017, SunMetro bus stops as of 2019 ", "paragraph", "analysis-info");
     paragraphAdder("Data Source:", "subtitle", "data-title");
     paragraphAdder("Crash data from TxDOT, location of bus stops from Sun Metro ", "paragraph", "data-info");
     paragraphAdder("How the Performance Measure was Calculated:", "subtitle", "calc-title");
-    paragraphAdder("A buffer of 200 ft. was created from the bus stops to identify how many crashes occurred within that distance.The crashes are from 2013 to 2017, and the bus stop locations are as of 2019. ", "paragraph", "calc-info");
+    paragraphAdder("A buffer of 200 ft. was created from the bus stops to identify how many crashes occurred within that distance. The crashes are from 2013 to 2017, and the bus stop locations are as of 2019.", "paragraph", "calc-info");
     openNav();
 }
 function pm25DynamicText(corridor, data) {

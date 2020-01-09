@@ -25,6 +25,8 @@
   <link rel="stylesheet" type="text/css" href="css/loading.css" />
   <link rel="stylesheet" type="text/css" href="css/loading-btn.css" />
   <link rel="stylesheet" type="text/css" href="benchmark/benchmark.css">
+  <link rel="stylesheet" type="text/css" href="tutorial/tutorial.css">
+
   <style>
 
   </style>
@@ -933,15 +935,17 @@
             <a href="http://www.elpasompo.org/" target="#" class="d-none d-md-inline"><img src="./img/elmpologo.png" class="img-responsive"></a>
             <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class=""></i><span class="d-none d-md-inline"></span></a>
             <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#pms-modal" data-toggle="modal"><i class="fa fa-bar-chart"></i> <span class="d-none d-md-inline">Regional Performance</span></a>
-            <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="#corridors-modal" data-toggle="modal"><i class="fa fa-toggle-on"></i> <span class="d-none d-md-inline">Corridor Performance</span></a>
-            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#" data-parent= "sidebar" id="benchmarking"><i class="fa fa-tachometer"></i> <span class="d-none d-md-inline">Benchmarking</span></a>
-            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#pms-modal" data-toggle="modal"><i class="fa fa-map"></i> <span class="d-none d-md-inline">Interactive AOI</span></a>
-            <a class="list-group-item d-inline-block collapsed " data-target="#sidebar" href="#" data-parent="sidebar" id="mtp-projects"> <i class="fa fa-pencil-square-o"></i> <span class="d-none d-md-inline">MTP
-                Projects</span></a>
-            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#data-repo" data-toggle="modal" id="data-repository"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Data Repository</span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#corridors-modal" data-toggle="modal"><i class="fa fa-toggle-on"></i> <span class="d-none d-md-inline">Corridor Performance</span></a>
+            <!-- <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#" data-parent= "sidebar" id="benchmarking"><i class="fa fa-tachometer"></i> <span class="d-none d-md-inline">Benchmarking</span></a> -->
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#benchmark"  data-toggle="modal" id="benchmarking"><i class="fa fa-tachometer"></i> <span class="d-none d-md-inline">Benchmarking</span></a>
 
-            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class=""></i><span class="d-none d-md-inline"></span></a>
-            <a href="tutorial.php" target="_blank" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-certificate"></i> <span class="d-none d-md-inline">Tutorial</span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#pms-modal" data-toggle="modal"><i class="fa fa-map"></i> <span class="d-none d-md-inline">Interactive AOI</span></a>
+
+            <a class="list-group-item d-inline-block collapsed " data-target="#sidebar" href="#mtp-projects"                   id="mtp-projects"   > <i class="fa fa-pencil-square-o"></i> <span class="d-none d-md-inline">MTP Projects</span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#data-repo" data-toggle="modal" id="data-repository"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Data Repository</span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#"                                                  ><i class=""></i><span class="d-none d-md-inline"></span></a>
+            <a class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#tutorial"  data-toggle="modal" id="tut"            ><i class="fa fa-certificate"></i> <span class="d-none d-md-inline">Tutorial</span></a>
+
             <a data-toggle="modal" href="#aboutmodal" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-info"></i> <span class="d-none d-md-inline">About</span></a>
             <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class=""></i><span class="d-none d-md-inline"></span></a>
             <a onclick="clearMetadata(); closeNav(); closeLegend()" href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-trash-o"></i> <span class="d-none d-md-inline">Clear</span></a>
@@ -1035,6 +1039,8 @@
 <script type="text/javascript" src="benchmark/benchmark.js"></script>
 
 <script type="text/javascript" src="data_repository/repo.js"></script>
+
+<script type="text/javascript" src="tutorial/tutorial.js"></script>
 
 
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">

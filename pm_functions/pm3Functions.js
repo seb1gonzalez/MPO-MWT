@@ -7,33 +7,42 @@
  *  * Mode 4: AOI
  */
 
-function pm3Data(mode, data_for_php) {
+function pm3Data(mode, ex) {
 
     let pm3TextData = {
         highAvg: 0,
         lowAvg: 1000000000,
         highRoute: 0,
-        lowRoute: 0
+        lowRoute: 0,
+        tot:0
     }
-
+    let data_for_php = {};
     let color = '#03A9F4';  // default
     let php_handler = "mwt_handler.php";
     let shape = "shape";
+
     if (mode == 0 || mode == 1) {
         let key = 'all_pm3';
         data_for_php = { key: key };
     }
-
-     else   if (mode == 3 || mode == 2) {
+    else if (mode == 3 || mode == 2) {
+    
         php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
+        data_for_php = {
+            key: 3,
+            corridors_selected: ex,
+            tableName: "pm3final"
+        };
     }
     else   if (mode == 4) {
         php_handler = "./backend/AOI.php";
     }
 
     $.get(php_handler, data_for_php, function (data) { // ajax call to populate pavement lines
-        console.log('back');
+      
+
+
         let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
         for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
             let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING 
@@ -45,7 +54,9 @@ function pm3Data(mode, data_for_php) {
             //PMS Data/Columns
             let route = parseInt(data.shape_arr[index].routeName); // used to color code line
             let avg = parseInt(data.shape_arr[index].AVG_ridership);
-
+  
+       
+            pm3TextData.tot += avg;
             //Draw Line(s)
             if (mode == 1 || mode == 2 || mode == 4) {
                 to_visualize = pm3_polyline_geojson_formatter(r);
@@ -88,8 +99,8 @@ function pm3Data(mode, data_for_php) {
                 pm3TextData.lowRoute = route;
             }
         }
-
-        let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
+      
+        let corr = translateCorridor(ex);// what corridor are we on?
         if (mode == 0) {
             let stpm3 = "";
             stpm3 = commafy(pm3TextData.highAvg);

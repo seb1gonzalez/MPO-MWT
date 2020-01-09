@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
        <!-- Sidenavbar -->
-       <div id="mySidenav" class="sidenav rounded-left mb-2 bg-light text-dark" ondblclick="openNav()" data-toggle="tooltip" data-placement="left" title="Double click to Open" >
+       <div id="mySidenav" class="sidenav rounded-left mb-2 bg-light text-dark" onclick="openNav()" data-toggle="tooltip" data-placement="left" title="Double click to Open" >
           <!-- <div class="ld ld-ring ld-spin"></div> -->
           <div class="p-2" id = "colorChanger" >
              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -18,8 +18,9 @@
              <div class="row">
                 <div id='chart2' class="col-md-12 col-sm-12 col-xs-12"></div>
              </div>
+			
              <!--  Radio Button Section -->
-             <div class = "d-flex justify-content-center">
+             <div id = "radioH" class = "d-flex justify-content-center">
                 <div id = "rad1" class="form-check-inline" style="display: block;">
                    <label  class="form-check-label" for="radio1" >
                    <input type="radio" onclick="turnOn_Switch('REGIONAL');toggleVisibilityCorr('off')"  class="form-check-input" id="radio1" name="optradio" value="option1" checked>Regional
@@ -36,6 +37,32 @@
                    </label>
                 </div>
              </div>
+			               <!-- Toggle holder -->
+             <div id="ToggleHolder">
+                <b>Status</b>
+                <div class="row">
+                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                      <h6>Existing</h6>
+                   </div>
+                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                      <label class="switch">
+                      <input type="checkbox" id="toggle1">
+                      <span class="slider round" id = "sliderSpan"></span>
+                      </label>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                      <h6>Planned</h6>
+                   </div>
+                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                      <label class="switch">
+                      <input type="checkbox" id="toggle2">
+                      <span class="slider round"></span>
+                      </label>
+                   </div>
+                </div>
+             </div>
+			 <!-- toggle holder end-->
              <!-- Drop Down Menu -->
              <div class = "d-flex justify-content-center">
                 <div  class="dropdown">
@@ -74,30 +101,7 @@
                 </div>
              </div>
              <!-- Toggle holder -->
-             <div id="ToggleHolder">
-                <b>Switches </b>
-                <div class="row">
-                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
-                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                      <h6>Existing</h6>
-                   </div>
-                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
-                      <label class="switch">
-                      <input type="checkbox" id="toggle1">
-                      <span class="slider round" id = "sliderSpan"></span>
-                      </label>
-                   </div>
-                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                      <h6>Planned</h6>
-                   </div>
-                   <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
-                      <label class="switch">
-                      <input type="checkbox" id="toggle2">
-                      <span class="slider round"></span>
-                      </label>
-                   </div>
-                </div>
-             </div>
+          
           </div>
        </div>
     </div>

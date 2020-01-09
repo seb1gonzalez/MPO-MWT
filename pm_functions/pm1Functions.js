@@ -17,6 +17,7 @@ function plotPM1(mode, ex) {
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
+
     if (mode == 0 || mode == 1) { // if we want regional (default) data
         let key = 'all_pm1';
         data_for_php = { key: key };
@@ -25,6 +26,12 @@ function plotPM1(mode, ex) {
         data_for_php = ex;
         shape = 'ST_AsText(SHAPE)';
         php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 1,
+            corridors_selected: ex,
+            tableName: "pm1"
+        };
     }
     $.get(php_handler, data_for_php, function (data) {
         let median = 0;

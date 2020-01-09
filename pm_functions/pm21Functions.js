@@ -105,8 +105,7 @@ function loadpm21H(mode, ex) {
                 color = "#8BC34A";
             }
             let polygon = new google.maps.Polygon({
-                description: "",
-                description_value: '',
+                description: pattern,
                 paths: to_visualize,
                 strokeColor: 'black',
                 strokeOpacity: 0.60,
@@ -118,20 +117,31 @@ function loadpm21H(mode, ex) {
             });
 	
             polyToErase.exist.push(polygon);
-			
-		
+            var infowindow;
 
+       
             // Hover Effect for Google API Polygons
-	        google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
+	        google.maps.event.addListener(polygon, 'mouseover', function (event) {
+           
+                 var polygonBounds = polygon.getPath();
+                 var point = {
+                    lat: polygonBounds.getAt(0).lat(),
+                    lng: polygonBounds.getAt(0).lng()
+                };
+                 infowindow = new google.maps.InfoWindow({
+                    content: polygon.title ,
+                    position:point,
+                  });
+                 infowindow.open(map);
+                });
+
+
             google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-			
-	
-			
+            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); infowindow.close(); });
+
             polygon.setMap(map);
             polygons.push(polygon);
         }
-
         loadpm21P(mode, ex);
     });
 }

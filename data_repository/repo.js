@@ -81,14 +81,17 @@ function load_legend(location, description, btn_name) {
 function load_repo_list(location, btn_names) {
     for(let btn in btn_names){
         let name = btn_names[btn];
+        let col_container = document.createElement('DIV');
+        col_container.className= 'col-lg-3';
         let button = document.createElement('BUTTON');
-        button.className = 'col-lg-3 btn btn-info';
+        button.className = 'btn btn-info';
         button.innerHTML = name;
         button.setAttribute('value', name );
         button.addEventListener('click', () =>{get_repo_data();});
         button.addEventListener('mouseover', () => {change_repo_info(name);});
         ////let button = document.createElement('BUTTON').outerHTML = `<button class=" col-lg-offset-1 btn btn-info" onmouseover="change_repo_info('${name}');" onclick="get_repo_data();" value="${name}">${name}</button>`;
-        $(location).append(button);
+        $(col_container).append(button);
+        $(location).append(col_container);
 
     }
 

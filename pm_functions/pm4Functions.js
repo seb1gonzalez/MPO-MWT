@@ -7,21 +7,34 @@
  * Mode 3: Corridor Data only, data for benchmark
  * Mode 4: AOI points and data only
  */
-function pm4Data(mode, data_for_php) {
+function pm4Data(mode, corr) {
     let count = 0; // PM4 Data
     let color = '#03A9F4'; 
     let caller = "mwt_handler.php";
     let shape = "shape";
     let key = 'all_pm4';
+    let data_for_php = {};
 
     if (mode == 0 || mode == 1) {
         if (currentType == 'walking') key = 'all_pm4W';
         else if (currentType == 'biking') key = 'all_pm4';
-     
         data_for_php = { key: key };
     } else  if(mode == 2){
         caller = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
+        let key = "";
+
+        if (currentType == "biking") {
+            key = "pm4_bike";
+        } else if (currentType == "walking") {
+            key = "pm4_walking";
+        }
+
+        data_for_php = {
+            key: 4,
+            corridors_selected: corr,
+            tableName: key
+        };
     }
     else if (mode == 4) { 
         caller = "./backend/AOI.php";
@@ -104,7 +117,7 @@ function pm4Data(mode, data_for_php) {
         if (mode == 0) {
             if (currentType == "walking") {
                 document.getElementById("pm4WText").innerHTML = commafy(count);
-                lineHandler('0pm4B'); 
+               // lineHandler('0pm4B'); 
             } else if (currentType == "biking") {
                 document.getElementById("pm4BText").innerHTML = commafy(count);
             }

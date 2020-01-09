@@ -1,137 +1,229 @@
-
-
 /** 
  * Creates graph for PM22
  * Calculates graph data
  *  
 */
-var pm22_crashes = []; // stores year totals for pm22 crashes
-let pm22Text = 0;
-//stores summation
 
+function pm22nmPoints(mode,ex) {
+    let image = "./icons/crash_red.png";
+    let cluster_markers = [];
+    $.get('mwt_handler.php', example, function (data) {
+        for (index in data.shape_arr) {
+            let holder = [];
+            holder.push(wktFormatterPoint(data.shape_arr[index]['shape']));
+            holder = holder[0][0]; // Fixes BLOB
 
-let pm22_TX_data = {
-		    _2013:{injuries:0},
-		    _2014:{injuries:0},
-		    _2015:{injuries:0},
-		    _2016:{injuries:0},
-		    _2017:{injuries:0}
-			};
-let pm22_NM_data = {
-		    _2013:{injuries:0},
-		    _2014:{injuries:0},
-		    _2015:{injuries:0},
-		    _2016:{injuries:0},
-		    _2017:{injuries:0}
-		};
+            cluster_points = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
+            cluster_markers.push(cluster_points);
+        }
 
-
-function pm22Data(){
-	pm22_crashes = []; // gets valuesPm22 for pm22 graph
-    
-	$.get("./backend/pm22_data.php",function (myJson) {
-       
-	// crashes data
-    let all_tx_years = myJson.PM22.TX_YEARS;
-	let all_nm_years = myJson.PM22.NM_YEARS;
-	//console.log(all_tx_years);
-	
-
-	let c17 = 0, c16 = 0, c15 = 0, c14 = 0, c13 = 0; // counts per year
-
-
-	// FOR Texas
-	for(let i = 0; i < all_tx_years.length; i++ ){
-		if(all_tx_years[i] == "2017"){
-			c17++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_TX_data._2017.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
-		
-		}
-		else if(all_tx_years[i] == "2016"){
-			c16++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_TX_data._2016.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
-		}
-		else if(all_tx_years[i] == "2015"){
-			c15++;// crash count
-			/* FOR INJURIES */
-			pm22_TX_data._2015.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
-			
-
-		}
-		else if(all_tx_years[i] == "2014"){
-			c14++;// crash count
-			/* FOR INJURIES */
-			pm22_TX_data._2014.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
-
-
-		}
-		else if(all_tx_years[i] == "2013"){	
-			c13++;// crash count
-			/* FOR INJURIES */
-			pm22_TX_data._2013.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
-
-		}
-	}
-	
-	// now for New Mexico
-		for(let i = 0; i < all_nm_years.length; i++ ){
-		if(all_nm_years[i] == "2017"){
-			c17++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_NM_data._2017.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
-		
-		}
-		else if(all_nm_years[i] == "2016"){
-			c16++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_NM_data._2016.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
-		}
-		else if(all_nm_years[i] == "2015"){
-			c15++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_NM_data._2015.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
-			
-
-		}
-		else if(all_nm_years[i] == "2014"){
-			c14++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_NM_data._2014.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
-
-
-		}
-		else if(all_nm_years[i] == "2013"){	
-			c13++;// crash count
-			
-			/* FOR INJURIES */
-			pm22_NM_data._2013.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
-
-		}
-	}	
-
-	pm22_crashes.push(c17);//0
-	pm22_crashes.push(c16);//1
-	pm22_crashes.push(c15);//2
-	pm22_crashes.push(c14);//3
-	pm22_crashes.push(c13);//4
-	pm22Text = c17+c16+c15+c14+c13;
-	document.getElementById("pm22Count").innerHTML = commafy(pm22Text);
-
+        var markers = cluster_markers.map(function (location, i) {
+            return new google.maps.Marker({
+                position: location,
+                icon: image,
+                title: "A crash ocurred at this location"
+            });
         });
+
+        clusters.push(markers);
+        markerCluster = new MarkerClusterer(map, markers, {
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        });
+    });
+}
+function pm22txPoints(mode,ex) {
+    let shape = "shape";
+    let php_handler = "mwt_handler.php";
+    let data_for_php = {};
+
+    let key = "";
+    if (mode == 4) {
+        data_for_php = ex;
+        php_handler = "./backend/AOI.php";
+    }
+
+    if (mode == 0 || mode == 1) {
+        key = 'all_pm22';
+        data_for_php = { key: key };
+    } else if (mode == 2) {
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 22,
+            corridors_selected: ex,
+            tableName: "pm22txpoints"
+        };
+    }
+
+        cmp_lines();
+        let image = "./icons/crash_red.png";
+        let cluster_markers = [];
+        $.get(php_handler, data_for_php, function (data) {
+            for (index in data.shape_arr) {
+                let holder = [];
+                holder.push(wktFormatterPoint(data.shape_arr[index]['shape']));
+                holder = holder[0][0]; // Fixes BLOB
+
+                cluster_points = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
+                cluster_markers.push(cluster_points);
+            }
+
+            var markers = cluster_markers.map(function (location, i) {
+                return new google.maps.Marker({
+                    position: location,
+                    icon: image,
+                    title: "A crash ocurred at this location"
+                });
+            });
+
+            clusters.push(markers);
+            markerCluster = new MarkerClusterer(map, markers,
+                {
+                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                });
+           // pm22nmPoints(mode,ex);
+        });
+}
+
+function pm22Data(mode, ex) {
+    var pm22_crashes = []; // stores year totals for pm22 crashes
+    let pm22Text = 0;
+    //stores summation
+
+
+    let pm22_TX_data = {
+        _2013: { injuries: 0 },
+        _2014: { injuries: 0 },
+        _2015: { injuries: 0 },
+        _2016: { injuries: 0 },
+        _2017: { injuries: 0 }
+    };
+    let pm22_NM_data = {
+        _2013: { injuries: 0 },
+        _2014: { injuries: 0 },
+        _2015: { injuries: 0 },
+        _2016: { injuries: 0 },
+        _2017: { injuries: 0 }
+    };
+    pm22_crashes = []; // gets valuesPm22 for pm22 graph
+
+    $.get("./backend/pm22_data.php", function (myJson) {
+
+        // crashes data
+        let all_tx_years = myJson.PM22.TX_YEARS;
+        let all_nm_years = myJson.PM22.NM_YEARS;
+        //console.log(all_tx_years);
+
+
+        let c17 = 0, c16 = 0, c15 = 0, c14 = 0, c13 = 0; // counts per year
+
+
+        // FOR Texas
+        for (let i = 0; i < all_tx_years.length; i++) {
+            if (all_tx_years[i] == "2017") {
+                c17++;// crash count
+
+                /* FOR INJURIES */
+                pm22_TX_data._2017.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
+
+            }
+            else if (all_tx_years[i] == "2016") {
+                c16++;// crash count
+
+                /* FOR INJURIES */
+                pm22_TX_data._2016.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
+            }
+            else if (all_tx_years[i] == "2015") {
+                c15++;// crash count
+                /* FOR INJURIES */
+                pm22_TX_data._2015.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
+
+
+            }
+            else if (all_tx_years[i] == "2014") {
+                c14++;// crash count
+                /* FOR INJURIES */
+                pm22_TX_data._2014.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
+
+
+            }
+            else if (all_tx_years[i] == "2013") {
+                c13++;// crash count
+                /* FOR INJURIES */
+                pm22_TX_data._2013.injuries += parseInt(myJson.PM22.TX_INJURIES[i]);
+
+            }
+        }
+
+        // now for New Mexico
+        for (let i = 0; i < all_nm_years.length; i++) {
+            if (all_nm_years[i] == "2017") {
+                c17++;// crash count
+
+                /* FOR INJURIES */
+                pm22_NM_data._2017.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
+
+            }
+            else if (all_nm_years[i] == "2016") {
+                c16++;// crash count
+
+                /* FOR INJURIES */
+                pm22_NM_data._2016.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
+            }
+            else if (all_nm_years[i] == "2015") {
+                c15++;// crash count
+
+                /* FOR INJURIES */
+                pm22_NM_data._2015.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
+
+
+            }
+            else if (all_nm_years[i] == "2014") {
+                c14++;// crash count
+
+                /* FOR INJURIES */
+                pm22_NM_data._2014.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
+
+
+            }
+            else if (all_nm_years[i] == "2013") {
+                c13++;// crash count
+
+                /* FOR INJURIES */
+                pm22_NM_data._2013.injuries += parseInt(myJson.PM22.NM_INJURIES[i]);
+
+            }
+        }
+
+        pm22_crashes.push(c17);//0
+        pm22_crashes.push(c16);//1
+        pm22_crashes.push(c15);//2
+        pm22_crashes.push(c14);//3
+        pm22_crashes.push(c13);//4
+        pm22Text = c17 + c16 + c15 + c14 + c13;
+
+        //draw
+        if (mode == 1 || mode == 2) {
+            pm22txPoints(mode, ex);
+        }
+
+        if (mode == 0) {
+            document.getElementById("pm22Count").innerHTML = commafy(pm22Text);
+        } else if (mode == 1) {
+            regionalText(pm22_TX_data);
+        } else if (mode == 2) {
+
+        }
+
+    });
+ 
 }
 
 
 //  CHARTS 
 		/* LINE CHART */
-function pm22chartLine(ctx){
+function pm22chartLine(ctx,data){
 let crashes = {
 		_2013:pm22_crashes[4],
 		_2014:pm22_crashes[3],
@@ -146,8 +238,9 @@ let crashes = {
         labels: ["2013", "2014", "2015", "2016", "2017"],
         datasets: [
             {
-            label: "Crashes",
-            data: [crashes._2013,crashes._2014,crashes._2015 ,crashes._2016 ,crashes._2017],
+                label: "Crashes",
+                data:[1,2,3,4,5],
+            //data: [crashes._2013,crashes._2014,crashes._2015 ,crashes._2016 ,crashes._2017],
             backgroundColor: "blue",
             borderColor: "lightblue",
             fill: false,
@@ -155,13 +248,14 @@ let crashes = {
             radius: 5
             },
             {
-            label: "Injuries",
-            data: [
+                label: "Injuries",
+                data:[5,6,7,8,9],
+            /*data: [
             		pm22_NM_data._2013.injuries + pm22_TX_data._2013.injuries,
              		pm22_NM_data._2014.injuries + pm22_TX_data._2014.injuries, 
              		pm22_NM_data._2015.injuries + pm22_TX_data._2015.injuries, 
              		pm22_NM_data._2016.injuries + pm22_TX_data._2016.injuries, 
-             		pm22_NM_data._2017.injuries + pm22_TX_data._2017.injuries],
+             		pm22_NM_data._2017.injuries + pm22_TX_data._2017.injuries],*/
             backgroundColor: "green",
             borderColor: "lightgreen",
             fill: false,
