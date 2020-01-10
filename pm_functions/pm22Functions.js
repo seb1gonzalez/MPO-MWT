@@ -4,10 +4,35 @@
  *  
 */
 
-function pm22nmPoints(mode,ex) {
+function pm22nmPoints(mode, ex) {
+    console.log("nm points");
+    let shape = "shape";
+    let php_handler = "mwt_handler.php";
+    let data_for_php = {};
+
+    let key = "";
+    if (mode == 4) {
+        data_for_php = ex;
+        php_handler = "./backend/AOI.php";
+    }
+
+    if (mode == 0 || mode == 1) {
+        key = 'all_pm22';
+        data_for_php = { key: key };
+    } else if (mode == 2) {
+        shape = 'ST_AsText(SHAPE)';
+        php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 22,
+            corridors_selected: ex,
+            tableName: "pm22nmpoints"
+        };
+    }
     let image = "./icons/crash_red.png";
     let cluster_markers = [];
-    $.get('mwt_handler.php', example, function (data) {
+    $.get(php_handler, data_for_php, function (data) {
+        console.log("nm points inside");
         for (index in data.shape_arr) {
             let holder = [];
             holder.push(wktFormatterPoint(data.shape_arr[index]['shape']));
@@ -82,7 +107,7 @@ function pm22txPoints(mode,ex) {
                 {
                     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
                 });
-           // pm22nmPoints(mode,ex);
+            pm22nmPoints(mode,ex);
         });
 }
 
@@ -223,7 +248,8 @@ function pm22Data(mode, ex) {
 
 //  CHARTS 
 		/* LINE CHART */
-function pm22chartLine(ctx,data){
+function pm22chartLine(ctx, data) {
+    /*
 let crashes = {
 		_2013:pm22_crashes[4],
 		_2014:pm22_crashes[3],
@@ -232,7 +258,7 @@ let crashes = {
 		_2017:pm22_crashes[0]
 		};
 
-
+    */
     //line chart data
     var data = {
         labels: ["2013", "2014", "2015", "2016", "2017"],
@@ -296,7 +322,7 @@ let crashes = {
 
 	//stores summation
 
-
+    /*
 	pm22_TX_data = {
 			    _2013:{injuries:0},
 			    _2014:{injuries:0},
@@ -311,6 +337,7 @@ let crashes = {
 			    _2016:{injuries:0},
 			    _2017:{injuries:0}
 			};
+            */
 	}
 
 

@@ -13,7 +13,7 @@ let passenger_totals_by_year = [];
 let freight_totals_by_year = [];    
 let pedestrian_totals_by_year = []; 
 let northbound_totals_by_year = []; 
-let data_by_mode = {
+let data_by_mode_pm13 = {
     'driving':{
         pdn:[],
         ysleta:[],
@@ -35,13 +35,10 @@ let data_by_mode = {
         stanton_dcl:[], 
         ysleta_dcl: [] ,
     },
-    
-
 }
-
 function pm13Data(mode,data){
     let php_handler = './mwt_handler.php';
-    let data_for_php = {'key':'all_pm13_14'};
+    let data_for_php = {'key':'all_pm13'};
     // if mode == x ...
     $.get(php_handler,data_for_php).done(function(data) {//succesful
         alert("success");
@@ -110,27 +107,27 @@ for(let i  = 0;   i < data_length; i++ ){
 
     if(mode_found == 'psgrveh'){
         passenger_totals_by_year.push(total_found);
-        data_by_mode.driving.bota.push(bota_data_found);
-        data_by_mode.driving.pdn.push(pdn_data_found);
-        data_by_mode.driving.ysleta.push(ysleta_data_found);
-        data_by_mode.driving.stanton_dcl.push(stanton_dcl_data_found);
-        data_by_mode.driving.ysleta_dcl.push(ysleta_dcl_data_found);
+        data_by_mode_pm13.driving.bota.push(bota_data_found);
+        data_by_mode_pm13.driving.pdn.push(pdn_data_found);
+        data_by_mode_pm13.driving.ysleta.push(ysleta_data_found);
+        data_by_mode_pm13.driving.stanton_dcl.push(stanton_dcl_data_found);
+        data_by_mode_pm13.driving.ysleta_dcl.push(ysleta_dcl_data_found);
     }
-        if(mode_found == 'freight'){
+    if(mode_found == 'freight'){
         freight_totals_by_year.push(total_found);
-        data_by_mode.freight.bota.push(bota_data_found);
-        data_by_mode.freight.pdn.push(pdn_data_found);
-        data_by_mode.freight.ysleta.push(ysleta_data_found);
-        data_by_mode.freight.stanton_dcl.push(stanton_dcl_data_found);
-        data_by_mode.freight.ysleta_dcl.push(ysleta_dcl_data_found);
+        data_by_mode_pm13.freight.bota.push(bota_data_found);
+        data_by_mode_pm13.freight.pdn.push(pdn_data_found);
+        data_by_mode_pm13.freight.ysleta.push(ysleta_data_found);
+        data_by_mode_pm13.freight.stanton_dcl.push(stanton_dcl_data_found);
+        data_by_mode_pm13.freight.ysleta_dcl.push(ysleta_dcl_data_found);
     }
     if(mode_found == 'pedestrian'){
         pedestrian_totals_by_year.push(total_found);
-        data_by_mode.walking.bota.push(bota_data_found);
-        data_by_mode.walking.pdn.push(pdn_data_found);
-        data_by_mode.walking.ysleta.push(ysleta_data_found);
-        data_by_mode.walking.stanton_dcl.push(stanton_dcl_data_found);
-        data_by_mode.walking.ysleta_dcl.push(ysleta_dcl_data_found);
+        data_by_mode_pm13.walking.bota.push(bota_data_found);
+        data_by_mode_pm13.walking.pdn.push(pdn_data_found);
+        data_by_mode_pm13.walking.ysleta.push(ysleta_data_found);
+        data_by_mode_pm13.walking.stanton_dcl.push(stanton_dcl_data_found);
+        data_by_mode_pm13.walking.ysleta_dcl.push(ysleta_dcl_data_found);
     }
     if(pm13_years.includes(year_found)){
         //do nothing; do not include repeated values
@@ -143,16 +140,25 @@ for (let index = 0; index < pm13_years.length; index++) {
     let sum =  parseInt(passenger_totals_by_year[index]) + parseInt(freight_totals_by_year[index]) +parseInt(pedestrian_totals_by_year[index]);
     northbound_totals_by_year.push(sum);
 }
-//    let checking_data = {
-//     ' years_found':pm13_years,
-//     'pass':passenger_totals_by_year,
-//     'freight':freight_totals_by_year,
-//     'ped':pedestrian_totals_by_year,
-//     'Northbound':northbound_totals_by_year
-// }
-//  console.table(checking_data);
-//  console.table(data_by_mode);
-
+ passenger_totals_by_year = parseStrArray2IntArray(passenger_totals_by_year);
+ freight_totals_by_year = parseStrArray2IntArray(freight_totals_by_year);
+ pedestrian_totals_by_year = parseStrArray2IntArray(pedestrian_totals_by_year);
+let pm13_driving_sum = arrSum(passenger_totals_by_year);
+let pm13_freight_sum = arrSum(freight_totals_by_year);
+let pm13_walking_sum = arrSum(pedestrian_totals_by_year);
+document.getElementById("pm13DText").innerHTML = commafy(pm13_driving_sum);
+document.getElementById("pm13FText").innerHTML = commafy(pm13_freight_sum);
+document.getElementById("pm13WText").innerHTML = commafy(pm13_walking_sum);
+}
+/** Sometimes int arrays are actually string arrays containing numbers as strings,  we parse them to INT*/
+function parseStrArray2IntArray(string_arr_of_ints){
+    let new_arr = [];
+    for(let i = 0; i < string_arr_of_ints.length;i++){
+        let num = string_arr_of_ints[i];
+        num = parseInt(num);
+        new_arr.push(num);
+    }
+    return new_arr;
 }
 function pm13ModeGraph(ctx){ 
         //line chart data
@@ -252,7 +258,7 @@ var data = {
     datasets: [
         {
         label: "PDN",
-        data: data_by_mode.driving.pdn,
+        data: data_by_mode_pm13.driving.pdn,
         backgroundColor: pdnColor,
         borderColor: pdnColor,
         fill: false,
@@ -261,7 +267,7 @@ var data = {
         },
         {
         label: "Ysleta",
-        data:  data_by_mode.driving.ysleta,
+        data:  data_by_mode_pm13.driving.ysleta,
         backgroundColor: ysletaColor,
         borderColor: ysletaColor,
         fill: false,
@@ -270,7 +276,7 @@ var data = {
         },
         {
         label: "BOTA",
-        data:  data_by_mode.driving.bota,
+        data:  data_by_mode_pm13.driving.bota,
         backgroundColor: botaColor,
         borderColor: botaColor,
         fill: false,
@@ -279,7 +285,7 @@ var data = {
         },
         {
         label: "Stanton DCL",
-        data:  data_by_mode.driving.stanton_dcl,
+        data:  data_by_mode_pm13.driving.stanton_dcl,
         backgroundColor: "#FF5722", 
         borderColor: "#FF5722",
         fill: false,
@@ -288,7 +294,7 @@ var data = {
         },
         {
         label: "Ysleta DCL",
-        data: data_by_mode.driving.ysleta_dcl,
+        data: data_by_mode_pm13.driving.ysleta_dcl,
         backgroundColor: "#FFB74D",
         borderColor: "#FFB74D",
         fill: false,
@@ -348,7 +354,7 @@ var data = {
         
         {
         label: "Ysleta",
-        data: data_by_mode.freight.ysleta,
+        data: data_by_mode_pm13.freight.ysleta,
         backgroundColor: ysletaColor,
         borderColor: ysletaColor,
         fill: false,
@@ -357,7 +363,7 @@ var data = {
         },
         {
         label: "BOTA",
-        data: data_by_mode.freight.bota,
+        data: data_by_mode_pm13.freight.bota,
         backgroundColor: botaColor,
         borderColor: botaColor,
         fill: false,
@@ -420,7 +426,7 @@ function pm13WalkingChart(ctx){
         datasets: [
         {
             label: "PDN",
-            data:data_by_mode.walking.pdn,
+            data:data_by_mode_pm13.walking.pdn,
             backgroundColor: pdnColor,
             borderColor: pdnColor,
             fill: false,
@@ -429,7 +435,7 @@ function pm13WalkingChart(ctx){
             },
             {
             label: "Ysleta",
-            data: data_by_mode.walking.ysleta,
+            data: data_by_mode_pm13.walking.ysleta,
             backgroundColor: ysletaColor,
             borderColor: ysletaColor,
             fill: false,
@@ -438,7 +444,7 @@ function pm13WalkingChart(ctx){
             },
             {
             label: "BOTA",
-            data: data_by_mode.walking.bota,
+            data: data_by_mode_pm13.walking.bota,
             backgroundColor: botaColor,
             borderColor: botaColor,
             fill: false,
@@ -512,9 +518,3 @@ function draw_points_pm13(points_data){
         points.push(point);
     }
 }
-let pm13_driving_avg = arr_avg(passenger_totals_by_year);
-let pm13_freight_avg = arr_avg(freight_totals_by_year);
-let pm13_walking_avg = arr_avg(pedestrian_totals_by_year);
-document.getElementById("pm13DText").innerHTML = commafy(pm13_driving_avg);
-document.getElementById("pm13FText").innerHTML = commafy(pm13_freight_avg);
-document.getElementById("pm13WText").innerHTML = commafy(pm13_walking_avg);

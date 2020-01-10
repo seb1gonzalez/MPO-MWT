@@ -1,31 +1,34 @@
 
 
-function pm12Data(mode, example) {
+function pm12Data(mode, ex) {
     console.log('12.1');
     var pm12Info = {
         pm12existing: 0, pm12proposed: 0, pm12tot: 0, coep_prop: 0,
         coep_exist: 0, pdn_prop: 0, pdn_exist: 0, sun_prop: 0,
         sun_exist: 0, s_e_prop: 0, s_e_exist: 0, tot: 0
     };
-    let caller = "mwt_handler.php";
+    let php_handler = "mwt_handler.php";
     let color = '#03A9F4';  
     let shape = 'shape';
 
     if (mode == 0 || mode == 1) {
         let key = 'all_pm12';
-        example = { key: key };
+        data_for_php = { key: key };
     } else if (mode == 2) {
-        caller = "corridor_handlerB.php";
+        php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
+        data_for_php = {
+            key: 12,
+            corridors_selected: ex,
+            tableName: "pm12"
+        };
     }
     else if (mode == 4) {
-        caller =" ./backend/AOI.php";
+        php_handler =" ./backend/AOI.php";
     }
-    console.log('12.2');
-    console.log(example);
-    console.log(caller);
-    $.get(caller, example, function (data) { 
-        console.log('12.3');
+
+    $.get(php_handler, data_for_php, function (data) { 
+
         for (index in data.shape_arr) { 
             let shp = data.shape_arr[index][shape]; 
             let reader = new jsts.io.WKTReader(); 
@@ -93,7 +96,7 @@ function pm12Data(mode, example) {
             }
         }
         console.log('12.4');
-        let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
+        let corr = translateCorridor(ex); // what corridor are we on?
 
         if (mode == 0) {
             document.getElementById("pm12Text").innerHTML = pm12Info.pm12existing.toFixed(2);

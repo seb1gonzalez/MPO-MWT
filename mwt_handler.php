@@ -64,7 +64,9 @@ if($key == "all_pm1" || $key == "all_pm2"){
 }else if($key == "all_pm8K"){
 	$query = "select display,type,existing,planned, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm9"){ // Pm5 and PM9 share table both have all_pm9
-	$query = "select status, b00001e1, ratio_prim, prcnt_prim, ratio_pop,prim_jobs_, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
+	$query = "select type,ratio_pop, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
+}else if($key == "all_pm9_C"){ // Pm5 and PM9 share table both have all_pm9
+	$query = "select b00001e1 from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm10"){ // Pm6 and pm10 share table
 	$query = "select status, b00001e1, ratio_pop, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";
 }else if($key == "all_pm11"){
@@ -87,7 +89,7 @@ if($key == "all_pm1" || $key == "all_pm2"){
 	$query = "select tti,astext(SHAPE) as shape from $pm_table where corridor_key = '$key'";// ! repetition
 }else if($key == "all_pm25"){
 	$query = "select state_code,year,iri_vn, miles, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
-}else if($key == "all_pm13_14"){ // here we need 2 tables, one for data, one for the ports of entry geo-objects
+}else if($key == "all_pm13"){ // here we need 2 tables, one for data, one for the ports of entry geo-objects
 	$query = "SET @year_ = (SELECT Max(Period) FROM mpo_test_jhuerta.pm13_all);";
 	$result = mysqli_query($conn, $query); 
 	$query = "SET @year_ = @year_ - 4; ";
@@ -99,7 +101,20 @@ if($key == "all_pm1" || $key == "all_pm2"){
 	}
 	$query = "select port_of_en, latitude,longitude from pm14points"; 
 
-}else if($key == "all_pm15_16_17"){
+}else if($key == "all_pm14"){
+	$query = "SET @year_pm14 = (SELECT Max(period) FROM mpo_test_jhuerta.pm14);";
+	$result = mysqli_query($conn, $query); 
+	$query = "SET @year_pm14 = @year_pm14 - 4; ";
+	$result = mysqli_query($conn, $query); 
+	$query = "SELECT * FROM mpo_test_jhuerta.pm14 WHERE Period >= @year_pm14;";
+	$result = mysqli_query($conn, $query); 
+	while($temporal = mysqli_fetch_assoc($result)){ 
+		array_push($shape, $temporal);
+	}
+	$query = "select port_of_en, latitude,longitude from pm14points"; 
+
+}
+else if($key == "all_pm15_16_17"){
 	$query = "select station_na, astext(SHAPE) as shape from $pm_table where corridor_key = '$key'"; 
 }else if($key == "all_pm15_16_17g"){
 	$query = "select Station, g2014,g2015,g2016,g2017,g2018,Pollutant from $pm_table where corridor_key = '$key'"; 

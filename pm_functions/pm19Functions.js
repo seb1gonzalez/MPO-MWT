@@ -14,6 +14,7 @@ function pm19Data(mode, ex) {
         bikeCrash: []
     }
 
+
     //stores line values
     let pm19Data = { // 2013 TO 2017, 5 year holder,  starts at index 0
         ID: [0, 0, 0, 0, 0], //SERIOUS Injuries driving
@@ -36,8 +37,7 @@ function pm19Data(mode, ex) {
         currentCorridor:'Entire Region'
          
     }
-
-    let data_for_php = 0;
+    let data_for_php = {};
     let shape = "shape";
     let php_handler = "mwt_handler.php";
 
@@ -45,9 +45,14 @@ function pm19Data(mode, ex) {
         let key = 'all_pm18_19';
         data_for_php = { key: key };
     } else if (mode == 2) { // if we want corridors
-        data_for_php = ex;
         shape = 'ST_AsText(SHAPE)';
         php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 19,
+            corridors_selected: ex,
+            tableName: "pm18_19txdotall"
+        };
     } else if (mode == 4) {
         data_for_php = ex;
         php_handler = "./backend/AOI.php";

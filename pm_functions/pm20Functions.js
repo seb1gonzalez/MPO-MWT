@@ -1,12 +1,12 @@
 function pm20Data(mode, corr) {
-
     pm20_buffers(mode,corr);
     
 
 }
 
 
-function pm20_buffers(mode,corr) {
+function pm20_buffers(mode, corr) {
+    console.log(1);
     let pm20data = {
         countSumB: 0,
         countSumP:0,
@@ -50,6 +50,7 @@ function pm20_buffers(mode,corr) {
 
 
     $.get(php_handler, data_for_php, function (data) {
+        console.log(2);
         let color = "#1A237E"; // Blue
         let currentCount = 0;
 
@@ -155,6 +156,7 @@ function pm20_buffers(mode,corr) {
     });
 }
 function loadpm20P(mode, corr, pm20data) {
+    console.log(3);
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
@@ -183,6 +185,7 @@ function loadpm20P(mode, corr, pm20data) {
 
 
     $.get(php_handler, data_for_php, function (data) {
+        console.log(4);
         for (index in data.shape_arr) {
             let holder = [];
             let type = data.shape_arr[index]['type'];
@@ -200,11 +203,9 @@ function loadpm20P(mode, corr, pm20data) {
                     icon: image
                 });
                 if (currentType == "biking" && type == "Pedcyclists") {
-                
                     point.setMap(map);
                     points.push(point);
                 } else if (currentType == "walking" && type == "Pedestrian") {
-                  
                     point.setMap(map);
                     points.push(point);
                 }
@@ -217,6 +218,8 @@ function loadpm20P(mode, corr, pm20data) {
                 pedCrash++;
             }
         }
+        console.log(pedCrash);
+        console.log(bikeCrash);
 
         //calculations
         pm20data.percentPed = (pm20data.countSumP * 100) / pedCrash;
@@ -235,7 +238,8 @@ function loadpm20P(mode, corr, pm20data) {
     });
 
 }
-function loadpm20Bus(mode,corr) {
+function loadpm20Bus(mode, corr) {
+    console.log(5);
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
@@ -256,6 +260,7 @@ function loadpm20Bus(mode,corr) {
     }
 
     $.get(php_handler, data_for_php, function (data) {
+        console.log(6);
         for (index in data.shape_arr) {
             let holder = [];
 

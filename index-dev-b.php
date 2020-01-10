@@ -21,7 +21,7 @@
       <link rel="stylesheet" type="text/css" href="css/loading.css"/>
       <link rel="stylesheet" type="text/css" href="css/loading-btn.css"/>
       <link rel="stylesheet" type="text/css" href="benchmark/benchmark.css"/>
-      <link rel="stylesheet" type="text/css" href="repo/repo.css"/>
+      <link rel="stylesheet" type="text/css" href="data_repository/repo.css"/>
       <link rel="stylesheet" type="text/css" href="tutorial/tutorial.css"/>
       <link rel="stylesheet" type="text/css" href="studies/studies.css"/>
 
@@ -139,8 +139,8 @@
                      <!-- <a onclick="switch_AOI()"class="list-group-item d-inline-block collapsed " data-parent="#sidebar" href="#" ><i class="fa fa-map"></i> <span class="d-none d-md-inline">Interactive AOI</span></a> -->
                      
                      <a class="list-group-item d-inline-block collapsed" data-target="#sidebar" href="#mtp-projects"                  id="mtp-projects"   ><i class="fa fa-pencil-square-o"></i> <span class="d-none d-md-inline">MTP Projects</span></a>
-                     <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="#data-repo" data-toggle="modal" id="data-repository"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Data Repository</span></a>
-                     <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="#studies" data-toggle="modal" id="studies-matrix" ><i class="fa fa-th-list"></i> <span class="d-none d-md-inline">Studies Matrix</span></a>
+                     <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="#data-repo" data-toggle="modal" id="data-repository"><i class="fa fa-database"></i> <span class="d-none d-md-inline">Regional Data Repository</span></a>
+                     <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href="#studies" data-toggle="modal" id="studies-matrix" ><i class="fa fa-th-list"></i> <span class="d-none d-md-inline">Exisiting Studies</span></a>
 
                      <a class="list-group-item d-inline-block collapsed" data-parent="#sidebar" href=""                                                   ><i class=""></i><span class="d-none d-md-inline"></span></a>
                      

@@ -14,8 +14,19 @@ function pm4Data(mode, corr) {
     let shape = "shape";
     let key = 'all_pm4';
     let data_for_php = {};
+    let walkingTracker = 0; // Aids mode 0 distinguish the type
 
-    if (mode == 0 || mode == 1) {
+    if (mode == 0) {
+
+        if (corr == 'b') key = 'all_pm4';
+        else if (corr = 'w') {
+            key = 'all_pm4W';
+            walkingTracker = 1;
+        }
+
+        data_for_php = { key: key };
+    }
+    else if ( mode == 1) {
         if (currentType == 'walking') key = 'all_pm4W';
         else if (currentType == 'biking') key = 'all_pm4';
         data_for_php = { key: key };
@@ -54,9 +65,10 @@ function pm4Data(mode, corr) {
 
             let pm4tct = data.shape_arr[index].tactcnt; // works for both walking and Biking
 
-        
+
             count += parseInt(data.shape_arr[index].tactcnt); // count if total miles
-            if (mode == 1 || mode == 2|| mode == 4) {
+
+            if (mode == 1 || mode == 2 || mode == 4) {
                 for (let i = 0; i < ln.length; i++) {
                     coord = { lat: ln[i]['y'], lng: ln[i]['x'] }; // this is how lat & lng is interpreted by the tool
                     to_visualize.push(coord); // pushing the interpretation to our to_visualize array
@@ -77,10 +89,10 @@ function pm4Data(mode, corr) {
                         strokeWeight: 4,
                         zIndex: 99 // on top of every other shape
                     });
-                          // Hover Effect for Google API Polygons
-            google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event,pm4tct); });
-            google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
+                    // Hover Effect for Google API Polygons
+                    google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event, pm4tct); });
+                    google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
+                    google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
 
                     line.setMap(map);
                     polylines.push(line);
@@ -101,37 +113,33 @@ function pm4Data(mode, corr) {
                         strokeWeight: 4,
                         zIndex: 99 // on top of every other shape
                     });
-                                       // Hover Effect for Google API Polygons
-            google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event,pm4tct); });
-            google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
+                    // Hover Effect for Google API Polygons
+                    google.maps.event.addListener(line, 'mouseover', function (event) { injectTooltip(event, pm4tct); });
+                    google.maps.event.addListener(line, 'mousemove', function (event) { moveTooltip(event); });
+                    google.maps.event.addListener(line, 'mouseout', function (event) { deleteTooltip(event); });
 
                     line.setMap(map);
                     polylines.push(line);
                 }
             }
+
         }
 
-        let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
-
         if (mode == 0) {
-            if (currentType == "walking") {
+            if (walkingTracker == 1) {
                 document.getElementById("pm4WText").innerHTML = commafy(count);
-               // lineHandler('0pm4B'); 
-            } else if (currentType == "biking") {
+            } else if (walkingTracker ==0) {
                 document.getElementById("pm4BText").innerHTML = commafy(count);
             }
         } else if (mode == 1) {
             regionalText(count);
         } else if (mode == 2) {
-            dynamicCorridorText(corr, count);
+            let corr2 = translateCorridor(corr); // what corridor are we on?
+            dynamicCorridorText(corr2, count);
         }
         else if (mode == 4) {
             dynamicCorridorText("AOI", count); // Send graph data and current corridor to dynamic text for corridors
         }
-
- 
-        
     });
 
 

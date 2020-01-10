@@ -10,104 +10,41 @@
 */
 let id = 0;  //* reference to the different layouts
 let benchmark_data; //* results of the data.
-let benchmar_layout; //* rows and options for the each of the tables
-const corridors = [
-    'Regional',
-    'Alameda',
-    'Artcraft Dominici',
-    'Doniphan',
-    'Dyer',
-    'Eastlake',
-    'Horizon',
-    'McNutt',
-    'Mesa',
-    'Montana',
-    'Montwood',
-    'Socorro',
-    'Yarbrough',
-    'Zaragoza',
-];
-const pm_categories = {
-    driving: [
-        'Bridges in Poor Condition',
-        'Fatalities',
-        'Serious Injuries',
-        'Drive Alone',
-        'Crashes on CMP Network',
-        'Ozone',
-        'Carbon Monoxide',
-        'Particulate Manner',
-        'Automobiles at POEs',
-        'Average wait time at POEs',
-    ],
-    freight: [
-        'Fatalities',
-        'Serious Injuries',
-        'truck at POEs',
-        'Average wait times at POEs',
-    ],
-    transit: [
-        'Commute by Transit',
-        'Transit Riders',
-        'Jobs Within ½ Mile',
-        'Populations Within ½ Mile',
-        'Key Destinations within ½ Mile',
-    ],
-    walking: [
-        'commute by Walking',
-        'Pedestrian fatalities',
-        'Pedestrian serious injuries',
-        'Northbound border Crossing',
-        'Average wait time at POEs',
-        'Walking Trips Recorded by Strava',
-        'Sidewalks per Mile',
-        'Number Crashes nearby bus stops',
-    ],
-    biking: [
-        'Workers Commuting',
-        'Fatalities',
-        'Injuries',
-        'Bikeway Network Buildout',
-        'Biking Trips Recorded By Strava',
-        'Key Destinations Within  ½ Mile',
-        'Crashes Nearby Bus Stops',
-        'Jobs Within ½ Mile',
-        'Population within ½ Mile',
-        'Corridor Test',
-    ],
-};
-
-
-function benchmark() {
-    clean();
-    id = 0;
-    let target = document.getElementById('non-pm-content');
-    target.innerHTML = `
-    <!-- benchmark_handler -->
-        <div id="benchmark" class=" sidenav rounded-left mb-2 bg-light text-dark" ondblclick="openNavBenchmark();" data-toggle="tooltip" data-placement="left" title="Double click to Open">
-            <a href="javascript:void(0)" href="javascript:void(0)" class="closebtn" onclick="closeNavBenchmark();"><i class="fa fa-times"></i></a>
-
-            <div id="benchmark-content" class ="container-fluid">
-                <div id="benchmark-table" class="row">
-                <!--contains the left most column. this one displays the names of the categories of the PM's-->
-                    <div class="col-lg-7">
-                        <div id="benchmark-containers" class="row"></div>
-                    </div>
-                <!--this one contains all the other cards that are held inside. \
-                this will contain the data of each of the corridors.-->
-                </div>
-            </div>
-        </div>
-    `;
-}
+let benchmark_layout; //* rows and options for the each of the tables
 
 $('#benchmarking').click(() => {
     //benchmark();
     load_benchmark_modal();
-    content= $('#benchamark-content');
+    let content = $('#benchmark-content');
+    let table = $('#benchmark-table');
+    let containers=$('#benchmark-containers');
+    ////console.log('table length: '+table.length);
+    if(table.length === 1 && containers.is(':empty')){ //* prevents duplicates
 
-    create_benchmark_categories(pm_categories);
-    create_benchmark_column(corridors, pm_categories);
+        if((benchmark_layout === undefined || null)|| ( benchmark_data === undefined || null) ){ //* prevents redundant requests
+            get_benchmark_data('benchmark/benchmark_layout.json')
+                .then(res=>{ 
+                    console.log(res);
+                    benchmark_layout = res;
+                    create_benchmark_categories(res.pm_categories);
+                    create_benchmark_column(res.corridors, res.pm_categories);        
+                })
+                .then(res=>{
+                    get_benchmark_data('benchmark/benchmark_data.json')
+                        .then(res =>{ //* get result data
+                            console.log(res);
+                            benchmark_data = res;
+                        })
+                        .catch(err=>console.log(err));
+                }).catch(err=>console.log(err));
+
+        }
+        else{ //* reuse the loaded variables.
+            create_benchmark_categories(benchmark_layout.pm_categories);
+            create_benchmark_column(benchmark_layout.corridors, benchmark_layout.pm_categories);
+
+        }
+    }
 });
 
 function load_benchmark_modal(){
@@ -136,7 +73,7 @@ function load_benchmark_modal(){
                                         <div class="col-lg-7">
                                             <div id="benchmark-containers" class="row"></div>
                                         </div>
-                                        <!--this one contains all the other cards that are held inside. \
+                                        <!--this one contains all the other cards that are held inside. 
                                                 this will contain the data of each of the corridors.-->
                                     </div>
                                 </div>
@@ -247,9 +184,9 @@ function create_benchmark_column(corridors, categories) {
     let header_content = `
                 <div class="col-lg-8">
                     <form action="" class="form-group"style="margin-bottom: 0.5rem;">
-                        <select name="corridor" id="corridor-select" class="form-control">
+                        <select name="corridor" onChange="console.log('i changed');"id="corridor-select" class="form-control">
             `;
-
+    
     // create title options
     corridors.forEach(corridor => {
         ////console.log(corridor);
@@ -311,6 +248,8 @@ function create_benchmark_column(corridors, categories) {
     root.appendChild(accordion);
     target.appendChild(root);
 }
+
+
 function remove_benchmark_column(id) {
     let target = document.getElementById(id);
     ////console.log(target);
@@ -320,7 +259,7 @@ function remove_benchmark_column(id) {
 function add_column() {
     parent = $('#benchmark-containers')[0];
     if (parent.children.length < 3) {
-        create_benchmark_column(corridors, pm_categories);
+        create_benchmark_column(benchmark_layout.corridors, benchmark_layout.pm_categories);
     }
 }
 

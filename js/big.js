@@ -612,8 +612,8 @@ function performanceDataLoader() {
     pm1Data(0, '');
     //pm2Data();
     pm3Data(0, '');
-    pm4Data(0, '');
-    //lineHandler('0pm4W'); // mode 0 in pm4 Walking
+    pm4Data(0, 'b');
+
     pm5Data(0, '');
     pm6Data(0, '');
     pm7Data(0, '');
@@ -637,6 +637,7 @@ function performanceDataLoader() {
     pm22Data();
     pm25Data(0, '');
     pm26Data(0, '');
+    pm4Data(0, 'w');
     toggleHide();
 
 }

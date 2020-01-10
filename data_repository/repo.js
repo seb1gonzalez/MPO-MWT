@@ -82,7 +82,7 @@ function load_repo_list(location, btn_names) {
     for(let btn in btn_names){
         let name = btn_names[btn];
         let col_container = document.createElement('DIV');
-        col_container.className= 'col-lg-3';
+        col_container.className= 'col-lg-3 d-flex justify-content-center';
         let button = document.createElement('BUTTON');
         button.className = 'btn btn-info';
         button.innerHTML = name;
@@ -117,21 +117,16 @@ function load_repo_modal() {
     clean();
     let base_content = document.createElement('DIV');
     base_content.innerHTML = `
-        <div id="data-repo" class="modal fade" role="dialog">
+        <div id="data-repo" class="modal fade in" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title text-center">Data Repository</h4>
-                        <button type="button"class="close" data-dismiss="modal"> &times; </button>
+                        <h4 class="modal-title justify-content-center text-primary">Regional Data Repository</h4>
+                        <button type="button"class="close" data-dismiss="modal"> <i class="fa fa-times"></i> </button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <p class="text-primary">Repositories</p> 
-                            </div>
-                        </div>
-                        <div class="row" id="repo-list"></div>
+                        <div class="row d-flex justify-content-center" id="repo-list"></div>
                         <div class="row" id="repo-description"></div>
                         <div class="row" id="repo-legend"></div>
                         <div class="row" id="repo-disclaimer"></div>

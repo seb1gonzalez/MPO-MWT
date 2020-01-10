@@ -3,7 +3,7 @@
  * This class only calculates the values for graph
  */
 
-function pm25Data(mode, example) {
+function pm25Data(mode, ex) {
     //graph values
 
     console.log(mode + " mode for 25 BC");
@@ -19,12 +19,12 @@ function pm25Data(mode, example) {
         nm_miles: 0,
         nm_poor_mi_perc: 0
     }
-    console.log('Good unitl here');
+
         
     let color = '#03A9F4';  // default
     let php_handler = "mwt_handler.php";
     let shape = "shape";
-    let data_for_php = example;
+    let data_for_php = 0;
 
     if (mode == 0 || mode == 1) {
         let key = 'all_pm25';
@@ -32,9 +32,15 @@ function pm25Data(mode, example) {
     } else if (mode == 4){
         php_handler = "backend/AOI.php";
     } 
-    else {
+    else if(mode == 2){
         php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
+
+        data_for_php = {
+            key: 25,
+            corridors_selected: ex,
+            tableName: "pm25d"
+        };
     }
     console.log(php_handler);
     console.log(data_for_php);
@@ -182,7 +188,7 @@ function pm25Data(mode, example) {
         pm25Data.poor[4] = (pm25Data.poor[4]).toFixed(2);
  
 
-        let corr = translateCorridor(example.corridors_selected); // what corridor are we on?
+        let corr = translateCorridor(ex); // what corridor are we on?
 
         if (mode == 0) {
             document.getElementById("pm25DText").innerHTML = pm25Data.poor_mi_perc;

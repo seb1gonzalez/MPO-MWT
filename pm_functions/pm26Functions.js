@@ -52,9 +52,14 @@ function pm26Data(mode, ex) {
         let key = 'all_pm26';
         data_for_php = { key: key };
     } else if (mode == 2 || mode == 3) { // if we want corridors
-        data_for_php = ex;
         shape = 'ST_AsText(SHAPE)'; // fix -> add alias (AS) for column in mysql query: SELECT column AS shape
         php_handler = "corridor_handlerB.php";
+
+        data_for_php = {
+            key: 26,
+            corridors_selected: ex,
+            tableName: "pm26"
+        };
     }
     else if (mode == 4) { 
         data_for_php = ex; // in AOI: ex = AOI string , table from DB -> needed for PHP handler
@@ -228,7 +233,7 @@ function pm26Data(mode, ex) {
             document.getElementById("pm26Text").innerHTML = mpo;     
         }
 
-        let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
+        let corr = translateCorridor(ex); // what corridor are we on?
 
         if (mode == 1) {
             regionalText(pm26Data);

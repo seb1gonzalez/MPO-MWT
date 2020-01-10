@@ -51,7 +51,7 @@ function load_tutorial_modal() {
                     <div class="modal-header">
                         <h4 class="modal-title text-primary ">Tutorial</h4>
                         <button type="button" class="close" data-dismiss="modal">
-                            &times;
+                            <i class="fa fa-times"></i>
                         </button>
                     </div>
 

@@ -22,7 +22,6 @@ function dynamicCorridorText(currentCorridor, data) {
         } else if (currentPM == 19) {
             pm19DynamicText(currentCorridor, data);
         } else if (currentPM == 20) {
-            console.log("about to send");
             pm20DynamicText(currentCorridor, data);
         } else if (currentPM == 25) {
             pm25DynamicText(currentCorridor, data);
@@ -323,7 +322,7 @@ function pm20DynamicText(corridor, data) {
         else if (data.w_greatestCounter == 1) {
             paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (on " + data.w_on_st + " at " + data.w_at_strt + ")", "paragraph", "summary-info");
         } else if (data.w_greatestCounter > 1)  {
-            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (" + data.w_count + " locations have the same number)", "paragraph", "summary-info");
+            paragraphAdder(data.percentPed.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.w_greatest + " (" + data.w_greatestCounter + " locations have the same number)", "paragraph", "summary-info");
         }
 
     } else if (currentType == "biking") {
@@ -335,7 +334,7 @@ function pm20DynamicText(corridor, data) {
             paragraphAdder(data.percentBike.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (on " + data.b_on_st + " at " + data.b_at_strt + ")", "paragraph", "summary-info");
 
         } else if (data.b_greatestCounter > 1) {
-            paragraphAdder(data.percentBike.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (" + data.b_count + " locations have the same number)", "paragraph", "summary-info");
+            paragraphAdder(data.percentBike.toFixed(2) + "% of all pedestrian crashes in " + wordFix(corridor) + " corridor  occurred within 200 feet of transit stops. Majority of the crashes near bus stops occurred in downtown area. The highest observed number of crashes within 200 ft. from a bus stop is " + data.b_greatest + " (" + data.b_greatestCounter + " locations have the same number)", "paragraph", "summary-info");
         }
 
     }
