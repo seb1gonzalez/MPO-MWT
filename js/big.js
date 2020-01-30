@@ -1,7 +1,13 @@
+/**
+ *
+ * 
+ * 
+ * */
+
 $(document).ready(function () { // when the document loads
     performanceDataLoader();
 });
-alert("Loading Initial Data");
+alert("Loading Data... A confirmation window will pop up once all data is ready. Click OK to continue. ");
 
 // * GLOBALS
 let map; // global variable for map
@@ -290,11 +296,24 @@ function regionalCaller() {
         } else if (currentType == "biking") {
             pointHandler("PM20B");
         }
-    }
-     else if (currentPM == 25) {
+    } else if (currentPM == 22) {
+        pointHandler("PM22");
+    }else if (currentPM == 24) {
+        if (currentType == "driving") {
+            lineHandler("PM24D");
+        } else if (currentType == "freight") {
+            lineHandler("PM24F");
+        }
+    } else if (currentPM == 25) {
         lineHandler("PM25");
     } else if (currentPM == 26) {
-        pointHandler("pm26");
+        if (currentType == "driving") {
+            pointHandler("pm26");
+        } else if (currentType == "freight") {
+            pointHandler("pm26F");
+        } else if (currentType == "transit") {
+            pointHandler("pm26T");
+        }
     }
    
 }
@@ -307,10 +326,14 @@ function sendCurrentCorridor(corr) {
         pm18Data(2, corr);
     } else if (currentPM == 20) {
         pm20Data(2, corr);
+    } else if (currentPM == 22) {
+        pm22Data(2, corr);
     }else if (currentPM == 19) {
         pm19Data(2, corr);
      } else if (currentPM == 26) {
         pm26Data(2, corr);
+    } else if (currentPM == 24) {
+        pm24Data(2, corr);
     }else if (currentPM == 25) {
         pm25Data(2, corr);
      } else if (currentPM == 11) {
@@ -555,12 +578,12 @@ function get_corridors() {
 //polygons
 function get_corridors_buffer() {
     let color = 'teal'; //default
-    let fillOpacityval = 0.60; //default
+    let fillOpacityval = 0.35; //default
     //console.table(corridors_selected);
-    if (currentPM == 20) {
+  //  if (currentPM == 20) {
         color = "#9E9E9E"; //gray
         fillOpacityval = 0.25;
-    }
+    //}
     fetch('./corridors_buffers.json').then(function (response) {
         return response.json();
     }).then(function (myJson) {
@@ -609,35 +632,82 @@ let corridorPointsT = [];
 
 // Loads graph Data, fetches go here
 function performanceDataLoader() {
-    pm1Data(0, '');
-    //pm2Data();
-    pm3Data(0, '');
-    pm4Data(0, 'b');
+    // pm1Data(0, '');
+    // //pm2Data();
+    // pm3Data(0, '');
+    // pm4Data(0, 'b');
+    // pm4Data(0, 'w');
+    // pm5Data(0, '');
+    // pm6Data(0, '');
+    // pm7Data(0, '');
+    // pm8Data(0, '');
+    // pm9Data(0, '');
+    // pm10Data(0, '');
+    // pm11Data(0, '');
+    // pm12Data(0, '');
+    // pm13Data(0);
+    // //pm13_14Data();
+    // //pm15Data();
+    // pm15Data(0);
+    // pm16Data(0);
+    // pm17Data(0);
 
-    pm5Data(0, '');
-    pm6Data(0, '');
-    pm7Data(0, '');
-    pm8Data(0, '');
-    pm9Data(0, '');
-    pm10Data(0, '');
-    pm11Data(0, '');
-    pm12Data(0, '');
-    //pm13Data();
-    //pm13_14Data();
-    //pm15Data();
-    pm15Data(0);
-    pm16Data(0);
-    pm17Data(0);
-
-    pm18Data(0, '');
-    pm19Data(0, '');
-    pm20Data(0, '');
-    //pm20Data();
-    //pm20DataT();
-    pm22Data();
-    pm25Data(0, '');
-    pm26Data(0, '');
-    pm4Data(0, 'w');
+    // pm18Data(0, '');
+    // pm19Data(0, '');
+    // pm20Data(0, '');
+    // pm21Data(0, '');
+    // //pm20DataT();
+    // pm22Data();
+    // pm24Data(0, 'f');
+    // pm24Data(0, 'd');
+  
+    $.when(
+       $.ajax(pm1Data(0, '')),
+        $.ajax(pm2Data(0, '')),
+        $.ajax(pm3Data(0, '')),
+        $.ajax(pm4Data(0, '')),
+        $.ajax(pm5Data(0, '')),
+        $.ajax(pm6Data(0, '')),
+        $.ajax(pm7Data(0, '')),
+        $.ajax(pm8Data(0, '')),
+        $.ajax(pm9Data(0, '')),
+        $.ajax(pm10Data(0, '')),
+        $.ajax(pm11Data(0, '')),
+        $.ajax(pm12Data(0, '')),
+        $.ajax(pm13Data(0)),
+        $.ajax(pm14Data(0)),
+        $.ajax(pm15Data(0)),
+        $.ajax(pm16Data(0)),
+        $.ajax(pm17Data(0)),
+        $.ajax(pm18Data(0, '')),
+        $.ajax(pm19Data(0, '')),
+        $.ajax(pm20Data(0, '')),
+        $.ajax(pm21Data(0, '')),
+        $.ajax(pm22Data(0, '')),
+        $.ajax(pm24Data(0, 'f')),
+        $.ajax(pm24Data(0, 'd')),
+        $.ajax(pm25Data(0, 'd')),
+        $.ajax(pm25Data(0, 't')),
+        $.ajax(pm25Data(0, 'f')),
+        $.ajax(pm26Data(0, 'd')),
+        $.ajax(pm26Data(0, 't')),
+        $.ajax(pm26Data(0, 'f')),
+        )
+        .done(function(){
+            alert("Data loaded successfully.");
+        })
+        .fail(function(error){
+            alert("Error loading data. \nCheck your internet connection or\ncontact Sonia Perez at:\nsperez@epmpo.org")
+            console.log(error)
+            //handle errors
+        });
+  //  pm25Data(0, 'd');
+  //  pm25Data(0, 't');
+  //  pm25Data(0, 'f');
+    // pm26Data(0, 'd');
+    // pm26Data(0, 't');
+    // pm26Data(0, 'f');
+  
     toggleHide();
 
 }
@@ -723,70 +793,70 @@ function pdf() {
 }
 
 
-function cmp_lines() {
-    fetch('./results.json').then(function (response) {
-        return response.json();
-    }).then(function (myJson) {
-        console.log("CMP NETWORK LINES");
-        for (var index in myJson.PM22_Lines) {
-            for (var county in myJson.PM22_Lines[index]) {
-                let shp = myJson.PM22_Lines[index][county]["shape"];
+// function cmp_lines() {
+//     fetch('./results.json').then(function (response) {
+//         return response.json();
+//     }).then(function (myJson) {
+//         console.log("CMP NETWORK LINES");
+//         for (var index in myJson.PM22_Lines) {
+//             for (var county in myJson.PM22_Lines[index]) {
+//                 let shp = myJson.PM22_Lines[index][county]["shape"];
 
-                let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-                let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-                let to_visualize = []; // used to populate the map (latitude & longitude)
-                let coord; // will be an object to push coordinates to populate the map
-                let ln = r.getCoordinates(); // parses the shape into lat & lng
-                for (let i = 0; i < ln.length; i++) {
-                    coord = {
-                        lat: ln[i]['y'],
-                        lng: ln[i]['x']
-                    };
-                    to_visualize.push(coord);
-                }
-                let line = new google.maps.Polyline({ // it is a POLYLINE
-                    path: to_visualize, // polyline has a path, defined by lat & lng
-                    // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
-                    strokeColor: 'pink',
-                    strokeOpacity: 0.80,
-                    strokeWeight: 5,
-                    zIndex: 99 // on top of every other shape
-                });
-                line.setMap(map);
-                polylines.push(line);
-            }
+//                 let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+//                 let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+//                 let to_visualize = []; // used to populate the map (latitude & longitude)
+//                 let coord; // will be an object to push coordinates to populate the map
+//                 let ln = r.getCoordinates(); // parses the shape into lat & lng
+//                 for (let i = 0; i < ln.length; i++) {
+//                     coord = {
+//                         lat: ln[i]['y'],
+//                         lng: ln[i]['x']
+//                     };
+//                     to_visualize.push(coord);
+//                 }
+//                 let line = new google.maps.Polyline({ // it is a POLYLINE
+//                     path: to_visualize, // polyline has a path, defined by lat & lng
+//                     // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
+//                     strokeColor: 'pink',
+//                     strokeOpacity: 0.80,
+//                     strokeWeight: 5,
+//                     zIndex: 99 // on top of every other shape
+//                 });
+//                 line.setMap(map);
+//                 polylines.push(line);
+//             }
 
-        }
+//         }
 
-        // for (var index in myJson.PM22_Lines.TX_CMP_LINES) {
-        //     let shp =  myJson.PM22_Lines[index]['shape']; // shape is LINESTRING or MULTILINESTRING
-        //     let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
-        //     let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
-        //     let to_visualize = []; // used to populate the map (latitude & longitude)
-        //     let coord; // will be an object to push coordinates to populate the map
-        //     let ln = r.getCoordinates(); // parses the shape into lat & lng
-        //     for (let i = 0; i < ln.length; i++) {
-        //         coord = {
-        //             lat: ln[i]['y'],
-        //             lng: ln[i]['x']
-        //         };
-        //         to_visualize.push(coord);
-        //     }
-        //     let line = new google.maps.Polyline({ // it is a POLYLINE
-        //         path: to_visualize, // polyline has a path, defined by lat & lng
-        //         // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
-        //         strokeColor: 'teal',
-        //         strokeOpacity: 0.70,
-        //         strokeWeight: 5,
-        //         zIndex: 99 // on top of every other shape
-        //     });
-        //     line.setMap(map);
-        //     corridors_shown[_key].push(line);
+//         // for (var index in myJson.PM22_Lines.TX_CMP_LINES) {
+//         //     let shp =  myJson.PM22_Lines[index]['shape']; // shape is LINESTRING or MULTILINESTRING
+//         //     let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
+//         //     let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
+//         //     let to_visualize = []; // used to populate the map (latitude & longitude)
+//         //     let coord; // will be an object to push coordinates to populate the map
+//         //     let ln = r.getCoordinates(); // parses the shape into lat & lng
+//         //     for (let i = 0; i < ln.length; i++) {
+//         //         coord = {
+//         //             lat: ln[i]['y'],
+//         //             lng: ln[i]['x']
+//         //         };
+//         //         to_visualize.push(coord);
+//         //     }
+//         //     let line = new google.maps.Polyline({ // it is a POLYLINE
+//         //         path: to_visualize, // polyline has a path, defined by lat & lng
+//         //         // value: data.corridor_data[index]['value'], // iri (attribute for the pavement condition score)
+//         //         strokeColor: 'teal',
+//         //         strokeOpacity: 0.70,
+//         //         strokeWeight: 5,
+//         //         zIndex: 99 // on top of every other shape
+//         //     });
+//         //     line.setMap(map);
+//         //     corridors_shown[_key].push(line);
 
 
-        // }
-    });
-}
+//         // }
+//     });
+// }
 
 function wktFormatter(poly) {
     let name = poly.slice(0, 7);
@@ -870,7 +940,7 @@ function injectTooltip(event, data) {
     if (!tipObj && event) {
         //create the tooltip object
         tipObj = document.createElement("div");
-        tipObj.style.width = '100px';
+        tipObj.style.width = 'auto';
         tipObj.style.height = '40px';
         tipObj.style.backgroundColor = "white";
         tipObj.style.borderRadius = "5px";
@@ -948,7 +1018,7 @@ function clearMetadata() {
     polygons = [];
     clusters = [];
     components = {};
-
+  //  currentPM = 0;
     markerClusterSafeDelete();
 }
 

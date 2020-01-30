@@ -1,7 +1,8 @@
 function openLegend() {
     if (detectmob() == true) {
-        console.log("Mobile");
         document.getElementById("legendHolder").style.width = "60%";
+    } else if (currentType == "repo") {
+        document.getElementById("legendHolder").style.width = "50%";
     } else {
         document.getElementById("legendHolder").style.width = "30%"; //length of legend
     }
@@ -12,13 +13,16 @@ function closeLegend() {
 }
 
 /* This functions are for sidebar */
+//* when the sidenav is getting closed the fact that both closing and opening use single clicks triggers both, that's why
+// it appears to do nothing. the solution is to make one of them to be used with double click and the othe with single click.
 function openNav() {
+    toggleNav('on');
     document.getElementById("mySidenav").style.overflow = "scroll";
     document.getElementById("mySidenav").className = "sidenav rounded-left mb-2 bg-light text-dark";
     $('#mySidenav').tooltip('disable');
     if (detectmob() == true) {
         document.getElementById("mySidenav").style.width = "100%";
-        //  document.getElementById("mySidenav").style.height = "50%";
+        document.getElementById("mySidenav").style.height = "40%";
     } else {
         document.getElementById("mySidenav").style.width = "53%";
         document.getElementById("mySidenav").style.height = "71%";
@@ -28,14 +32,39 @@ function openNav() {
 
 function closeNav() {
     // document.getElementById("mySidenav").style.width = "0%";
-    document.getElementById("mySidenav").style.width = "1%";
-    document.getElementById("mySidenav").style.height = "2%";
-    document.getElementById("mySidenav").style.overflow = "hidden";
-    document.getElementById("mySidenav").className = "sidenav rounded-left mb-2 bg-info text-dark";
+    if (detectmob() == true) {
+        document.getElementById("mySidenav").style.width = "8%";
+        document.getElementById("mySidenav").style.height = "8%";
+        document.getElementById("mySidenav").style.overflow = "hidden";
+        document.getElementById("mySidenav").className = "sidenav rounded-left mb-2 bg-info text-dark";
+
+    } else {
+        document.getElementById("mySidenav").style.width = "1%";
+        document.getElementById("mySidenav").style.height = "2%";
+        document.getElementById("mySidenav").style.overflow = "hidden";
+        document.getElementById("mySidenav").className = "sidenav rounded-left mb-2 bg-info text-dark";
+    }
+    //alert(currentPM);
+    if (currentPM === 0) {
+      //  document.getElementById("mySidenav").style.overflow = "none";
+
+    } else {
+        //document.getElementById("mySidenav").style.display = "block";
+
+    }
     $('#mySidenav').tooltip('enable');
 
 
     //removeAllElementsBar(); // destroy everything when closing bar
+}
+function toggleNav(state) {
+    if (state == "on") {
+        document.getElementById("mySidenav").style.visibility = "visible";
+        //document.getElementById("radioH").style.visibility = "visible";
+    } else if (state == "off") {
+        document.getElementById("mySidenav").style.visibility = "hidden";
+       // document.getElementById("radioH").style.visibility = "hidden";
+    }
 }
 
 function clean() {
@@ -45,8 +74,10 @@ function clean() {
     markerClusterSafeDelete();
     toggleSafeRemove();
     turnoff_Corridors();
+    removeNonPMContent();
     resetRadioBtn("optradio");
-    console.log("calling clean");
+    switch_AOI("off");
+    deleteUserShapes();
     
 }
 function toggleSafeRemove() {
@@ -87,7 +118,8 @@ function removeAllElementsBar() {
 }
 
 function removeNonPMContent() {
-  document.getElementById('non-pm-content').innerHTML = '';
+    document.getElementById('non-pm-content').innerHTML = '';
+    toggleNav('off');
 }
 function imageAdder(imageDir, holderDiv) {
     // create a new div element 
@@ -160,9 +192,11 @@ function anchorAdder(text, link) {
 // adds the information/subtitles(e.g summary/analysis period/data source/how it was calculated) of the pm
 function paragraphAdder(text, elemtype, infotype) {
     var elem = document.createElement("P");
-    var node = document.createTextNode(text);
+    // var node = document.createTextNode(text);
+    elem.innerHTML = text;
     elem.id = universal;
-    elem.appendChild(node);
+    //elem.className = 'text-secondary ';
+   // elem.appendChild(node);
     var holder = document.getElementById(infotype);
     holder.appendChild(elem);
 
@@ -204,7 +238,6 @@ function markerClusterSafeDelete() {
 
         // Clears all clusters and markers from the clusterer.
         markerCluster.clearMarkers();
-        console.log("cluster deleted");
     }
 }
 
@@ -243,17 +276,57 @@ function idChanger(old, newId) {
     var holder = document.getElementById(old);
     holder.id = newId;
 }
-
-function toggleRadioVisible(){
-    document.getElementById("radioH").style.visibility = "visible";
-    toggleOn = true;
+function toggleNameChanger() {
+    if (currentPM == 5 || currentPM == 7 || currentPM == 9) {
+        document.getElementById("toggleName1").innerHTML = "Existing Stations";
+        document.getElementById("toggleName2").innerHTML = "Planned Stations";
+    } else if (currentPM == 6 || currentPM == 8 || currentPM == 10) {
+        document.getElementById("toggleName1").innerHTML = "Existing Bikeways";
+        document.getElementById("toggleName2").innerHTML = "All bikeways";
+    }
 }
 
-function toggleRadioHide(){
-	document.getElementById("radioH").style.visibility = "hidden";
-    // toggleIdRestore();
-    toggleOn = false;
+function toggleRadio(state) {
+    if (state == "on") {
+        document.getElementById("radioH").style.visibility = "visible";
+    } else if (state == "off") {
+        document.getElementById("radioH").style.visibility = "hidden";
+    }
+
 }
+
+// adds the pm title
+function headerAdder(text, holderTitle) {
+    var x = document.createElement("HEADER");
+    var y;
+    x.setAttribute("id", universal);
+    x.className = 'text-dark justify-content-center font-weight-bold';
+    document.body.appendChild(x);
+    var holder = document.getElementById(holderTitle);
+    if (holderTitle == "legend_title") {
+        y = document.createElement("H5");
+        if (detectmob() == true) {
+            y = document.createElement("H7");
+        }
+        x.className = 'text-dark justify-content-center font-weight-bold';
+        y.id = "temp_title"
+    }
+    else {
+        y = document.createElement("H4");
+        y.id = universal;
+    }
+    var t = document.createTextNode(text);
+    y.className = 'text-dark justify-content-center font-weight-bold';
+    y.appendChild(t);
+
+    holder.appendChild(y);
+
+    // styles
+    holder.style.textAlign = "center";
+
+    universal++;
+}
+
 
 function toggleHide() {
     document.getElementById("ToggleHolder").style.display = "none";
@@ -263,6 +336,7 @@ function toggleHide() {
 
 function togglevisible() {
     document.getElementById("ToggleHolder").style.display = "inline";
+    toggleNameChanger();
     toggleOn = true;
 }
 
@@ -311,7 +385,7 @@ function translateCorridor(corridors_selected) {
     else if (corridors_selected == "socorro_buffer") corr = 'SOCORRO';
     else if (corridors_selected == "mcnutt_buffer") corr = 'MCNUTT';
     else if (corridors_selected == "eastlake_buffer") corr = 'EASTLAKE';
-    else if (corridors_selected == "artcraft_buffer") corr = 'ARTCRAFT';
+    else if (corridors_selected == "artcraft_buffer") corr = 'Artcraft/Domenici';
     return corr;
 }
 
@@ -378,6 +452,3 @@ function commafy(num) {
     return str.join('.');
 }
 
-function clearAllContent(){
-
-}

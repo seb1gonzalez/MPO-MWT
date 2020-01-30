@@ -4,18 +4,22 @@ function polygonHandler(found) {
 
     if (found == "PM1") {
         currentType = "driving";
+        active_pm_for_AOI = "all_pm1";
         currentPM = 1;
         pm1Data(1, '');
     }else if (found == "PM2T") {
         currentType = "transit";
+        active_pm_for_AOI = "all_pm2";
         currentPM = 2;
         pm2Data(1, '');
     } else if (found == "PM2W") {
         currentType = "walking";
+        active_pm_for_AOI = "all_pm2";
         currentPM = 2;
         pm2Data(1, '');
     } else if (found == "PM2B") {
         currentType = "biking";
+        active_pm_for_AOI = "all_pm2";
         currentPM = 2;
         pm2Data(1, '');
     }

@@ -7,48 +7,39 @@
  * Mode 3: Corridor Data only, data for benchmark
  * Mode 4: AOI points and data only
  */
-function pm4Data(mode, corr) {
+function pm4Data(mode, data_in) {
     let count = 0; // PM4 Data
     let color = '#03A9F4'; 
     let caller = "mwt_handler.php";
     let shape = "shape";
     let key = 'all_pm4';
     let data_for_php = {};
-    let walkingTracker = 0; // Aids mode 0 distinguish the type
+    let pm4data = {
+        dataW: 0,
+        dataB:0
+    }
+
+    //let walkingTracker = 0; // Aids mode 0 distinguish the type
 
     if (mode == 0) {
-
-        if (corr == 'b') key = 'all_pm4';
-        else if (corr = 'w') {
-            key = 'all_pm4W';
-            walkingTracker = 1;
-        }
-
         data_for_php = { key: key };
     }
     else if ( mode == 1) {
-        if (currentType == 'walking') key = 'all_pm4W';
-        else if (currentType == 'biking') key = 'all_pm4';
         data_for_php = { key: key };
-    } else  if(mode == 2){
+    }
+     else  if(mode == 2){
         caller = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
-        let key = "";
-
-        if (currentType == "biking") {
-            key = "pm4_bike";
-        } else if (currentType == "walking") {
-            key = "pm4_walking";
-        }
-
+    
         data_for_php = {
             key: 4,
-            corridors_selected: corr,
-            tableName: key
+            corridors_selected: data_in,
+            tableName: "pm4"
         };
     }
     else if (mode == 4) { 
         caller = "./backend/AOI.php";
+        data_for_php = data_in;
     }
 
     $.get(caller, data_for_php, function (data) { // ajax call to populate pavement lines
@@ -64,9 +55,14 @@ function pm4Data(mode, corr) {
             //PMS Data
 
             let pm4tct = data.shape_arr[index].tactcnt; // works for both walking and Biking
+            let type = data.shape_arr[index].type; 
 
+            if (type == "walking") {
+                pm4data.dataW += parseInt(data.shape_arr[index].tactcnt); // count if total miles
+            } else if (type == "bike" ) {
+                pm4data.dataB += parseInt(data.shape_arr[index].tactcnt); // count if total miles
+            }
 
-            count += parseInt(data.shape_arr[index].tactcnt); // count if total miles
 
             if (mode == 1 || mode == 2 || mode == 4) {
                 for (let i = 0; i < ln.length; i++) {
@@ -126,21 +122,22 @@ function pm4Data(mode, corr) {
         }
 
         if (mode == 0) {
-            if (walkingTracker == 1) {
-                document.getElementById("pm4WText").innerHTML = commafy(count);
-            } else if (walkingTracker ==0) {
-                document.getElementById("pm4BText").innerHTML = commafy(count);
-            }
+            document.getElementById("pm4WText").innerHTML = commafy(pm4data.dataW);
+            document.getElementById("pm4BText").innerHTML = commafy(pm4data.dataB);
         } else if (mode == 1) {
-            regionalText(count);
+            regionalText(pm4data);
         } else if (mode == 2) {
-            let corr2 = translateCorridor(corr); // what corridor are we on?
-            dynamicCorridorText(corr2, count);
+            let corr2 = translateCorridor(data_in); // what corridor are we on?
+            dynamicCorridorText(corr2, pm4data);
         }
         else if (mode == 4) {
-            dynamicCorridorText("AOI", count); // Send graph data and current corridor to dynamic text for corridors
+            dynamicCorridorText("AOI", pm4data); // Send graph data and current corridor to dynamic text for corridors
         }
-    });
+    }).fail(function (error) {
+        console.log(error);
+        alert("Error Fetching Data. Please Contact MPO.");
+        clean();
+    }); 
 
 
 }

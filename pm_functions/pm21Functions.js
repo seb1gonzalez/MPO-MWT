@@ -7,9 +7,10 @@ function loadpm21P(mode,ex) {
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
+    let pm21dataCount = 0;
 
     if (mode == 0 || mode == 1) { // if we want regional (default) data
-        let key = 'all_pm21_p';
+        let key = 'all_pm21P';
         data_for_php = { key: key };
     } else if (mode == 2) { // if we want corridors
         data_for_php = ex;
@@ -23,7 +24,12 @@ function loadpm21P(mode,ex) {
         for (index in data.shape_arr) {
             let holder = [];
             let project_name = data.shape_arr[index]['project_id'];
-            console.log(project_name);
+            let hotspot_ty = data.shape_arr[index]['hotspot_ty'];
+
+            if (hotspot_ty != "N/A") {
+                pm21dataCount++;
+            }
+    
             if (mode == 1 || mode == 2) { // mode 1 and 2 allows us to store points
                 holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
                 holder = holder[0][0]; // Fixes BLOBs
@@ -42,14 +48,8 @@ function loadpm21P(mode,ex) {
             }
         }
 
-        if (mode == 1) {
-            regionalText("");
-        }
-        else if (mode == 2 || mode == 3) {
-            let corr = translateCorridor(data_for_php.corridors_selected); // what corridor are we on?
-            dynamicCorridorText(corr, pm20Data); // Send graph data and current corridor to dynamic text for corridors
-        }
-        loadpm21Lines(mode,ex);
+     
+        loadpm21Lines(mode, ex, pm21dataCount);
     });
 
 }
@@ -70,78 +70,80 @@ function loadpm21H(mode, ex) {
     }
 
     $.get(php_handler, data_for_php, function (data) {
+        if (mode ==1) {
+            let color = "#039BE5";//blue
+            for (index in data.shape_arr) {
+                let temp = wktFormatter(data.shape_arr[index][shape]);
+                let to_visualize = [];
+                let pattern = data.shape_arr[index]['pattern'];
 
-        let color = "#039BE5";//blue
-        for (index in data.shape_arr) {
-            let temp = wktFormatter(data.shape_arr[index][shape]);
-            let to_visualize = [];
-            let pattern = data.shape_arr[index]['pattern'];
-            
-            // if the status of a shape exists, push to visualize
-            for (let i = 0; i < temp.length; i++) {
-                to_visualize.push(temp[i]);
-                polyToErase.exist.push();
-            }
+                // if the status of a shape exists, push to visualize
+                for (let i = 0; i < temp.length; i++) {
+                    to_visualize.push(temp[i]);
+                    polyToErase.exist.push();
+                }
 
-            if (pattern == "Intensifying Hot Spot") {
-                color = '#d50000';
-            } else if (pattern == "New Hot Spot") {
-                color = '#FFA726';
-            } else if (pattern == "Not Emerging") {
-                color = '#9E9E9E';
-            } else if (pattern == "Oscillating Hot Spot") {
-                color = "#FF5722";
-            } else if (pattern == "Persistent Cold Spot") {
-                color = "#9C27B0";
-            } else if (pattern == "Sporadic Cold Spot") {
-                color = "#1A237E";
-            } else if (pattern == "Sporadic Hot Spot") {
-                color = "#3F51B5";
-            } else if (pattern == "Diminishing Cold Spot") {
-                color = "#80D8FF";
-            } else if (pattern == "Consecutive Hot Spot") {
-                color = "#FF4081";
-            }else {
-                color = "#8BC34A";
-            }
-            let polygon = new google.maps.Polygon({
-                description: pattern,
-                paths: to_visualize,
-                strokeColor: 'black',
-                strokeOpacity: 0.60,
-                strokeWeight: 0.70,
-                fillColor: color,
-                fillOpacity: 0.60,
-                zIndex: -1,
-                title: pattern + "\n" + "Project name here"
-            });
-	
-            polyToErase.exist.push(polygon);
-            var infowindow;
+                if (pattern == "Intensifying Hot Spot") {
+                    color = '#d50000';
+                } else if (pattern == "New Hot Spot") {
+                    color = '#FFA726';
+                } else if (pattern == "Not Emerging") {
+                    color = '#9E9E9E';
+                } else if (pattern == "Oscillating Hot Spot") {
+                    color = "#FF5722";
+                } else if (pattern == "Persistent Cold Spot") {
+                    color = "#9C27B0";
+                } else if (pattern == "Sporadic Cold Spot") {
+                    color = "#1A237E";
+                } else if (pattern == "Sporadic Hot Spot") {
+                    color = "#3F51B5";
+                } else if (pattern == "Diminishing Cold Spot") {
+                    color = "#80D8FF";
+                } else if (pattern == "Consecutive Hot Spot") {
+                    color = "#FF4081";
+                } else {
+                    color = "#8BC34A";
+                }
+                let polygon = new google.maps.Polygon({
+                    description: pattern,
+                    paths: to_visualize,
+                    strokeColor: 'black',
+                    strokeOpacity: 0.60,
+                    strokeWeight: 0.70,
+                    fillColor: color,
+                    fillOpacity: 0.60,
+                    zIndex: -1,
+                    title: pattern
+                });
 
-       
-            // Hover Effect for Google API Polygons
-	        google.maps.event.addListener(polygon, 'mouseover', function (event) {
-           
-                 var polygonBounds = polygon.getPath();
-                 var point = {
-                    lat: polygonBounds.getAt(0).lat(),
-                    lng: polygonBounds.getAt(0).lng()
-                };
-                 infowindow = new google.maps.InfoWindow({
-                    content: polygon.title ,
-                    position:point,
-                  });
-                 infowindow.open(map);
+                polyToErase.exist.push(polygon);
+                var infowindow;
+
+
+                // Hover Effect for Google API Polygons
+                google.maps.event.addListener(polygon, 'mouseover', function (event) {
+
+                    var polygonBounds = polygon.getPath();
+                    var point = {
+                        lat: polygonBounds.getAt(0).lat(),
+                        lng: polygonBounds.getAt(0).lng()
+                    };
+                    infowindow = new google.maps.InfoWindow({
+                        content: polygon.title,
+                        position: point,
+                    });
+                    infowindow.open(map);
                 });
 
 
-            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); infowindow.close(); });
+                google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
+                google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); infowindow.close(); });
 
-            polygon.setMap(map);
-            polygons.push(polygon);
+                polygon.setMap(map);
+                polygons.push(polygon);
+            }
         }
+        
         loadpm21P(mode, ex);
     });
 }
@@ -162,10 +164,8 @@ function loadpm21Projected(mode, ex) {
     }
 
     $.get(php_handler, data_for_php, function (data) {
-        console.log("returned from uterp");
         let color = "#E91E63";
         for (index in data.shape_arr) {
-            console.log("in here");
             let temp = wktFormatter(data.shape_arr[index][shape]);
             let pattern = wktFormatter(data.shape_arr[index]['pattern']);
             let to_visualize = [];
@@ -221,7 +221,7 @@ function loadpm21Projected(mode, ex) {
     });
 }
 
-function loadpm21Lines(mode, ex) {
+function loadpm21Lines(mode, ex, pm21dataCount) {
     let data_for_php = 0;
     let shape = "shape";
     let php_handler = "mwt_handler.php";
@@ -235,23 +235,27 @@ function loadpm21Lines(mode, ex) {
         php_handler = "corridor_handlerB.php";
     }
     let color = "#039BE5";//blue
+
     $.get(php_handler, data_for_php, function (data) { // ajax call to populate pavement lines
         let reader = new jsts.io.WKTReader(); // 3rd party tool to handle multiple shapes
         for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
             let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING
             let r = reader.read(shp); // r becomes an object from the 3rd party tool, for a single shp
             let to_visualize = []; // used to populate the map (latitude & longitude)
-
+            let projectId = data.shape_arr[index]['project_id'];
+            let hotspot_ty = data.shape_arr[index]['hotspot_ty'];
+       
+            if (hotspot_ty!="N/A") {
+                pm21dataCount++;
+            }
 
             if (mode == 1 || mode == 2) {
-
                 if ('geometries' in r) { //multilinestrings
                     to_visualize = pm3_polyline_geojson_formatter(r);
                    
-
                     for (i in to_visualize) {
                         let line = new google.maps.Polyline({ // it is a POLYLINE
-							title:'bETO', // Add column that has name of project here !!!!!
+                            title:projectId, // Add column that has name of project here !!!!!
                             path: to_visualize[i], // polyline has a path, defined by lat & lng 
                             strokeColor: color,
                             strokeOpacity: .50,
@@ -270,7 +274,7 @@ function loadpm21Lines(mode, ex) {
                     to_visualize = pm3_line_geojson_formatter(r);
 
                     let line = new google.maps.Polyline({ // it is a POLYLINE
-						title:'Brian', // Add column that has name of project here !!!!!
+                        title: projectId, // Add column that has name of project here !!!!!
                         path: to_visualize, // polyline has a path, defined by lat & lng 
                         strokeColor: color,
                         strokeOpacity: .50,
@@ -284,14 +288,15 @@ function loadpm21Lines(mode, ex) {
 					
                     line.setMap(map);
                     polylines.push(line);
-
                 }
-
-
-
             }
         }
-
+        if (mode ==0) {
+            document.getElementById("pm21Text").innerHTML = pm21dataCount;
+        }
+        else if (mode == 1) {
+            regionalText(pm21dataCount);
+        }
 
 
 

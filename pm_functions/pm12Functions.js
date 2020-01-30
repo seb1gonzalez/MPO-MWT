@@ -1,11 +1,27 @@
 
 
 function pm12Data(mode, ex) {
-    console.log('12.1');
     var pm12Info = {
-        pm12existing: 0, pm12proposed: 0, pm12tot: 0, coep_prop: 0,
-        coep_exist: 0, pdn_prop: 0, pdn_exist: 0, sun_prop: 0,
-        sun_exist: 0, s_e_prop: 0, s_e_exist: 0, tot: 0
+        pm12existing: 0,
+        pm12proposed: 0,
+        pm12tot: 0,
+
+        coep_prop: 0,
+        coep_exist: 0,
+        pdn_prop: 0,
+        pdn_exist: 0,
+        sun_prop: 0,
+        sun_exist: 0,
+        s_e_prop: 0,
+        s_e_exist: 0,
+
+        tot: 0,
+        existingMiles: 0,
+        proposedMiles:0,
+        milesExistingPercent: 0,
+        proposedBikewaysPercent:0, 
+        endPercentage:0 
+
     };
     let php_handler = "mwt_handler.php";
     let color = '#03A9F4';  
@@ -25,6 +41,7 @@ function pm12Data(mode, ex) {
     }
     else if (mode == 4) {
         php_handler =" ./backend/AOI.php";
+        data_for_php = ex;
     }
 
     $.get(php_handler, data_for_php, function (data) { 
@@ -69,7 +86,7 @@ function pm12Data(mode, ex) {
             }
 
 
-            if (pm12Status == 'PROPOSED' || pm12Status == 'Proposed') {
+            if (pm12Status == 'PROPOSED' || pm12Status == 'Proposed' || pm12Status == 'Proposed/Funded' || pm12Status == 'Funded') {
                 pm12Info.pm12proposed += parseFloat(pm12mile);
                 pm12Info.tot += parseFloat(pm12mile)
                 if (pm12bikepath == "COEP") {
@@ -80,8 +97,11 @@ function pm12Data(mode, ex) {
                     pm12Info.s_e_prop += parseFloat(pm12mile);
                 } else if (pm12bikepath == "Sunland Park") {
                     pm12Info.sun_prop += parseFloat(pm12mile);
+                } else {
+                    console.log(pm12Status);
+                    console.log(pm12bikepath);
                 }
-            } else if (pm12Status == 'EXISTING' || pm12Status == 'Existing') {
+            } else if (pm12Status == 'EXISTING' || pm12Status == 'Existing' || pm12Status == 'Existing/Proposed' ) {
                 pm12Info.pm12existing += parseFloat(pm12mile);
                 pm12Info.tot += parseFloat(pm12mile)
                 if (pm12bikepath == "COEP") {
@@ -92,11 +112,27 @@ function pm12Data(mode, ex) {
                     pm12Info.s_e_exist += parseFloat(pm12mile);
                 } else if (pm12bikepath == "Sunland Park") {
                     pm12Info.sun_exist += parseFloat(pm12mile);
+                } else {
+                    console.log(pm12bikepath);
                 }
+            } else {            
+                //pm12Info.pdn_exist += parseFloat(pm12mile); // the values that fall in here are for pdn
+                pm12Info.tot += parseFloat(pm12mile)
+                console.log(pm12Status);
+
             }
         }
-        console.log('12.4');
+        // calculations
+
+        pm12Info.proposedMiles = pm12Info.tot - pm12Info.pm12existing;
+        pm12Info.milesExistingPercent = (pm12Info.pm12existing / pm12Info.tot) * 100;
+        pm12Info.proposedBikewaysPercent = (pm12Info.tot - pm12Info.pm12existing) * 100;
+        pm12Info.endPercentage = (pm12Info.proposedBikeways - pm12Info.milesExistingPercent) * 100;
+        
+
+
         let corr = translateCorridor(ex); // what corridor are we on?
+
 
         if (mode == 0) {
             document.getElementById("pm12Text").innerHTML = pm12Info.pm12existing.toFixed(2);

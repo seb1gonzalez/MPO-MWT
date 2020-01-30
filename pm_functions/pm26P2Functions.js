@@ -24,24 +24,24 @@ function pm26Data(mode, ex) {
         poorNM: 0,
         noDataNM: 0,
 
-        tx_good_count:0,
-        tx_fair_count:0,
-        tx_poor_count:0,
-        tx_no_data_count:0,
+        tx_good_count: 0,
+        tx_fair_count: 0,
+        tx_poor_count: 0,
+        tx_no_data_count: 0,
 
-        nm_good_count:0,
-        nm_fair_count:0,
-        nm_poor_count:0,
+        nm_good_count: 0,
+        nm_fair_count: 0,
+        nm_poor_count: 0,
         nm_no_data_count: 0,
 
         dynamicTot: 0,
-        dynamicPoor:0,
+        dynamicPoor: 0,
 
-        totTXBridges:0,
+        totTXBridges: 0,
         totNMBridges: 0,
-        tnodatabridges:0,
+        tnodatabridges: 0,
 
-        lowestRating:0
+        lowestRating: 0
     };
 
     let data_for_php = 0;
@@ -49,22 +49,24 @@ function pm26Data(mode, ex) {
     let php_handler = "mwt_handler.php";
 
     if (mode == 0 || mode == 1) { // if we want regional (default) data
-        let key = 'all_pm26';
+        let key = 'all_pm26F';
+        if (currentType == "transit") {
+            key = 'all_pm26T';
+        }
         data_for_php = { key: key };
+
 
     } else if (mode == 2 || mode == 3) { // if we want corridors
         shape = 'ST_AsText(SHAPE)'; // fix -> add alias (AS) for column in mysql query: SELECT column AS shape
         php_handler = "corridor_handlerB.php";
-        let key = 26;
-        let tableName = 'pm26';
-       
+
         data_for_php = {
-            key: key,
+            key: 26,
             corridors_selected: ex,
-            tableName: tableName
+            tableName: "pm26"
         };
     }
-    else if (mode == 4) { 
+    else if (mode == 4) {
         data_for_php = ex; // in AOI: ex = AOI string , table from DB -> needed for PHP handler
         php_handler = "./backend/AOI.php";
     }
@@ -72,84 +74,101 @@ function pm26Data(mode, ex) {
     $.get(php_handler, data_for_php, function (data) {
         let image = "./img/markers/crash.png";
         let condition = '';
-        var lowestRating = 0;
+        let deck_cond_ = 0;
+        let superstruc = 0;
+
+        let substruc_c = 0;
+        //let region = '';
 
         for (index in data.shape_arr) { // Organize information into dictionaries
-            let deck_cond_ = parseInt(data.shape_arr[index]['deck_cond_']);
-            let superstruc = parseInt(data.shape_arr[index]['superstruc']);
-            let substruc_c = parseInt(data.shape_arr[index]['substruc_c']);
-            let region = data.shape_arr[index]['region'];
-            let type = data.shape_arr[index]['mode'];
-            let typeHolder = currentType;
-            lowestRating = Math.min(deck_cond_, superstruc, substruc_c);
+            //hold info of 1 point at a time
 
-            if (mode ==0) {
-                let zeroType = "";
-                if (ex == "d") {
-                    typeHolder = "driving";
-                } else if (ex == "t") {
-                    typeHolder = "transit";
-                } else if (ex == "f") {
-                    typeHolder = "freight";
-                }
-                
+
+            deck_cond_ = data.shape_arr[index]['deck_cond_'];
+            superstruc = data.shape_arr[index]['superstruc'];
+
+            substruc_c = data.shape_arr[index]['substruc_c'];
+            //region = data.shape_arr[index]['region'];
+
+            //convert Values
+            if (deck_cond_ == "N") {
+                deck_cond_ = 999;
+            }
+            if (superstruc == "N") {
+                superstruc = 999;
+            }
+            if (substruc_c == "N") {
+                substruc_c = 999;
             }
 
-            if (typeHolder == type) {
-                //count bridges by region
-                if (region == "TX" || region == "Texas") {
-                    pm26Data.totTXBridges++;
-                } else if (region == "NM" || region == "New Mexico") {
-                    pm26Data.totNMBridges++;
-                }
+            // if they are all equal
+            if (deck_cond_ == superstruc && deck_cond_ == substruc_c) {
+                lowestRating = deck_cond_;
+            }
+            // if a < b && a < c {a is the lowest}
+            else if (deck_cond_ < superstruc && deck_cond_ < substruc_c) {
+                lowestRating = deck_cond_;
+            }
+            // if we reach this line, then we know that a is not the lowest. Is it b or c?
+            else if (superstruc < substruc_c) {
+                lowestRating = superstruc;
+            }
+            // if we reach this point it means that neither a or b are the lowest
+            else {
+                lowestRating = substruc_c;
+            }
 
-                // Count Conditions by Region. Used for Graph
-                if (lowestRating >= 7 && lowestRating <= 9) {
-                    condition = 'Good Condition';
-                    image = "./img/markers/green.png";
-                    if (region == "TX" || region == "Texas") {
-                        pm26Data.tx_good_count++;
-                    } else {
-                        pm26Data.nm_good_count++;
-                    }
-                } else if (lowestRating >= 5 && lowestRating <= 6) {
-                    condition = 'Fair Condition';
-                    image = "./img/markers/yellow.png"
-                    if (region == 'TX' || region == "Texas") {
-                        pm26Data.tx_fair_count++;
-                    } else {
-                        pm26Data.nm_fair_count++;
-                    }
-                } else if (lowestRating >= 0 && lowestRating <= 4) {
-                    condition = 'Poor Condition';
-                    image = "./img/markers/red.png";
-                    if (region == 'TX' || region == "Texas") {
-                        pm26Data.tx_poor_count++;
-                    } else {
-                        pm26Data.nm_poor_count++;
-                    }
-                } else if (lowestRating == 999) {
-                    condition = 'No data';
-                    image = "./img/markers/grey.png";
-                    if (region == 'TX' || region == "Texas") {
-                        pm26Data.tx_no_data_count++;
-                    } else {
-                        pm26Data.nm_no_data_count++;
-                    }
-                } else {//null
-                    condition = 'No data';
-                    image = "./img/markers/grey.png";
-                    if (region == 'TX' || region == "Texas") {
-                        pm26Data.tx_no_data_count++;
-                    } else {
-                        pm26Data.nm_no_data_count++;
-                    }
+            //count bridges by region
+            if (region == "TX") {
+                pm26Data.totTXBridges++;
+            } else if (region == "NM") {
+                pm26Data.totNMBridges++;
+            }
+
+            // Count Conditions by Region. Used for Graph
+            if (lowestRating >= 7 && lowestRating <= 9) {
+                condition = 'Good Condition';
+                image = "./img/markers/green.png";
+                if (region == 'TX') {
+                    pm26Data.tx_good_count++;
+                } else {
+                    pm26Data.nm_good_count++;
+                }
+            } else if (lowestRating >= 5 && lowestRating <= 6) {
+                condition = 'Fair Condition';
+                image = "./img/markers/yellow.png"
+                if (region == 'TX') {
+                    pm26Data.tx_fair_count++;
+                } else {
+                    pm26Data.nm_fair_count++;
+                }
+            } else if (lowestRating >= 0 && lowestRating <= 4) {
+                condition = 'Poor Condition';
+                image = "./img/markers/red.png";
+                if (region == 'TX') {
+                    pm26Data.tx_poor_count++;
+                } else {
+                    pm26Data.nm_poor_count++;
+                }
+            } else if (lowestRating == 999) {
+                condition = 'No data';
+                image = "./img/markers/grey.png";
+                if (region == 'TX') {
+                    pm26Data.tx_no_data_count++;
+                } else {
+                    pm26Data.nm_no_data_count++;
+                }
+            } else {//null
+                condition = 'No data';
+                image = "./img/markers/grey.png";
+                if (region == 'TX') {
+                    pm26Data.tx_no_data_count++;
+                } else {
+                    pm26Data.nm_no_data_count++;
                 }
             }
-            
             let holder = [];
-
-            if (mode == 1 || mode == 2 || mode == 4)  { // mode 1 and 2 allows us to draw points 
+            if (mode == 1 || mode == 2 || mode == 4) { // mode 1 and 2 allows us to store points 
                 holder.push(wktFormatterPoint(data.shape_arr[index][shape]));
                 holder = holder[0][0]; // Fixes BLOBs
                 let to_visualize = { lat: parseFloat(holder[0].lat), lng: parseFloat(holder[0].lng) };
@@ -159,16 +178,12 @@ function pm26Data(mode, ex) {
                 }
                 let point = new google.maps.Marker({
                     position: to_visualize,
-                   title: titleH,
-                   // value: '',
+                    title: titleH,
+                    // value: '',
                     icon: image
                 });
-                // draw by 1 type at a time
-                if (currentType == type) {
-                    point.setMap(map);
-                    points.push(point);
-                } 
-               
+                point.setMap(map);
+                points.push(point);
             }
 
         }
@@ -184,44 +199,38 @@ function pm26Data(mode, ex) {
         pm26Data.dynamicTot = pm26Data.totTXBridges + pm26Data.totNMBridges;
         pm26Data.dynamicPoor = (((pm26Data.tx_poor_count + pm26Data.nm_poor_count) / pm26Data.dynamicTot) * 100).toFixed(2);
 
-        //formulas
+        //tx graph data
         if (pm26Data.tx_good_count != 0) {
-            pm26Data.goodTX = ((pm26Data.tx_good_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.goodTX = ((pm26Data.tx_good_count / totTX) * 100).toFixed(2);
         }
         if (pm26Data.tx_fair_count != 0) {
-            pm26Data.fairTX = ((pm26Data.tx_fair_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.fairTX = ((pm26Data.tx_fair_count / totTX) * 100).toFixed(2);
         }
         if (pm26Data.tx_poor_count != 0) {
-            pm26Data.poorTX = ((pm26Data.tx_poor_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.poorTX = ((pm26Data.tx_poor_count / totTX) * 100).toFixed(2);
         }
         if (pm26Data.tx_no_data_count != 0) {
-            pm26Data.noDataTX = ((pm26Data.tx_no_data_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.noDataTX = ((pm26Data.tx_no_data_count / totTX) * 100).toFixed(2);
         }
         //nm
         if (pm26Data.nm_good_count != 0) {
-            pm26Data.goodNM = ((pm26Data.nm_good_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.goodNM = ((pm26Data.nm_good_count / totNM) * 100).toFixed(2);
         }
         if (pm26Data.nm_fair_count != 0) {
-            pm26Data.fairNM = ((pm26Data.nm_fair_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.fairNM = ((pm26Data.nm_fair_count / totNM) * 100).toFixed(2);
         }
         if (pm26Data.nm_poor_count != 0) {
-            pm26Data.poorNM = ((pm26Data.nm_poor_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.poorNM = ((pm26Data.nm_poor_count / totNM) * 100).toFixed(2);
         }
         if (pm26Data.nm_no_data_count != 0) {
-            pm26Data.noDataNM = ((pm26Data.nm_no_data_count / pm26Data.dynamicTot) * 100).toFixed(2);
+            pm26Data.noDataNM = ((pm26Data.nm_no_data_count / totNM) * 100).toFixed(2);
         }
 
         if (mode == 0) { // menu text, this is only done once
+            // ! mpo = ( (tx_poor + nm_poor) / 2 ) * 10  | operation was missing multiplication by 10 & text was missing  ' % '  character  
             mpo = (mpo * 10).toString() + ' %';
 
-            if (ex == 'd') {
-                document.getElementById("pm26DText").innerHTML = pm26Data.dynamicPoor + "%"; 
-            } else if (ex == 't') {
-                document.getElementById("pm26TText").innerHTML = pm26Data.dynamicPoor + "%" ;
-            } else if (ex == 'f') {
-                document.getElementById("pm26FText").innerHTML = pm26Data.dynamicPoor + "%";
-            }
-
+            document.getElementById("pm26Text").innerHTML = mpo;
         }
 
         let corr = translateCorridor(ex); // what corridor are we on?
@@ -229,16 +238,17 @@ function pm26Data(mode, ex) {
         if (mode == 1) {
             regionalText(pm26Data);
         }
-        else if (mode == 2) {
+        else if (mode > 1 & mode < 4) {
             dynamicCorridorText(corr, pm26Data); // Send graph data and current corridor to dynamic text for corridors
         }
-         else if (mode == 4) {
+        else if (mode == 4) {
             dynamicCorridorText("AOI", pm26Data); // Send graph data and current corridor to dynamic text for corridors
         }
 
-    }).fail(function(error){
-        pm_error_handler(mode,ex);
-    }); 
+    }).fail(function (error) {
+        console.log(error);
+        alert("Error Fetching Data. Please Contact MPO.");
+    });
 }
 
 //draw Chart
@@ -274,7 +284,7 @@ function chart_pm26(g1, data) {
                     borderWidth: 1
                 },
                 {
-                    label:data.tx_poor_count +   ' Poor',
+                    label: data.tx_poor_count + ' Poor',
                     data: [data.poorTX],
                     backgroundColor: [
                         'rgba(242, 38, 19, 1)',
@@ -286,7 +296,7 @@ function chart_pm26(g1, data) {
                     borderWidth: 1
                 },
                 {
-                    label:data.tx_no_data_count +  ' No Data',
+                    label: data.tx_no_data_count + ' No Data',
                     data: [data.noDataTX],
                     backgroundColor: [
                         'rgba(149, 165, 166, 1)',
@@ -308,7 +318,7 @@ function chart_pm26(g1, data) {
             },
             title: {
                 display: true,
-                text: 'Texas (' + data.totTXBridges+ ' bridges)'
+                text: 'Texas (' + data.totTXBridges + ' bridges)'
             },
             scales: {
                 yAxes: [
@@ -325,14 +335,14 @@ function chart_pm26(g1, data) {
 
 }
 
-function chart_pm26_2(g2,data){
+function chart_pm26_2(g2, data) {
     myChart2 = new Chart(g2, {
         type: 'bar',
         data: {
             labels: [''],
             datasets: [
                 {
-                    label: data.nm_good_count + ' Good',
+                    label: 'Good',
                     data: [data.goodNM],
                     backgroundColor: [
                         'rgba(30, 130, 76, 1)',
@@ -344,7 +354,7 @@ function chart_pm26_2(g2,data){
                     borderWidth: 1
                 },
                 {
-                    label:data.nm_fair_count +   ' Fair',
+                    label: 'Fair',
                     data: [data.fairNM],
                     backgroundColor: [
                         'rgba(247, 202, 24, 1)',
@@ -356,7 +366,7 @@ function chart_pm26_2(g2,data){
                     borderWidth: 1
                 },
                 {
-                    label: data.nm_poor_count + ' Poor',
+                    label: 'Poor',
                     data: [data.poorNM],
                     backgroundColor: [
                         'rgba(242, 38, 19, 1)',
@@ -368,7 +378,7 @@ function chart_pm26_2(g2,data){
                     borderWidth: 1
                 },
                 {
-                    label: data.nm_no_data_count+' No Data',
+                    label: 'No Data',
                     data: [data.noDataNM],
                     backgroundColor: [
                         'rgba(149, 165, 166, 1)',
@@ -390,7 +400,7 @@ function chart_pm26_2(g2,data){
             },
             title: {
                 display: true,
-                text: 'New Mexico (' + data.totNMBridges+ ' bridges)'
+                text: 'New Mexico (' + data.totNMBridges + ' bridges)'
             },
             scales: {
                 yAxes: [{

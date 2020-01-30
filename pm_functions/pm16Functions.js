@@ -44,7 +44,21 @@ function pm16Data(mode) {
            
 
             if (category == "CO") {
-   
+                if (g2014 == '0') {
+                    g2014 = null;
+                }
+                if (g2015 == '0') {
+                    g2015 = null;
+                }
+                if (g2016 == '0') {
+                    g2016 = null;
+                }
+                if (g2017 == '0') {
+                    g2017 = null;
+                }
+                if (g2018 == '0') {
+                    g2018 = null;
+                }
                 pm16Data[i] = {
                     name: stationName,
                     graphData: [g2014, g2015, g2016, g2017, g2018]
@@ -144,7 +158,7 @@ function pm16Data(mode) {
 
         //menu text
         if (mode == 0) {
-            document.getElementById("pm16Text").innerHTML = pm16Data[pm16Data.length - 1].num + " ppb";
+            document.getElementById("pm16Text").innerHTML = pm16Data[pm16Data.length - 1].num + " ppm";
         } else if (mode == 1) {
             regionalText(pm16Data);
         }
@@ -158,7 +172,7 @@ function pm16Data(mode) {
             datasets: [
                 {
                     label: data[0].name,
-                    data: [null, null, null, null, data[0].graphData[4]],
+                    data: data[0].graphData,
                     backgroundColor: "orange",
                     borderColor: "orange",
                     fill: false,
@@ -177,10 +191,7 @@ function pm16Data(mode) {
             ]
         };
 
-		
 
-		
-		
         //options
         var options = {
             scales: {

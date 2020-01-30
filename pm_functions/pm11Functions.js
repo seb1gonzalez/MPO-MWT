@@ -21,7 +21,7 @@ function pm11Data(mode, ex) {
         data_for_php = {
             key: 11,
             corridors_selected: ex,
-            tableName: "pm11_sidewalks"
+            tableName: "pm11"
         };
     }
     else if(mode == 4){

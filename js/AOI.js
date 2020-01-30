@@ -2,46 +2,44 @@ var AOI_STRING;
 let active_pm_for_AOI;
 //to delete user drawn shapes
 function deleteUserShapes() {
-    for (var i=0; i < all_overlays.length; i++)
-    {
-      all_overlays[i].overlay.setMap(null);
+    for (var i = 0; i < all_overlays.length; i++) {
+        all_overlays[i].overlay.setMap(null);
     }
     all_overlays = [];
-  }
-
+}
 //returns geoJSON string
-function createGeoJSON(poly_type,coords){
-    let polygon,type;
+function createGeoJSON(poly_type, coords) {
+    let polygon, type;
     if (poly_type == "polygon") {
         type = "Polygon";
         polygon = [coords];
     }
-    else{
+    else {
         type = "LineString"
         polygon = coords;
     }
     let geo = {
-          "type": type,
-          "coordinates": polygon
-      };
+        "type": type,
+        "coordinates": polygon
+    };
     return JSON.stringify(geo);
 }
 // turns on/off AOI controls
-function switch_AOI(){
+function switch_AOI(status) {
     console.log("switch AOI");
-    if( drawingManager.drawingControl == true){
+    if (status == "off") {
         drawingManager.drawingControl = false;
         drawingManager.setMap(map);
+        drawingManager.setDrawingMode(null); //
         console.log("switch AOI OFF");
     }
-    else{
+    else if (status == "on") {
         drawingManager.drawingControl = true;
         drawingManager.setMap(map);
         console.log("switch AOI ON");
     }
-    
-}
 
+}
 //Options for AOI
 /*
 all_pm1                     	pm1	polygon
@@ -52,7 +50,7 @@ all_pm8P                       	pmt8keys	line
 all_pm4                     pm4_bike	line
 all_pm11                       	pm11_sidewalks	line
 all_pm12                       	pm12	line
-all_pm3                     pm3final	line
+all_pm3                     pm3	line
 all_pm5                    	pm5	polygon
 all_pm9                    	pmt5_9	polygon
 all_pm7                    	pm7_buffer	polygon
@@ -80,82 +78,93 @@ all_pm15_16_17g                    	pms_15_16_17_graph_data	point
  * get intersection;
  * display general AOI
  */
-function AOI(AOI_STRING){
-
-    console.log("current active pm " + active_pm_for_AOI);
+function AOI(AOI_STRING) {
+    turnoff_Corridors();
+    clearMetadata();
+    //  console.log("current active pm " + active_pm_for_AOI);
     let tables_reference = {
         //Points:
         'all_pm26': 'pm26',			//done
-        'all_pm13_14': 'pm14points',			
+        'all_pm13_14': 'pm14points',
         'all_pm21P': 'pm21_points', // does not exist in PM folder
         'all_pm7P': 'pm7_planbrst', //pending dynamic data
-       'all_pm15_16_17':'pm15_16_17p',
+        'all_pm15_16_17': 'pm15_16_17p',
         'all_pm7PK': 'pm7_plannedkey', //pending dynamic data
         'all_pm20PC': 'pm20_crashp',
-        'all_pm22': 'pm22txpoints', 
-        'all_pm22nm': 'pm22nmpoints',
-        'all_pm18_19': 'pm18_19txdotall',
-        'all_pm20': 'pm20_buscrashesf',
+        'all_pm22': 'pm22',
+        'all_pm18_19': 'pm18_19',
+        'all_pm_19': 'pm18_19',
+        'pm20W': 'pm20_crashes',
+        'pm20B': 'pm20_buffer',
         //end points
         //Lines:
-        'all_pm4B':'pm4_bike',
-        'all_pm4W':'pm4_walking',
-        'all_pm3':'pm3final',
-        'all_pm11':'pm11_sidewalks',
-        'all_pm12':'pm12'
-
+        'all_pm4': 'pm4',
+        'all_pm3': 'pm3',
+        'all_pm11': 'pm11',
+        'all_pm12': 'pm12',
+        'all_pm24': 'pm24',
+        'all_pm25': 'pm25',
+        //Polygons
+        'all_pm1': 'pm_1_2',
+        'all_pm2': 'pm_1_2',
     }
     let table_wanted = tables_reference[active_pm_for_AOI];
-     let to_php = {
-         "AOI": AOI_STRING,
-         "PM_SOURCE":table_wanted
-     }
-     drawingManager.drawingControl = true;
-     drawingManager.setMap(map);
-     clearMetadata();
+    console.log(table_wanted);
+    let to_php = {
+        "AOI": AOI_STRING,
+        "PM_SOURCE": table_wanted
+    }
+    //   console.log(to_php);
 
-         if (table_wanted == 'pm26'){
-            pm26Data(4,to_php);
-          
-        }  
-        else if (table_wanted == 'pm3final'){
-            pm3Data(4, to_php);
+    clearMetadata();
+    if (table_wanted == 'pm_1_2') {
+        if(active_pm_for_AOI == 'all_pm1'){
+            pm1Data(4,to_php);
         }
-        else if (table_wanted == 'pm4_bike' || table_wanted == 'pm4_walking'){
-            pm4Data(4, to_php);
+        else if (active_pm_for_AOI == 'all_pm2'){
+            pm2Data(4,to_php);
         }
-      
-        else if(table_wanted =='pm11_sidewalks'){
-            pm11Data(4,to_php);
+
+
+    }
+    else if (table_wanted == 'pm26') {
+        pm26Data(4, to_php);
+
+    }
+    else if (table_wanted == 'pm3') {
+        pm3Data(4, to_php);
+    }
+    else if (table_wanted == 'pm4') {
+        pm4Data(4, to_php);
+    }
+    else if (table_wanted == 'pm4_bike' || table_wanted == 'pm4_walking') {
+        pm4Data(4, to_php);
+    }
+
+    else if (table_wanted == 'pm11') {
+        pm11Data(4, to_php);
+    }
+    else if (table_wanted == 'pm18_19') {
+        if (active_pm_for_AOI == 'all_pm_19') {
+            pm19Data(4, to_php);
         }
-        else if (table_wanted == 'pm18_19txdotall'){
+        else {
             pm18Data(4, to_php);
         }
-        else if (table_wanted == 'pm12'){
-            pm12Data(4, to_php);
-        }
-
-
-
-
-
-
-    // console.log("AOI table to fetch: "+ table_wanted);
-    // let to_php = {
-    //     "AOI": AOI_STRING,
-    //     "PM_SOURCE":table_wanted
-    // }
-    // $.get( "backend/AOI.php",to_php).done(function(data) {
-    //     drawingManager.drawingControl = true;
-    //     drawingManager.setMap(map);
-    //     alert( "Retrieving AOI..." );
-    //     clearMetadata();
-    //     if (table_wanted == 'pm26'){
-    //         pm26Data(4,data);
-    //     }
-    // })
-    // .fail(function() {
-    //     alert( "Error fetching AOI" );
-    // });
-  
+    }
+    else if (table_wanted == 'pm12') {
+        pm12Data(4, to_php);
+    }
+    else if (table_wanted == 'pm20_crashes' || table_wanted == 'pm20_buffer') {
+        pm20Data(4, to_php);
+    }
+    else if (table_wanted == 'pm22') {
+        pm22Data(4, to_php);
+    }
+    else if (table_wanted == 'pm24') {
+        pm24Data(4, to_php);
+    }
+    else if (table_wanted == 'pm25') {
+        pm25Data(4, to_php);
+    }
 }

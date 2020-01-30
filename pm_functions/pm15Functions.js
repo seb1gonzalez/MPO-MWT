@@ -42,6 +42,22 @@ function pm15Data(mode) {
             g2018 = data.shape_arr[index].g2018;
 
             if (category == "Ozone 1 hr" || category == "Ozone 8 hr") {
+                if (g2014 == '0') {
+                    g2014 = null;
+                }
+                if (g2015 == '0') {
+                    g2015 = null;
+                }
+                if (g2016 == '0') {
+                    g2016 = null;
+                }
+                if (g2017 == '0') {
+                    g2017 = null;
+                }
+                if (g2018 == '0') {
+                    g2018 = null;
+                }
+
                 pm15Data[index] = {
                     name: stationName,
                     category: category,

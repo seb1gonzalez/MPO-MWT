@@ -3,14 +3,15 @@
 
 function pm6Data(mode, condition) {
     let pm6Data = {
-        existingJobs: 0,
-        totalJobs: 0,
-        totalprims:0,
-        percentJobs: 0,
-        percentJobsTot:0
+        totJobs: 0,
+        jobsPercent: 0,
+        totalJobsPercent: 0,
+
+        existing_ratio_sum: 0,
+        all_ratio_sum: 0
     };
 
-    let key = 'all_pm10';
+    let key = 'all_pm6';
     let example = { key: key };
     let color = "#039BE5";
 
@@ -18,78 +19,80 @@ function pm6Data(mode, condition) {
         for (index in data.shape_arr) {
             let temp = wktFormatter(data.shape_arr[index]['shape']);
             let to_visualize = [];
-            let status = data.shape_arr[index].status;
-            let prctprim = parseFloat(data.shape_arr[index].prcnt_prim);
-            let ratioprim = parseFloat(data.shape_arr[index].ratio_prim);
-            let primJobs = parseInt(data.shape_arr[index].prim_jobs_);
+            let type = data.shape_arr[index].type;
+            let ratio_prim = parseFloat(data.shape_arr[index].ratio_prim); 
 
-            if (status == "existing") {
-                pm6Data.existingJobs += ratioprim;
+            //update Dynamic Data
+            if (type == "existing") {
+                pm6Data.existing_ratio_sum += ratio_prim;
+            } else if (type == "all") {
+                pm6Data.all_ratio_sum += ratio_prim;
             }
 
-            pm6Data.totalJobs += primJobs;
-            pm6Data.totalprims += ratioprim;
-              
-            // if the status of a shape exists, push to visualize
-            for (let i = 0; i < temp.length; i++) {
-                if (status == "existing" && condition == "e") {
-                    color = "#039BE5";//blue
-                    to_visualize.push(temp[i]);
-                    polyToErase.exist.push();
-                } else if (status == "planned_exist" && condition == "p") {
-                    color = "#9E9E9E"; //gray
-                    to_visualize.push(temp[i]);
-                    polyToErase.plan.push();
+            if (mode == 1) {
+                // if the status of a shape exists, push to visualize
+                for (let i = 0; i < temp.length; i++) {
+                    if (type == "existing" && condition == "e") {
+                        color = "#039BE5";//blue
+                        to_visualize.push(temp[i]);
+                        polyToErase.exist.push();
+                    } else if (type == "all" && condition == "p") {
+                        color = "#9E9E9E"; //gray
+                        to_visualize.push(temp[i]);
+                        polyToErase.plan.push();
+                    }
+
                 }
+                let polygon = new google.maps.Polygon({
+                    description: "",
+                    description_value: '',
+                    paths: to_visualize,
+                    strokeColor: 'black',
+                    strokeOpacity: 0.60,
+                    strokeWeight: 0.70,
+                    fillColor: color,
+                    fillOpacity: 0.60,
+                    zIndex: -1,
+                    title: ratio_prim.toFixed(2) + "%",
+                });
 
+                if (condition == "e") polyToErase.exist.push(polygon);
+                if (condition == "p") polyToErase.plan.push(polygon);
+
+                // Hover Effect for Google API Polygons
+                google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
+                google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
+                google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
+
+                polygon.setMap(map);
+                polygons.push(polygon);
             }
-            let polygon = new google.maps.Polygon({
-                description: "",
-                description_value: '',
-                paths: to_visualize,
-                strokeColor: 'black',
-                strokeOpacity: 0.60,
-                strokeWeight: 0.70,
-                fillColor: color,
-                fillOpacity: 0.60,
-                zIndex: -1,
-                title: prctprim.toFixed(2) + "%",
-            });
-
-            if (condition == "e") polyToErase.exist.push(polygon);
-            if (condition == "p") polyToErase.plan.push(polygon);
-
-            // Hover Effect for Google API Polygons
-            google.maps.event.addListener(polygon, 'mouseover', function (event) { injectTooltip(event, polygon.title); });
-            google.maps.event.addListener(polygon, 'mousemove', function (event) { moveTooltip(event); });
-            google.maps.event.addListener(polygon, 'mouseout', function (event) { deleteTooltip(event); });
-
-            polygon.setMap(map);
-            polygons.push(polygon);
         }
-
-        // calculations
-        /*In EXISTING only, get the summation of all the values in the Ratio_Prim_Jobs 
-         * column from both TX& NM.For the percentage, use this summation, then divide 
-         * that by the total number of jobs 
-         * ((Ratio_Prim_Jobs /Total Jobs) *100).*/
-
-        pm6Data.percentJobs = (pm6Data.existingJobs / pm6Data.totalJobs) * 100;
-        pm6Data.percentJobsTot =   (pm6Data.totalprims / pm6Data.totalJobs) * 100;
-
-
-        if (mode == 0) {
-            document.getElementById("pm6Text").innerHTML = String(pm6Data.percentJobs.toFixed(2)) + "%"; // menu text
-        } else if (mode == 1) {
-            console.log(pm6Data);
-            regionalText(pm6Data);
-        }
-
+        pm6Calculations(pm6Data, mode);
     });
 }
+function pm6Calculations(pm6Data, mode) {
+    let key = 'all_pm5_6';
+    let example = { key: key };
+    $.get('mwt_handler.php', example, function (data) {
+        let totJobs = 0;
+        for (index in data.shape_arr) {
+            totJobs += parseInt(data.shape_arr[index].primjobsc0);
+        }
+        //calculations
+        pm6Data.totJobs = totJobs;
+        pm6Data.jobsPercent = ((pm6Data.existing_ratio_sum / pm6Data.totJobs) * 100);
+        pm6Data.totalJobsPercent = ((pm6Data.all_ratio_sum / pm6Data.totJobs) * 100);
 
+        if (mode == 0) {
+            document.getElementById("pm6Text").innerHTML = String(pm6Data.jobsPercent.toFixed(2)) + "%"; // menu text
+        } else if (mode == 1) {
+            regionalText(pm6Data);
+        }
+    });
+}
 function pm6chart(g2, data) {
-    let totJobs = 100 - data.percentJobs;
+    let tot = 100 - (Math.round(data.jobsPercent));
     colors = [];
     colors = [
         'rgba(33,150,243,1)',
@@ -100,8 +103,7 @@ function pm6chart(g2, data) {
         type: 'pie',
         data: {
             datasets: [{
-              //  data: [tot, Math.round(data.ratioPrim)],
-                data: [totJobs.toFixed(2), data.percentJobs.toFixed(2)],
+                data: [tot, Math.round(data.jobsPercent)],
                 backgroundColor: colors,
                 label: 'Dataset 1'
             }],

@@ -1,10 +1,11 @@
-// Colors for Graphs
+// Colors for Graphs/
 let pdnC = "#FDD835";
 let pdnC2 = "#FFEB3B"
 let ysC = "#FF9800";
 let ysC2 = '#FFB74D';
 let botaC = "#304FFE";
-let botaC2 ="#2196F3";
+let botaC2 = "#2196F3";
+
 let data_by_mode_pm14 = {
     'driving':{
         pdn:[],
@@ -28,12 +29,12 @@ let data_by_mode_pm14 = {
     }
 }
 
-function pm14Data(mode,data){
-    let php_handler = './mwt_handler.php';
+function pm14Data(mode){
+    let php_handler = 'mwt_handler.php';
     let data_for_php = {'key':'all_pm14'};
-    // if mode == x ...
+
     $.get(php_handler,data_for_php).done(function(data) {//succesful
-        alert("Success");
+        
         let all_pm14_data = 
         {
             bridge_data: {
@@ -93,11 +94,81 @@ function pm14Data(mode,data){
                 all_pm14_data.bridge_points.port_point.push(geoPoint);
             }
         }
+
         load_graph_values_pm14(all_pm14_data);
+        if (mode == 0){
+            //walking text data
+            let sum = arrSum(data_by_mode_pm14.walking.bota) + arrSum(data_by_mode_pm14.walking.pdn) + arrSum(data_by_mode_pm14.walking.pdn_ready) + arrSum(data_by_mode_pm14.walking.ysleta);
+             document.getElementById("pm14WText").innerHTML = sum;
+
+        //driving text data
+            sum = arrSum(data_by_mode_pm14.driving.bota_ready) +  arrSum(data_by_mode_pm14.driving.bota) +
+            arrSum(data_by_mode_pm14.driving.pdn) + arrSum(data_by_mode_pm14.driving.pdn_ready) +
+             arrSum(data_by_mode_pm14.driving.ysleta) + arrSum(data_by_mode_pm14.driving.ysleta_ready);
+             document.getElementById("pm14DText").innerHTML = sum;
+
+             //freight data text
+             sum = arrSum(data_by_mode_pm14.freight.bota) +  arrSum(data_by_mode_pm14.freight.bota_fast) +
+             arrSum(data_by_mode_pm14.freight.ysleta) + arrSum(data_by_mode_pm14.freight.ysleta_fast);
+              document.getElementById("pm14FText").innerHTML = sum;
+        } 
+        if (mode == 1) {
+            draw_points_pm14(all_pm14_data);
+            regionalText(all_pm14_data);
+        }
     }).fail(function(error){
         alert("ERROR PM 14");
         console.log(error);
     });
+}
+function draw_points_pm14(points_data) {
+    let image = "./img/markers/grey.png";
+    for (let index = 0; index < 4; index++) {
+        let title = points_data.bridge_points.port_name[index];
+        let to_visualize;
+        to_visualize = points_data.bridge_points.port_point[index];
+
+        // filter points by type
+        if (currentType == "driving") {
+            if (title == "PDN") {
+      //          to_visualize = points_data.port_point[index];
+                image = "./icons/yellowPin.png";
+            } else if (title == "Ysleta") {
+      //          to_visualize = points_data.port_point[index];
+                image = "./icons/orangePin.png";
+            } else if (title == "BOTA") {
+   //             to_visualize = points_data.port_point[index];
+                image = "./icons/darkbluePin.png";
+            }
+        } else if (currentType == "freight") {
+            if (title == "Ysleta") {
+     //           to_visualize = points_data.port_point[index];
+                image = "./icons/orangePin.png";
+            } else if (title == "BOTA") {
+     //           to_visualize = points_data.port_point[index];
+                image = "./icons/darkbluePin.png";
+            }
+        } else if (currentType == "walking") {
+            if (title == "PDN") {
+          //      to_visualize = points_data.port_point[index];
+                image = "./icons/yellowPin.png";
+            } else if (title == "Ysleta") {
+           //     to_visualize = points_data.port_point[index];
+                image = "./icons/orangePin.png";
+            } else if (title == "BOTA") {
+          //      to_visualize = points_data.port_point[index];
+                image = "./icons/darkbluePin.png";
+            }
+        }
+
+        let point = new google.maps.Marker({
+            position: to_visualize,
+            title: title,
+            icon: image
+        });
+        point.setMap(map);
+        points.push(point);
+    }
 }
 function load_graph_values_pm14(all_data){
     let all_years_found = all_data.bridge_data.year;

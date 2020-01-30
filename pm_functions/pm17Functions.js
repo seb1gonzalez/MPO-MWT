@@ -42,6 +42,21 @@ function pm17Data(mode) {
             g2017 = data.shape_arr[index].g2017;
             g2018 = data.shape_arr[index].g2018;
 
+            if (g2014 == '0') {
+                g2014 = null;
+            }
+            if (g2015 == '0') {
+                g2015 = null;
+            }
+            if (g2016 == '0') {
+                g2016 = null;
+            }
+            if (g2017 == '0') {
+                g2017 = null;
+            }
+            if (g2018 == '0') {
+                g2018 = null;
+            }
 
             if (category == "PM 10 ") {
 
@@ -150,7 +165,9 @@ function pm17Data(mode) {
     });
 }
 
-function pm17chartLine(ctx,data) {
+function pm17chartLine(ctx, data) {
+    //modify values
+
     var data = {
        labels: ['2014', '2015', '2016', '2017', '2018'],
        datasets: [

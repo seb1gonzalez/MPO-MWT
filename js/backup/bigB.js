@@ -929,7 +929,7 @@
     }
 
      // adds the pm title
-     function headerAdder(text,holderTitle) {
+     /*function headerAdder(text,holderTitle) {
         var x = document.createElement("HEADER");
         var y;
         x.setAttribute("id", universal);
@@ -955,7 +955,7 @@
         holder.style.textAlign = "center";
         
         universal++;
-    }
+    }*/
 
     // adds Anchor
     function anchorAdder(text,link){

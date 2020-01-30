@@ -1,26 +1,25 @@
-/*
- * Note that PM25 is on progress. The graph values are hardcoded, Only 2017 is loaded. 
- * This class only calculates the values for graph
- */
 
 function pm25Data(mode, ex) {
-    //graph values
-
-    console.log(mode + " mode for 25 BC");
-    
     let pm25Data = {
         good: [0, 0, 0, 0, 0],
         fair: [0, 0, 0, 0, 0],
         poor: [0, 0, 0, 0, 0],
+
         tot_miles: 0,
-        poor_mi_perc: 0,
+        poor_mi_perc: 0, 
+        tot_poor_mi: 0,
+
         tx_miles: 0,
-        tx_poor_mi_perc: 0,
+        tx_poor_mi: 0, 
+        tx_poor_mi_perc: 0, 
+
         nm_miles: 0,
-        nm_poor_mi_perc: 0
+        nm_poor_mi: 0, 
+        nm_poor_mi_perc: 0, 
+
+        latestYear: 0
     }
 
-        
     let color = '#03A9F4';  // default
     let php_handler = "mwt_handler.php";
     let shape = "shape";
@@ -29,28 +28,38 @@ function pm25Data(mode, ex) {
     if (mode == 0 || mode == 1) {
         let key = 'all_pm25';
         data_for_php = { key: key };
-    } else if (mode == 4){
-        php_handler = "backend/AOI.php";
-    } 
-    else if(mode == 2){
+    } else if (mode == 4) {
+        php_handler = "./backend/AOI.php";
+        data_for_php = ex;
+    }
+    else if (mode == 2) {
         php_handler = "corridor_handlerB.php";
         shape = 'ST_AsText(SHAPE)';
+        let tableName = "pm25";
 
         data_for_php = {
             key: 25,
             corridors_selected: ex,
-            tableName: "pm25d"
+            tableName: tableName
         };
     }
-    console.log(php_handler);
-    console.log(data_for_php);
+
 
     $.get(php_handler, data_for_php, function (data) { // ajax call to populate pavement lines
-        //miles in poor condition
-        console.log('pass barrier');
         let poorconditionMiles = 0;
         let poorconditionMilesTX = 0;
         let poorconditionMilesNM = 0;
+        let latestYear = 0;
+
+        //get latest year
+        for (index in data.shape_arr) {
+            let year = data.shape_arr[index].year_recor;
+            if (latestYear < year) {
+                latestYear = year;
+            }
+        }
+
+        pm25Data.latestYear = latestYear;
 
         for (index in data.shape_arr) { // iterates through every index in the returned element (data['shape_arr'])
             let shp = data.shape_arr[index][shape]; // shape is LINESTRING or MULTILINESTRING
@@ -61,46 +70,48 @@ function pm25Data(mode, ex) {
             let ln = r.getCoordinates(); // parses the shape into lat & lng
 
             //PMS Data
-            let iri = data.shape_arr[index].iri_vn;
-            let year = data.shape_arr[index].year;
+            let iri = parseInt(data.shape_arr[index].iri);
+            let year = parseInt(data.shape_arr[index].year_recor);
             let miles = parseFloat(data.shape_arr[index].miles);
             let state = data.shape_arr[index].state_code;
 
+    
+
             //filter graph Data by Year, add counts on 3 conditions
-            if (year == 2013) {
-                if (iri < 95) { //condition
-                    pm25Data.good[0] += miles; //year 0 or 2013
-                } else if (iri > 94 && iri < 171) {
+            if (year == latestYear - 4) {
+                if (iri >0 && iri < 95) { // good condition
+                    pm25Data.good[0] += miles;
+                } else if (iri > 94 && iri < 171) { // Fair condition
                     pm25Data.fair[0] += miles;
-                } else if (iri > 170) {
+                } else if (iri > 170) { // Poor condition
                     pm25Data.poor[0] += miles;
                 }
-            } else if (year == 2014) {
-                if (iri < 95) {
+            } else if (year == latestYear - 3) {
+                if (iri > 0 && iri < 95) {
                     pm25Data.good[1] += miles;
                 } else if (iri > 94 && iri < 171) {
                     pm25Data.fair[1] += miles;
                 } else if (iri > 170) {
                     pm25Data.poor[1] += miles;
                 }
-            } else if (year == 2015) {
-                if (iri < 95) {
+            } else if (year == latestYear - 2) {
+                if (iri > 0 && iri < 95) {
                     pm25Data.good[2] += miles;
                 } else if (iri > 94 && iri < 171) {
                     pm25Data.fair[2] += miles;
                 } else if (iri > 170) {
                     pm25Data.poor[2] += miles;
                 }
-            } else if (year == 2016) {
-                if (iri < 95) {
+            } else if (year == latestYear - 1) {
+                if (iri > 0 && iri < 95) {
                     pm25Data.good[3] += miles;
                 } else if (iri > 94 && iri < 171) {
                     pm25Data.fair[3] += miles;
                 } else if (iri > 170) {
                     pm25Data.poor[3] += miles;
                 }
-            } else if (year == 2017) {
-                if (iri < 95) {
+            } else if (year == latestYear) {
+                if (iri > 0 && iri < 95) {
                     pm25Data.good[4] += miles;
                 } else if (iri > 94 && iri < 171) {
                     pm25Data.fair[4] += miles;
@@ -109,44 +120,49 @@ function pm25Data(mode, ex) {
                 }
             }
 
-            //total miles
-            pm25Data.tot_miles += miles;
-            // total poor condition miles
-            if (iri > 170) {
-                poorconditionMiles += miles;
-            }
-
-            //Texas 
-            if (state == 48) {
-                //total in tx
-                pm25Data.tx_miles += miles;
-                //poor in tx
-                if (iri > 170) {
-                    poorconditionMilesTX += miles;
+            if (year == latestYear) {
+                if (iri > 170) {      // total poor condition miles
+                    poorconditionMiles += miles;
                 }
+                //Texas 
+                if (state == 48 || state == "Texas") {
+                    //total in tx
+                    if (iri !=0) {
+                        pm25Data.tx_miles += miles;
+                    }
+                
+                    //poor in tx
+                    if (iri > 170) {
+                        pm25Data.tx_poor_mi += miles;
+                    }
 
-            } else if (state == 35) {
-                pm25Data.nm_miles += miles;
+                } else if (state == 35 || state == "New Mexico") {
+                    if (iri != 0) {
+                        pm25Data.nm_miles += miles;
+                    }
 
-                if (iri > 170) {
-                    poorconditionMilesNM += miles;
+                    if (iri > 170) {
+                        pm25Data.nm_poor_mi += miles;
+                    }
                 }
             }
 
             //Draw latest year
-            if (year == 2017) {
-                if (mode == 1 || mode == 2  || mode == 4) {
+            if (year == latestYear) {
+                if (mode == 1 || mode == 2 || mode == 4) {
                     for (let i = 0; i < ln.length; i++) {
                         coord = { lat: ln[i]['y'], lng: ln[i]['x'] }; // this is how lat & lng is interpreted by the tool
                         to_visualize.push(coord); // pushing the interpretation to our to_visualize array
                     }
                     // filter colors 
-                    if (iri < 95) {
-                        color = '#8BC34A';
+                    if (iri > 0 && iri < 95) {
+                        color = '#8BC34A'; //green
                     } else if (iri > 94 && iri < 171) {
-                        color = '#F57C00';
+                        color = '#F57C00'; //orange
                     } else if (iri > 170) {
-                        color = '#d50000';
+                        color = '#d50000'; //red
+                    } else if (iri == 0) { // No data
+                        color = '#9E9E9E';
                     }
                     let line = new google.maps.Polyline({ // it is a POLYLINE
                         path: to_visualize, // polyline has a path, defined by lat & lng 
@@ -160,14 +176,16 @@ function pm25Data(mode, ex) {
                 }
             }
         }
-        //calculations for dynamic Text
-        pm25Data.poor_mi_perc = ((poorconditionMiles / pm25Data.tot_miles) * 100).toFixed(2);
-        pm25Data.tx_poor_mi_perc = ((poorconditionMilesTX / pm25Data.tx_miles) * 100).toFixed(2);
-        pm25Data.nm_poor_mi_perc = ((poorconditionMilesNM / pm25Data.nm_miles) * 100).toFixed(2);
+ 
+        //totals
+        pm25Data.tot_poor_mi = (pm25Data.nm_poor_mi + pm25Data.tx_poor_mi).toFixed(2);
+        pm25Data.tot_miles = pm25Data.tx_miles + pm25Data.nm_miles;
 
-        pm25Data.tot_miles = (pm25Data.tot_miles).toFixed(2);
-        pm25Data.tx_miles = (pm25Data.tx_miles).toFixed(2);
-        pm25Data.nm_miles = (pm25Data.nm_miles).toFixed(2);
+        // Dynamic Text Calculations Percentages
+        pm25Data.poor_mi_perc = ((pm25Data.tot_poor_mi / pm25Data.tot_miles) * 100).toFixed(2);
+        pm25Data.tx_poor_mi_perc = ((pm25Data.tx_poor_mi / pm25Data.tx_miles) * 100).toFixed(2);
+        pm25Data.nm_poor_mi_perc = ((pm25Data.nm_poor_mi / pm25Data.nm_miles) * 100).toFixed(2);
+
         // If we fixed used 'toFixed(2)' earlier it cause a bug. Estimating here worked
         pm25Data.good[0] = (pm25Data.good[0]).toFixed(2);
         pm25Data.good[1] = (pm25Data.good[1]).toFixed(2);
@@ -187,31 +205,33 @@ function pm25Data(mode, ex) {
         pm25Data.poor[3] = (pm25Data.poor[3]).toFixed(2);
         pm25Data.poor[4] = (pm25Data.poor[4]).toFixed(2);
  
-
         let corr = translateCorridor(ex); // what corridor are we on?
 
         if (mode == 0) {
-            document.getElementById("pm25DText").innerHTML = pm25Data.poor_mi_perc;
+            if (ex == 'd') {
+                document.getElementById("pm25DText").innerHTML = pm25Data.poor_mi_perc + "%";
+            } else if (ex == 't') {
+                document.getElementById("pm25T_Text").innerHTML = pm25Data.poor_mi_perc + "%";
+            } else if (ex == 'f') {
+                document.getElementById("pm25FText").innerHTML = pm25Data.poor_mi_perc + "%";
+            }
+            
         }
         else if (mode == 1) {
             regionalText(pm25Data);
         } else if (mode == 2) {
-            console.log('Entering Another Realm');
             dynamicCorridorText(corr, pm25Data);
         }
         else if(mode == 4){
-            console.log('Entering AOI Realm');
             dynamicCorridorText("AOI", pm25Data);
         }
     });
     
 }
 
-
-
 function pm25StackedChart(ctx, data) {
     var barChartData = {
-        labels: ['2013', '2014', '2015', '2016', '2017'],
+        labels: [data.latestYear - 4, data.latestYear - 3, data.latestYear - 2, data.latestYear - 1, data.latestYear],
         datasets: [{
             label: 'Good',
             backgroundColor: 'rgba(139,195,74 ,1)',
@@ -268,7 +288,7 @@ function pm25StackedChart(ctx, data) {
 }
 function pm25chartLine(ctx, data) {
     var data = {
-        labels: ["2013", "2014", "2015", "2016", "2017"],
+        labels: [data.latestYear - 4, data.latestYear - 3, data.latestYear - 2, data.latestYear - 1, data.latestYear],
         datasets: [
             {
                 label: "Poor Condition",
